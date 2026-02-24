@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pinchtab - Harness Engineering</title>
+<link rel="stylesheet" href="../site.css">
+<style>
+  #reading-progress{position:fixed;top:0;left:0;right:0;height:3px;background:var(--border);z-index:200;}
+  #reading-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));width:0%;}
+  .split-demo{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0;}
+  @media(max-width:600px){.split-demo{grid-template-columns:1fr;}}
+  .split-panel{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px;min-height:200px;position:relative;overflow:hidden;}
+  .split-panel h4{font-size:12px;font-family:var(--font-mono);color:var(--text-muted);margin:0 0 12px;text-transform:uppercase;letter-spacing:0.06em;}
+  .browser-mock{background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+  .browser-bar{background:var(--surface2);padding:6px 10px;display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--border);}
+  .browser-bar-dot{width:8px;height:8px;border-radius:50%;}
+  .browser-bar-url{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:2px 8px;font-size:11px;font-family:var(--font-mono);color:var(--text-muted);}
+  .browser-body{padding:12px;font-size:12px;color:var(--text-dim);line-height:1.6;}
+  .selected-text{background:rgba(99,102,241,0.25);border-radius:2px;color:var(--text);}
+  .flow-arrow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:28px;color:var(--accent);z-index:10;opacity:0;transition:opacity 0.5s,transform 0.5s;}
+  .flow-arrow.show{opacity:1;transform:translate(-50%,-50%) scale(1.2);}
+  .term-inject{margin-top:8px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:10px;font-size:11px;font-family:var(--font-mono);color:var(--text-muted);}
+  .inject-line{display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;}
+  .inject-tag{background:var(--accent);color:#fff;border-radius:3px;padding:1px 5px;font-size:10px;flex-shrink:0;margin-top:1px;}
+  .inject-content{color:var(--text-dim);}
+  .feature-row{display:grid;grid-template-columns:auto 1fr;gap:8px 16px;align-items:start;margin:16px 0;}
+  .feat-label{font-family:var(--font-mono);font-size:12px;color:var(--accent);padding-top:1px;}
+  .feat-val{font-size:13px;color:var(--text-dim);}
+</style>
+</head>
+<body>
+<div id="reading-progress"><div id="reading-progress-fill"></div></div>
+<div class="site-layout">
+  <div id="nav-sidebar" class="sidebar"></div>
+  <div class="main-content">
+    <div id="nav-topbar"></div>
+    <div class="page-content">
+      <div class="page-header">
+        <div class="module-eyebrow">Module 09 &middot; Skills &amp; Tools &middot; 8 min</div>
+        <h1 class="gradient-text">Pinchtab</h1>
+        <p class="lead">Browser Tab Context Capture &mdash; one shortcut, full page awareness.</p>
+      </div>
+      <div class="content-section">
+        <p style="font-size:16px;line-height:1.8;color:var(--text-dim);">Pinchtab is a browser extension that captures your currently active browser tab &mdash; the URL, page title, selected text, and full page content &mdash; and injects it as context into Claude Code. Instead of copy-pasting, you pinch the tab and Claude instantly knows what you are looking at.</p>
+      </div>
+      <div class="callout callout-info" style="margin:24px 0;">
+        <div class="callout-icon">&#128161;</div>
+        <div class="callout-body"><strong>The Mental Model</strong><br>Imagine having a colleague who can glance at exactly what is on your screen and immediately understand it &mdash; without you having to explain or copy anything. Pinchtab is that glance: one shortcut, and Claude gets full context of your browser tab.</div>
+      </div>
+      <div class="content-section">
+        <h2 class="section-title"><span class="icon">&#9889;</span> How It Works</h2>
+        <p style="color:var(--text-dim);margin-bottom:16px;">Press the Pinchtab shortcut and watch page content flow from your browser into Claude Code context. Select some text first to give Claude a focused injection point.</p>
+        <div class="anim-box">
+          <div class="anim-box-header"><span class="anim-box-title">Live Demo: Tab Context Injection</span></div>
+          <div class="anim-box-body">
+            <div class="split-demo">
+              <div class="split-panel" id="browser-panel">
+                <h4>&#127760; Browser Tab</h4>
+                <div class="browser-mock">
+                  <div class="browser-bar">
+                    <div class="browser-bar-dot" style="background:#ef4444"></div>
+                    <div class="browser-bar-dot" style="background:#f59e0b"></div>
+                    <div class="browser-bar-dot" style="background:#22c55e"></div>
+                    <div class="browser-bar-url">docs.anthropic.com/claude/hooks</div>
+                  </div>
+                  <div class="browser-body">
+                    <strong>Claude Code Hooks</strong><br>
+                    Hooks let you intercept tool calls before and after they execute.
+                    <span class="selected-text" id="selected-highlight"> You can run scripts, validate inputs, track usage, and send notifications.</span>
+                    Use PreToolUse to block dangerous operations...
+                  </div>
+                </div>
+              </div>
+              <div class="split-panel" id="claude-panel">
+                <h4>&#128187; Claude Code Context</h4>
+                <div class="term-inject" id="inject-display">
+                  <div style="color:var(--text-muted);font-size:11px;">Waiting for Pinchtab shortcut...</div>
+                </div>
+              </div>
+            </div>
+            <div style="margin-top:16px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+              <button class="btn btn-primary" onclick="runPinchtabAnim()">&#9654; Press Pinchtab Shortcut</button>
+              <button class="btn btn-ghost" onclick="resetPinchtabAnim()">&#8634; Reset</button>
+              <span style="font-size:12px;color:var(--text-muted);margin-left:4px;">Simulates Ctrl+Shift+P</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="content-section">
+        <h2 class="section-title"><span class="icon">&#128203;</span> What Gets Captured</h2>
+        <div class="feature-row">
+          <div class="feat-label">URL</div><div class="feat-val">The full URL of the active tab, including query params and fragments.</div>
+          <div class="feat-label">Title</div><div class="feat-val">The page title, used by Claude to understand the document context.</div>
+          <div class="feat-label">Selected Text</div><div class="feat-val">Any text you highlight before pressing the shortcut gets priority injection &mdash; Claude focuses on that first.</div>
+          <div class="feat-label">Full Content</div><div class="feat-val">The visible page text, cleaned of navigation chrome and ads.</div>
+          <div class="feat-label">Works With</div><div class="feat-val">Any browser tab, including JavaScript-rendered apps. Also works with PDFs open in the browser.</div>
+        </div>
+      </div>
+      <div class="content-section">
+        <h2 class="section-title"><span class="icon">&#128187;</span> Terminal Demo</h2>
+        <div class="terminal">
+          <div class="term-bar"><span class="term-dot" style="background:var(--red)"></span><span class="term-dot" style="background:var(--orange)"></span><span class="term-dot" style="background:var(--green)"></span><span class="term-title">claude code &mdash; after pinchtab injection</span></div>
+          <div class="term-body">
+            <div><span class="comment"># User pressed Ctrl+Shift+P on docs.anthropic.com/claude/hooks</span></div>
+            <div><span class="info">[Pinchtab] Injecting tab context...</span></div>
+            <div><span class="ok">&#10003; URL: https://docs.anthropic.com/claude/hooks</span></div>
+            <div><span class="ok">&#10003; Title: Claude Code Hooks - Anthropic</span></div>
+            <div><span class="ok">&#10003; Selected: &quot;You can run scripts, validate inputs, track usage...&quot;</span></div>
+            <div><span class="ok">&#10003; Content: 4,200 chars injected into context</span></div>
+            <br>
+            <div><span class="prompt">&gt;</span> <span class="cmd">Based on the page I just shared, write a PostToolUse hook that logs every file write to a CSV.</span></div>
+            <br>
+            <div><span class="output">I can see you are on the Hooks documentation page. Based on the selected text about</span></div>
+            <div><span class="output">tracking usage, here is a PostToolUse hook that logs file writes to CSV...</span></div>
+            <br>
+            <div><span class="prompt">&gt;</span> <span class="cmd">Now summarise the entire page in 3 bullet points<span class="cursor"></span></span></div>
+          </div>
+        </div>
+      </div>
+      <div class="content-section">
+        <h2 class="section-title"><span class="icon">&#127947;</span> Exercise</h2>
+        <div class="exercise-block">
+          <div class="exercise-header">Hands-On: Install and Use Pinchtab</div>
+          <div class="exercise-body">
+            <div class="exercise-step"><div class="step-badge">1</div><div class="step-content"><strong>Install the extension</strong><br>Search for Pinchtab in the Chrome Web Store or Firefox Add-ons. Install and pin it to your toolbar.</div></div>
+            <div class="exercise-step"><div class="step-badge">2</div><div class="step-content"><strong>Configure Claude Code integration</strong><br>Follow the extension setup wizard. It will ask for the Claude Code endpoint URL and shortcut key preference (default: Ctrl+Shift+P on Windows, Cmd+Shift+P on Mac).</div></div>
+            <div class="exercise-step"><div class="step-badge">3</div><div class="step-content"><strong>Open any webpage</strong><br>Navigate to any page you want to discuss with Claude &mdash; docs, a bug report, a competitor page, a Stack Overflow answer.</div></div>
+            <div class="exercise-step"><div class="step-badge">4</div><div class="step-content"><strong>Highlight text</strong><br>Select a specific paragraph or code block on the page. This becomes the priority content Claude focuses on first.</div></div>
+            <div class="exercise-step"><div class="step-badge">5</div><div class="step-content"><strong>Press the shortcut</strong><br>Hit Ctrl+Shift+P (or your configured shortcut). Switch to Claude Code and ask a question about the page &mdash; Claude already has full context.</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="callout callout-tip" style="margin:24px 0;"><div class="callout-icon">&#128218;</div><div class="callout-body"><strong>Power Combo</strong><br>Use Pinchtab to capture a page, then ask Claude to use the agent-browser skill to follow links from that page. You get human-guided starting point + autonomous deep crawl.</div></div>
+      <div class="content-section">
+        <h2 class="section-title"><span class="icon">&#127919;</span> Key Takeaways</h2>
+        <div class="takeaways"><h3>What to Remember</h3>
+          <div class="takeaway-item"><div class="ti-icon">&#128247;</div><div><strong>Pinchtab eliminates copy-paste for web context.</strong> One shortcut, full page injected.</div></div>
+          <div class="takeaway-item"><div class="ti-icon">&#127760;</div><div><strong>Works with any browser tab.</strong> Docs, SPAs, PDFs, GitHub issues &mdash; all captured.</div></div>
+          <div class="takeaway-item"><div class="ti-icon">&#127775;</div><div><strong>Selected text gets priority.</strong> Highlight the key section before pressing the shortcut for focused context.</div></div>
+          <div class="takeaway-item"><div class="ti-icon">&#128279;</div><div><strong>Combine with agent-browser.</strong> Pinchtab for human-chosen starting points; agent-browser for autonomous follow-up crawling.</div></div>
+        </div>
+      </div>
+      <div class="section-divider" style="margin-top:40px;"></div>
+      <div style="display:flex;justify-content:center;margin:24px 0;">
+        <button class="btn btn-ghost" id="mark-complete-btn">Mark as Complete &#10003;</button>
+      </div>
+      <div id="module-nav"></div>
+    </div>
+  </div>
+</div>
+<script src="../nav.js"></script>
+<script>
+  window.addEventListener("scroll",()=>{
+    const el=document.documentElement;
+    document.getElementById("reading-progress-fill").style.width=(el.scrollTop/(el.scrollHeight-el.clientHeight))*100+"%";
+  });
+  let ptTimer=null;
+  function runPinchtabAnim(){
+    clearTimeout(ptTimer);
+    const inject=document.getElementById("inject-display");
+    const hl=document.getElementById("selected-highlight");
+    hl.style.transition="background 0.3s";
+    hl.style.background="rgba(99,102,241,0.45)";
+    inject.innerHTML='<div style="color:var(--accent);font-size:11px;margin-bottom:6px;">&#9654; Pinchtab injecting...</div>';
+    ptTimer=setTimeout(()=>{
+      inject.innerHTML=[
+        '<div class="inject-line"><span class="inject-tag">URL</span><span class="inject-content">https://docs.anthropic.com/claude/hooks</span></div>',
+        '<div class="inject-line"><span class="inject-tag">TITLE</span><span class="inject-content">Claude Code Hooks - Anthropic</span></div>',
+        '<div class="inject-line"><span class="inject-tag">SEL</span><span class="inject-content">You can run scripts, validate inputs, track usage, and send notifications.</span></div>',
+        '<div class="inject-line"><span class="inject-tag">BODY</span><span class="inject-content">4,200 chars of page content injected into context window</span></div>',
+        '<div style="margin-top:8px;color:var(--green);font-size:11px;">&#10003; Context ready &mdash; ask Claude about this page</div>'
+      ].join("");
+    },600);
+  }
+  function resetPinchtabAnim(){
+    clearTimeout(ptTimer);
+    const inject=document.getElementById("inject-display");
+    inject.innerHTML='<div style="color:var(--text-muted);font-size:11px;">Waiting for Pinchtab shortcut...</div>';
+    const hl=document.getElementById("selected-highlight");
+    hl.style.background="rgba(99,102,241,0.25)";
+  }
+</script>
+</body>
+</html>

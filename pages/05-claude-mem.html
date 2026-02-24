@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>claude-mem — Harness Engineering</title>
+<link rel="stylesheet" href="../site.css">
+<style>
+  #reading-progress{position:fixed;top:0;left:0;right:0;height:3px;background:var(--border);z-index:200;}
+  #reading-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));width:0%;}
+
+  .mem-arch { display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0; }
+  .arch-box { background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px; }
+  .arch-box h4 { font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px; }
+  .arch-item { font-size:13px;color:var(--text-dim);padding:3px 0;display:flex;align-items:center;gap:6px; }
+
+  /* Memory flow animation */
+  .mem-flow { position:relative;background:#080810;border:1px solid var(--border);border-radius:var(--radius-sm);padding:20px;overflow:hidden;min-height:140px; }
+  .fact-bubble { background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.3);border-radius:6px;padding:4px 10px;font-size:11px;color:var(--accent3);display:inline-block;margin:3px; }
+  .compress-arrow { text-align:center;color:var(--accent);font-size:18px;margin:8px 0; }
+
+  @media(max-width:600px){ .mem-arch{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+<div id="reading-progress"><div id="reading-progress-fill"></div></div>
+<div class="site-layout">
+  <div id="nav-sidebar" class="sidebar"></div>
+  <div class="main-content">
+    <div id="nav-topbar"></div>
+    <div class="page-content">
+
+      <div class="page-header">
+        <div class="module-eyebrow">Module 05 · Memory &amp; Context · ⏱ 8 min</div>
+        <h1>claude-mem — <span class="gradient-text">Persistent AI Memory</span></h1>
+        <p class="lead">Claude forgets everything when a session ends. claude-mem is a Claude Code plugin that automatically captures what Claude does across sessions, compresses it (~10× token reduction), and injects relevant context back at session start.</p>
+      </div>
+
+      <div class="content-section">
+        <div class="section-title"><div class="icon" style="background:rgba(99,102,241,.15);">🧠</div>The Auto-Indexing Assistant</div>
+        <p>Imagine an assistant who listens to every meeting, extracts the key decisions and facts into a searchable index, and reads that index before tomorrow's meeting. You don't have to repeat yourself — they already know your history.</p>
+        <p>claude-mem works passively in the background. Every tool call, decision, and significant output gets compressed into a semantic observation and stored. The next session, relevant memories surface automatically.</p>
+      </div>
+
+      <!-- Architecture -->
+      <div class="anim-box">
+        <div class="anim-box-header">
+          <div class="anim-box-title">⚙️ How claude-mem works</div>
+        </div>
+        <div class="anim-box-body">
+          <div class="mem-arch">
+            <div class="arch-box">
+              <h4>🔴 Capture</h4>
+              <div class="arch-item">📡 Worker service (port 37777)</div>
+              <div class="arch-item">🪝 PostToolUse hook fires</div>
+              <div class="arch-item">📝 Raw output captured (~5k tok)</div>
+              <div class="arch-item">🤖 AI compresses to ~500 tok</div>
+            </div>
+            <div class="arch-box">
+              <h4>🟢 Recall</h4>
+              <div class="arch-item">🔍 search — full-text + filter</div>
+              <div class="arch-item">📅 timeline — chronological context</div>
+              <div class="arch-item">📄 get_observations — fetch details</div>
+              <div class="arch-item">⚡ 10× token efficient vs raw</div>
+            </div>
+          </div>
+
+          <div style="font-size:12px;color:var(--text-muted);margin-top:4px;margin-bottom:12px;">Storage: SQLite (session data) + Chroma vector DB (semantic search)</div>
+
+          <div class="mem-flow">
+            <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px;">Session 1 — captured facts</div>
+            <div>
+              <span class="fact-bubble">Stack: Next.js + Prisma</span>
+              <span class="fact-bubble">DB: Neon PostgreSQL</span>
+              <span class="fact-bubble">Hosting: Vercel + Railway</span>
+              <span class="fact-bubble">Decision: REST → tRPC</span>
+              <span class="fact-bubble">Bug: cascade delete issue in user model</span>
+              <span class="fact-bubble">Pattern: always wrap API calls in try-catch</span>
+            </div>
+            <div class="compress-arrow">↓ 10× compressed ↓</div>
+            <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;">Session 2 — context loaded</div>
+            <div style="font-size:13px;color:var(--text-dim);">Claude already knows your stack, decisions, and patterns.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Compare vs MEMORY.md -->
+      <div class="content-section">
+        <div class="section-title"><div class="icon" style="background:rgba(245,158,11,.15);">⚖️</div>claude-mem vs MEMORY.md</div>
+        <div class="compare-grid">
+          <div class="compare-card bad">
+            <h4>📝 Manual MEMORY.md</h4>
+            <ul>
+              <li>You write it manually</li>
+              <li>Only what you remember to add</li>
+              <li>Full content on every load</li>
+              <li>Not searchable</li>
+              <li>Full editorial control</li>
+            </ul>
+          </div>
+          <div class="compare-card good">
+            <h4>🧠 claude-mem Plugin</h4>
+            <ul>
+              <li>Automatic capture (passive)</li>
+              <li>Everything Claude does</li>
+              <li>10× compressed + search-retrieved</li>
+              <li>Vector + keyword searchable</li>
+              <li>AI decides what to compress</li>
+            </ul>
+          </div>
+        </div>
+        <div class="callout info" style="margin-top:12px;">
+          <div class="callout-icon">ℹ</div>
+          <div class="callout-body">Use <strong>both</strong>: claude-mem for automatic recall, MEMORY.md for facts you explicitly want Claude to always know (architectural decisions, personal preferences).</div>
+        </div>
+      </div>
+
+      <div class="terminal">
+        <div class="term-bar">
+          <div class="term-dot" style="background:#ff5f57"></div>
+          <div class="term-dot" style="background:#febc2e"></div>
+          <div class="term-dot" style="background:#28c840"></div>
+          <div class="term-title">Claude Code — install claude-mem</div>
+        </div>
+        <div class="term-body">
+          <div><span class="comment"># Install claude-mem as a Claude Code plugin</span></div>
+          <div><span class="acc">&gt; </span><span class="cmd">/plugin marketplace add thedotmack/claude-mem</span></div>
+          <div class="output">Found: thedotmack/claude-mem</div>
+          <div class="output">Installing... (auto-installs Bun, uv, Chroma)</div>
+          <div class="ok">✓ claude-mem installed</div>
+          <br>
+          <div><span class="acc">&gt; </span><span class="cmd">/plugin install claude-mem</span></div>
+          <div class="ok">✓ Worker service started (port 37777)</div>
+          <div class="ok">✓ PostToolUse hook registered</div>
+          <div class="info">Memory capture is now active.</div>
+          <br>
+          <div><span class="comment"># Worker management (from ~/.claude-mem/):</span></div>
+          <div><span class="prompt">$ </span><span class="cmd">npm run worker:status</span></div>
+          <div class="ok">Worker: running on port 37777</div>
+        </div>
+      </div>
+
+      <div class="exercise-block">
+        <div class="exercise-header"><span>🔧</span><h3>Hands-On Exercise</h3></div>
+        <div class="exercise-body">
+          <div class="exercise-step">
+            <div class="step-badge">01</div>
+            <div class="step-content">
+              <h4>Install the plugin</h4>
+              <p>In Claude Code, run: <code>/plugin marketplace add thedotmack/claude-mem</code> then <code>/plugin install claude-mem</code>. It will auto-install dependencies.</p>
+            </div>
+          </div>
+          <div class="exercise-step">
+            <div class="step-badge">02</div>
+            <div class="step-content">
+              <h4>Work for 10 minutes</h4>
+              <p>Do any coding task with Claude. Ask it to create files, analyze code, run commands. claude-mem is silently capturing everything.</p>
+            </div>
+          </div>
+          <div class="exercise-step">
+            <div class="step-badge">03</div>
+            <div class="step-content">
+              <h4>Test recall in a new session</h4>
+              <p>Start a fresh Claude Code session and ask: <em>"Search your memory for what we did earlier"</em> or <em>"What do you know about this project?"</em></p>
+            </div>
+          </div>
+          <div class="exercise-step">
+            <div class="step-badge">04</div>
+            <div class="step-content">
+              <h4>Browse the web UI</h4>
+              <p>Open <code>http://localhost:37777</code> in your browser to see all captured memories with search and filtering.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="takeaways">
+        <h3>⚡ Key Takeaways</h3>
+        <div class="takeaway-item"><span class="ti-icon">✓</span><div>claude-mem is a Claude Code plugin — passive auto-capture, not a manual tool.</div></div>
+        <div class="takeaway-item"><span class="ti-icon">✓</span><div>Worker service on port 37777 handles compression + storage (SQLite + Chroma).</div></div>
+        <div class="takeaway-item"><span class="ti-icon">✓</span><div>10× token reduction via AI compression — cheaper than loading raw history.</div></div>
+        <div class="takeaway-item"><span class="ti-icon">✓</span><div>3-tool recall workflow: search → timeline → get_observations (progressive disclosure).</div></div>
+      </div>
+
+      <div class="section-divider" style="margin-top:40px;"></div>
+      <div style="display:flex;justify-content:center;margin:24px 0;">
+        <button class="btn btn-ghost" id="mark-complete-btn">Mark as Complete ✓</button>
+      </div>
+      <div id="module-nav"></div>
+    </div>
+  </div>
+</div>
+<script src="../nav.js"></script>
+</body>
+</html>

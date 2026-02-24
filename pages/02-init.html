@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>/init Command &#8212; Harness Engineering</title>
+<link rel="stylesheet" href="../site.css">
+<style>
+  #reading-progress{position:fixed;top:0;left:0;right:0;height:3px;background:var(--border);z-index:200;}
+  #reading-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));width:0%;}
+  .flow-step{display:flex;align-items:flex-start;gap:16px;padding:16px;background:var(--surface);border:1px solid var(--border);}
+  .flow-step:first-child{border-radius:12px 12px 0 0;}
+  .flow-step:last-child{border-radius:0 0 12px 12px;}
+  .flow-step+.flow-step{border-top:none;}
+  .flow-icon{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+  .fi-scan{background:rgba(99,102,241,0.15);}
+  .fi-write{background:rgba(34,197,94,0.15);}
+  .fi-load{background:rgba(6,182,212,0.15);}
+  .flow-title{font-weight:700;margin-bottom:4px;font-size:14px;}
+  .flow-desc{color:var(--text-dim);font-size:13px;line-height:1.6;}
+  .step-status{font-size:11px;padding:2px 8px;border-radius:20px;background:var(--surface2);color:var(--text-muted);transition:all 0.4s;display:inline-block;margin-left:8px;}
+  .step-status.active{background:rgba(99,102,241,0.2);color:var(--accent);}
+  .step-status.done{background:rgba(34,197,94,0.2);color:var(--green);}
+  .file-ticker{font-family:var(--font-mono);font-size:11px;color:var(--accent);margin-top:6px;min-height:16px;}
+  .typing-line{font-family:var(--font-mono);font-size:12px;color:var(--green);line-height:1.5;}
+  .anim-trigger{background:var(--surface2);border:1px solid var(--border2);color:var(--text);padding:8px 22px;border-radius:8px;cursor:pointer;font-size:13px;transition:all 0.2s;}
+  .anim-trigger:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
+</style>
+</head>
+<body>
+<div id="reading-progress"><div id="reading-progress-fill"></div></div>
+<div class="site-layout">
+  <div id="nav-sidebar" class="sidebar"></div>
+  <div class="main-content">
+    <div id="nav-topbar"></div>
+    <div class="page-content">
+      <div class="page-header">
+        <div class="module-eyebrow">Module 02 &middot; Getting Started &middot; 8 min</div>
+        <h1><span class="gradient-text">/init</span> Command</h1>
+        <p class="lead">Running /init tells Claude to study your project and write its own CLAUDE.md &#8212; a contract that persists across every conversation. One command, permanent context.</p>
+      </div>
+      <div class="content-section">
+        <h2 class="section-title">The Self-Writing Onboarding Doc</h2>
+        <p style="color:var(--text-dim);line-height:1.75;margin-bottom:16px;">Imagine hiring a new employee. Instead of you writing their onboarding document, you ask <em>them</em> to shadow your codebase for an hour and write their own handbook. That is /init &#8212; Claude reverse-engineers the instructions it needs to work well in your project.</p>
+        <p style="color:var(--text-dim);line-height:1.75;">Claude reads your package.json, README, existing code patterns, folder structure, and config files. Then it writes a CLAUDE.md tailored to your project &#8212; capturing the stack, conventions, and architectural decisions it can infer. Every future session loads this file automatically before the first message.</p>
+        <div class="callout tip" style="margin-top:20px;"><div class="callout-icon">&#128161;</div><div class="callout-body"><strong>Run /init once per project.</strong> After that, Claude carries your project context into every session automatically. Edit the generated CLAUDE.md to correct any wrong assumptions.</div></div>
+      </div>
+      <div class="content-section">
+        <h2 class="section-title">The /init Flow &#8212; Three Stages</h2>
+        <div class="anim-box">
+          <div class="anim-box-header"><span class="anim-box-title">Onboarding Animation</span><span class="pill pill-accent">Click to Run</span></div>
+          <div class="anim-box-body">
+            <div>
+              <div class="flow-step" id="fstep1">
+                <div class="flow-icon fi-scan">&#128269;</div>
+                <div style="flex:1;">
+                  <div class="flow-title">Stage 1 &#8212; Scan <span class="step-status" id="s1status">waiting</span></div>
+                  <div class="flow-desc">Claude reads your file tree, package.json, README, config files, and code patterns.</div>
+                  <div class="file-ticker" id="fileTicker"></div>
+                </div>
+              </div>
+              <div class="flow-step" id="fstep2">
+                <div class="flow-icon fi-write">&#128221;</div>
+                <div style="flex:1;">
+                  <div class="flow-title">Stage 2 &#8212; Write <span class="step-status" id="s2status">waiting</span></div>
+                  <div class="flow-desc">Claude generates CLAUDE.md &#8212; your project handbook. Lines appear one by one.</div>
+                  <div id="typingArea" style="margin-top:8px;min-height:44px;background:var(--surface2);border-radius:6px;padding:8px;font-size:12px;"></div>
+                </div>
+              </div>
+              <div class="flow-step" id="fstep3">
+                <div class="flow-icon fi-load">&#128504;</div>
+                <div style="flex:1;">
+                  <div class="flow-title">Stage 3 &#8212; Auto-Load <span class="step-status" id="s3status">waiting</span></div>
+                  <div class="flow-desc">Every future session loads CLAUDE.md automatically. Context is always ready before the first message.</div>
+                  <div id="loadIndicator" style="margin-top:6px;font-size:12px;color:var(--text-muted);"></div>
+                </div>
+              </div>
+            </div>
+            <div style="display:flex;justify-content:center;margin-top:16px;"><button class="anim-trigger" onclick="runInitAnim()" id="initBtn">&#9654; Run /init</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="content-section">
+        <h2 class="section-title">What /init Looks Like</h2>
+        <div class="terminal">
+          <div class="term-bar"><span class="term-dot" style="background:#ef4444;"></span><span class="term-dot" style="background:#f59e0b;"></span><span class="term-dot" style="background:#22c55e;"></span><span class="term-title">Terminal</span></div>
+          <div class="term-body">
+            <div><span class="prompt">$</span> <span class="cmd">cd my-project</span></div>
+            <div><span class="prompt">$</span> <span class="cmd">claude</span></div>
+            <div class="output ok">Claude Code v1.x.x ready.</div>
+            <br>
+            <div><span class="prompt">&gt;</span> <span class="cmd">/init</span></div>
+            <br>
+            <div class="output info">Scanning project structure...</div>
+            <div class="output info">Reading package.json, README.md...</div>
+            <div class="output info">Analyzing code patterns...</div>
+            <div class="output info">Detecting tech stack: TypeScript, React, Prisma</div>
+            <div class="output info">Writing CLAUDE.md...</div>
+            <br>
+            <div class="output ok">CLAUDE.md created!</div>
+            <div class="output ok">This file will load automatically in all future sessions.</div>
+            <br>
+            <div><span class="comment"># Review and edit it now:</span></div>
+            <div><span class="prompt">$</span> <span class="cmd">cat CLAUDE.md</span></div>
+            <span class="cursor">&#9610;</span>
+          </div>
+        </div>
+      </div>
+      <div class="content-section">
+        <h2 class="section-title">Hands-On Exercise</h2>
+        <div class="exercise-block">
+          <div class="exercise-header"><span>Exercise 02 &#8212; Bootstrap Your Project</span><span class="pill pill-green">8 min</span></div>
+          <div class="exercise-body">
+            <div class="exercise-step"><div class="step-badge">1</div><div class="step-content"><strong>Open a terminal in any project folder</strong><br>Use an existing project, or create one: <code>mkdir my-app &amp;&amp; cd my-app &amp;&amp; git init</code></div></div>
+            <div class="exercise-step"><div class="step-badge">2</div><div class="step-content"><strong>Start Claude Code</strong><br>Run <code>claude</code> to launch Claude Code in that directory. You will see a prompt with your project path.</div></div>
+            <div class="exercise-step"><div class="step-badge">3</div><div class="step-content"><strong>Run /init</strong><br>Type <code>/init</code> and press Enter. Claude will start scanning your project. This takes 30-60 seconds depending on project size.</div></div>
+            <div class="exercise-step"><div class="step-badge">4</div><div class="step-content"><strong>Wait for completion</strong><br>Watch the output as Claude scans files and generates your CLAUDE.md. When it says "created!" the file is ready.</div></div>
+            <div class="exercise-step"><div class="step-badge">5</div><div class="step-content"><strong>Review the generated CLAUDE.md</strong><br>Open <code>CLAUDE.md</code> in your editor. Read what Claude wrote about your project. Look for any incorrect assumptions.</div></div>
+            <div class="exercise-step"><div class="step-badge">6</div><div class="step-content"><strong>Edit incorrect assumptions</strong><br>Fix anything Claude got wrong. Then start a new session and verify Claude loads the updated context.</div></div>
+          </div>
+        </div>
+        <div class="callout warn" style="margin-top:16px;"><div class="callout-icon">&#9888;</div><div class="callout-body"><strong>Commit CLAUDE.md to git.</strong> This file should be version-controlled. It is documentation that helps Claude and new team members understand your project.</div></div>
+      </div>
+      <div class="content-section">
+        <h2 class="section-title">Key Takeaways</h2>
+        <div class="takeaways">
+          <div class="takeaway-item"><div class="ti-icon">&#128196;</div><div><strong>CLAUDE.md persists across all sessions in that project.</strong> Claude reads it at the start of every conversation automatically &#8212; no manual loading needed.</div></div>
+          <div class="takeaway-item"><div class="ti-icon">&#128271;</div><div><strong>/init is a one-time command per project.</strong> Run it once, edit the output, and Claude carries that context permanently into future sessions.</div></div>
+          <div class="takeaway-item"><div class="ti-icon">&#9999;</div><div><strong>Always review and edit the generated file.</strong> Claude makes good inferences but also makes assumptions. Correct them before your next session for the best results.</div></div>
+        </div>
+      </div>
+      <div class="section-divider" style="margin-top:40px;"></div>
+      <div style="display:flex;justify-content:center;margin:24px 0;"><button class="btn btn-ghost" id="mark-complete-btn">Mark as Complete &#10003;</button></div>
+      <div id="module-nav"></div>
+    </div>
+  </div>
+</div>
+<script src="../nav.js"></script>
+<script>
+  window.addEventListener("scroll",function(){var el=document.documentElement;document.getElementById("reading-progress-fill").style.width=(el.scrollTop/(el.scrollHeight-el.clientHeight)*100)+"%";});
+  var files=["package.json","README.md","src/index.ts","tsconfig.json",".env.example","prisma/schema.prisma","src/utils/api.ts"];
+  var lines=["# My Project","","## Tech Stack","- TypeScript, Node.js, Prisma","- PostgreSQL for storage","","## Conventions","- Use async/await","- kebab-case for filenames","","## What To Avoid","- Never commit .env"];
+  var busy=false;
+  function runInitAnim(){
+    if(busy)return;
+    busy=true;
+    document.getElementById("initBtn").textContent="Running...";
+    document.getElementById("initBtn").disabled=true;
+    setSt("s1status","active","scanning...");
+    var fi=0,ticker=document.getElementById("fileTicker");
+    var t1=setInterval(function(){
+      if(fi<files.length){ticker.textContent="reading: "+files[fi++];}
+      else{clearInterval(t1);setSt("s1status","done","done &#10003;");setTimeout(doWrite,400);}
+    },280);
+  }
+  function doWrite(){
+    setSt("s2status","active","writing...");
+    var area=document.getElementById("typingArea");
+    area.innerHTML="";
+    var li=0;
+    var t2=setInterval(function(){
+      if(li<lines.length){
+        var d=document.createElement("div");
+        d.className="typing-line";
+        d.textContent=lines[li]||" ";
+        li++;
+        area.appendChild(d);
+        area.scrollTop=area.scrollHeight;
+      }else{clearInterval(t2);setSt("s2status","done","done &#10003;");setTimeout(doLoad,400);}
+    },180);
+  }
+  function doLoad(){
+    setSt("s3status","active","loading...");
+    document.getElementById("loadIndicator").textContent="Next session: loading CLAUDE.md...";
+    setTimeout(function(){
+      document.getElementById("loadIndicator").innerHTML="&#9989; Context loaded. Claude ready with full project knowledge.";
+      setSt("s3status","done","always on");
+      var btn=document.getElementById("initBtn");
+      btn.textContent="&#10003; Done &#8212; Reset";
+      btn.disabled=false;
+      btn.onclick=resetAnim;
+    },1400);
+  }
+  function setSt(id,cls,txt){var el=document.getElementById(id);el.className="step-status "+cls;el.innerHTML=txt;}
+  function resetAnim(){
+    busy=false;
+    ["s1status","s2status","s3status"].forEach(function(id){setSt(id,"","waiting");});
+    document.getElementById("fileTicker").textContent="";
+    document.getElementById("typingArea").innerHTML="";
+    document.getElementById("loadIndicator").textContent="";
+    var btn=document.getElementById("initBtn");
+    btn.textContent="&#9654; Run /init";
+    btn.onclick=runInitAnim;
+  }
+</script>
+</body>
+</html>

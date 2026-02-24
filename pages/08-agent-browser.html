@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent Browser Skill - Harness Engineering</title>
+<link rel="stylesheet" href="../site.css">
+<style>
+  #reading-progress{position:fixed;top:0;left:0;right:0;height:3px;background:var(--border);z-index:200;}
+  #reading-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));width:0%;}
+  .pipeline-toggle{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
+  .pipeline-btn{padding:6px 14px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-size:13px;cursor:pointer;transition:all 0.2s;}
+  .pipeline-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .pipeline-scene{display:none;flex-direction:column;gap:10px;}
+  .pipeline-scene.visible{display:flex;}
+  .pipe-step{display:flex;align-items:center;gap:14px;padding:13px 16px;border-radius:8px;border:1px solid var(--border);background:var(--surface);opacity:0.3;transform:translateX(-8px);transition:all 0.4s ease;}
+  .pipe-step.active{opacity:1;transform:translateX(0);border-color:var(--accent);}
+  .pipe-step.done{opacity:0.65;transform:translateX(0);border-color:var(--green);}
+  .pipe-step.blocked{opacity:1;transform:translateX(0);border-color:var(--red);}
+  .pipe-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+  .pipe-label{font-size:14px;color:var(--text);flex:1;}
+  .pipe-status{font-family:var(--font-mono);font-size:11px;color:var(--text-muted);white-space:nowrap;}
+  .pipe-step.active .pipe-status{color:var(--accent);}
+  .pipe-step.done .pipe-status{color:var(--green);}
+  .pipe-step.blocked .pipe-status{color:var(--red);}
+  .pipe-connector{width:2px;height:10px;background:var(--border);margin:0 17px;transition:background 0.4s;}
+  .pipe-connector.lit{background:var(--accent);}
+  .feature-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px;margin:20px 0;}
+  .feature-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px;}
+  .fc-icon{font-size:22px;margin-bottom:8px;}
+  .fc-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;}
+  .fc-desc{font-size:12px;color:var(--text-muted);line-height:1.5;}
+</style>
+</head>
+<body>
+<div id="reading-progress"><div id="reading-progress-fill"></div></div>
+<div class="site-layout">
+  <div id="nav-sidebar" class="sidebar"></div>
+  <div class="main-content">
+    <div id="nav-topbar"></div>
+    <div class="page-content">
+      <div class="page-header">
+        <div class="module-eyebrow">Module 08 &middot; Skills &amp; Tools &middot; 10 min</div>
+        <h1 class="gradient-text">Agent Browser Skill</h1>
+        <p class="lead">Semantic Web Navigation &mdash; giving Claude live eyes on the internet.</p>
+      </div>
+      <div class="content-section">
+        <p style="font-size:16px;line-height:1.8;color:var(--text-dim);">The <code>agent-browser</code> skill gives Claude the ability to open URLs, navigate pages, fill forms, click elements, and extract content &mdash; using a headless Chrome browser. You trigger it by installing the skill and saying <em>browse to X and get Y.</em></p>
+      </div>
+      <div class="callout callout-info" style="margin:24px 0;">
+        <div class="callout-icon">&#128161;</div>
+        <div class="callout-body"><strong>The Mental Model</strong><br>Without the browser skill, Claude is a brilliant person locked in a room with no windows &mdash; it can reason, but cannot see the web. The <code>agent-browser</code> skill opens that window. Now Claude can read any live webpage, not just what you paste.</div>
+      </div>
+      <div class="content-section">
+        <h2 class="section-title"><span class="icon">&#9889;</span> How It Works</h2>
+        <p style="color:var(--text-dim);margin-bottom:16px;">Toggle between scenarios to see what changes when the browser skill is active. Run the animation to watch each step light up in sequence.</p>
+        <div class="anim-box">
+          <div class="anim-box-header"><span class="anim-box-title">Task: Check competitor pricing on shopify.com</span></div>
+          <div class="anim-box-body">
+            <div class="pipeline-toggle">
+              <button class="pipeline-btn active" data-mode="without" onclick="setPipelineMode(this.dataset.mode)">&#10007; Without Browser Skill</button>
+              <button class="pipeline-btn" data-mode="with" onclick="setPipelineMode(this.dataset.mode)">&#10003; With Browser Skill</button>
+            </div>
+            <div class="pipeline-scene visible" id="scene-without">
+              <div class="pipe-step blocked"><div class="pipe-icon" style="background:rgba(239,68,68,0.12)">&#129302;</div><div class="pipe-label">Claude receives the task</div><div class="pipe-status">received</div></div>
+              <div class="pipe-connector"></div>
+              <div class="pipe-step blocked"><div class="pipe-icon" style="background:rgba(239,68,68,0.12)">&#128683;</div><div class="pipe-label">No browser capability &mdash; cannot fetch live URLs</div><div class="pipe-status">BLOCKED &#10007;</div></div>
+              <div class="pipe-connector"></div>
+              <div class="pipe-step blocked"><div class="pipe-icon" style="background:rgba(239,68,68,0.12)">&#128172;</div><div class="pipe-label">Cannot browse the web &mdash; please paste the content you want analysed.</div><div class="pipe-status">fallback only</div></div>
+            </div>
+            <div class="pipeline-scene" id="scene-with">
+              <div class="pipe-step" id="ps-1"><div class="pipe-icon" style="background:rgba(99,102,241,0.12)">&#129302;</div><div class="pipe-label">Claude receives the task</div><div class="pipe-status" id="pst-1">waiting...</div></div>
+              <div class="pipe-connector" id="pc-1"></div>
+              <div class="pipe-step" id="ps-2"><div class="pipe-icon" style="background:rgba(99,102,241,0.12)">&#127760;</div><div class="pipe-label">agent-browser skill activates automatically</div><div class="pipe-status" id="pst-2">waiting...</div></div>
+              <div class="pipe-connector" id="pc-2"></div>
+              <div class="pipe-step" id="ps-3"><div class="pipe-icon" style="background:rgba(245,158,11,0.12)">&#128421;</div><div class="pipe-label">Headless Chrome launches and navigates to the URL</div><div class="pipe-status" id="pst-3">waiting...</div></div>
+              <div class="pipe-connector" id="pc-3"></div>
+              <div class="pipe-step" id="ps-4"><div class="pipe-icon" style="background:rgba(245,158,11,0.12)">&#128269;</div><div class="pipe-label">Page content extracted and cleaned into structured text</div><div class="pipe-status" id="pst-4">waiting...</div></div>
+              <div class="pipe-connector" id="pc-4"></div>
+              <div class="pipe-step" id="ps-5"><div class="pipe-icon" style="background:rgba(34,197,94,0.12)">&#9989;</div><div class="pipe-label">Structured results returned to Claude for analysis</div><div class="pipe-status" id="pst-5">waiting...</div></div>
+            </div>
+            <div style="margin-top:16px;display:flex;gap:8px;">
+              <button class="btn btn-primary" onclick="runPipelineAnim()">&#9654; Run Animation</button>
+              <button class="btn btn-ghost" onclick="resetPipelineAnim()">&#8634; Reset</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="content-section">
+        <h2 class="section-title"><span class="icon">&#128295;</span> Capabilities</h2>
+        <div class="feature-grid">
+          <div class="feature-card"><div class="fc-icon">&#128279;</div><div class="fc-title">Open URLs</div><div class="fc-desc">Navigate to any public URL, including JavaScript-rendered single-page apps.</div></div>
+          <div class="feature-card"><div class="fc-icon">&#128203;</div><div class="fc-title">Extract Content</div><div class="fc-desc">Pull headings, paragraphs, tables, and code blocks as structured data.</div></div>
+          <div class="feature-card"><div class="fc-icon">&#9999;&#65039;</div><div class="fc-title">Fill Forms</div><div class="fc-desc">Type into inputs, select dropdowns, and submit forms programmatically.</div></div>
+          <div class="feature-card"><div class="fc-icon">&#128433;&#65039;</div><div class="fc-title">Click Elements</div><div class="fc-desc">Interact with buttons, links, menus &mdash; anything a human can click.</div></div>
+          <div class="feature-card"><div class="fc-icon">&#128247;</div><div class="fc-title">Screenshots</div><div class="fc-desc">Capture visual snapshots of full pages or specific DOM elements.</div></div>
+          <div class="feature-card"><div class="fc-icon">&#128260;</div><div class="fc-title">Multi-page Flow</div><div class="fc-desc">Follow links, paginate through results, crawl across multiple pages.</div></div>
+        </div>
+      </div>
+      <div class="content-section">
+        <h2 class="section-title"><span class="icon">&#128187;</span> Terminal Demo</h2>
+        <div class="terminal">
+          <div class="term-bar"><span class="term-dot" style="background:var(--red)"></span><span class="term-dot" style="background:var(--orange)"></span><span class="term-dot" style="background:var(--green)"></span><span class="term-title">bash &mdash; claude code</span></div>
+          <div class="term-body">
+            <div><span class="comment"># Skills live in ~/.ai/Skills/ or ~/.claude/skills/</span></div>
+            <div><span class="prompt">$</span> <span class="cmd">ls ~/.ai/Skills/</span></div>
+            <div><span class="output">agent-browser/   aws-cli/   context7/   firecrawl/</span></div>
+            <br>
+            <div><span class="prompt">$</span> <span class="cmd">claude</span></div>
+            <div><span class="info">Claude Code v1.x &mdash; type /help for commands</span></div>
+            <br>
+            <div><span class="prompt">&gt;</span> <span class="cmd">Use the agent-browser skill to go to github.com/upstash/context7 and extract the installation instructions.</span></div>
+            <br>
+            <div><span class="ok">&#10003; Loading agent-browser skill...</span></div>
+            <div><span class="ok">&#10003; Launching headless Chrome...</span></div>
+            <div><span class="ok">&#10003; Navigating to https://github.com/upstash/context7</span></div>
+            <div><span class="ok">&#10003; Page loaded (1.4s) &mdash; extracting content...</span></div>
+            <br>
+            <div><span class="output">Installation instructions found in README:</span></div>
+            <div><span class="output">&nbsp;&nbsp;1. Add to .mcp.json: { &quot;context7&quot;: { &quot;command&quot;: &quot;npx&quot; }}</span></div>
+            <div><span class="output">&nbsp;&nbsp;2. Append &quot;use context7&quot; to any Claude prompt</span></div>
+            <div><span class="output">&nbsp;&nbsp;3. Context7 auto-detects libraries and injects live docs</span></div>
+            <br>
+            <div><span class="prompt">&gt;</span> <span class="cmd">Now navigate to the Quickstart section<span class="cursor"></span></span></div>
+          </div>
+        </div>
+      </div>
+      <div class="callout callout-tip" style="margin:24px 0;"><div class="callout-icon">&#128194;</div><div class="callout-body"><strong>Where Skills Live</strong><br>Skills are Markdown or YAML files that inject system-level instructions into Claude context. Canonical location: <code>~/.ai/Skills/agent-browser/</code>. Claude Code also checks <code>~/.claude/skills/</code> via a directory junction.</div></div>
+      <div class="content-section">
+        <h2 class="section-title"><span class="icon">&#127947;</span> Exercise</h2>
+        <div class="exercise-block">
+          <div class="exercise-header">Hands-On: Use the Agent Browser</div>
+          <div class="exercise-body">
+            <div class="exercise-step"><div class="step-badge">1</div><div class="step-content"><strong>Locate the skill</strong><br>Run <code>ls ~/.ai/Skills/</code>. Confirm an <code>agent-browser/</code> directory exists. If missing, clone it from your skills repository.</div></div>
+            <div class="exercise-step"><div class="step-badge">2</div><div class="step-content"><strong>First browse request</strong><br>In Claude Code: <em>Use the browser to go to example.com and tell me what the page is about.</em> Watch Claude activate the skill and return live content.</div></div>
+            <div class="exercise-step"><div class="step-badge">3</div><div class="step-content"><strong>Observe the flow</strong><br>Watch Claude emit step-by-step status messages: loading skill &rarr; launching Chrome &rarr; navigating &rarr; extracting. This maps to the animation above.</div></div>
+            <div class="exercise-step"><div class="step-badge">4</div><div class="step-content"><strong>Extract structured data</strong><br>Try: <em>Go to docs.anthropic.com and extract all headings from the sidebar navigation.</em> Expect a clean list, not raw HTML.</div></div>
+            <div class="exercise-step"><div class="step-badge">5</div><div class="step-content"><strong>Form interaction</strong><br>Try: <em>Navigate to duckduckgo.com, search for Claude Code hooks, and return the first 3 result titles and URLs.</em></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="callout callout-warn" style="margin:24px 0;"><div class="callout-icon">&#9888;</div><div class="callout-body"><strong>Know the Limits</strong><br>Cannot bypass CAPTCHA or SMS 2FA. Does not work behind corporate VPNs without Chrome proxy config. For authenticated resources, use GitHub MCP or AWS CLI instead.</div></div>
+      <div class="content-section">
+        <h2 class="section-title"><span class="icon">&#127919;</span> Key Takeaways</h2>
+        <div class="takeaways"><h3>What to Remember</h3>
+          <div class="takeaway-item"><div class="ti-icon">&#127760;</div><div><strong>Browser skill = live web access.</strong> Claude reads any URL, not just pasted content.</div></div>
+          <div class="takeaway-item"><div class="ti-icon">&#9881;</div><div><strong>Works with JavaScript-rendered pages.</strong> Headless Chrome executes JS fully.</div></div>
+          <div class="takeaway-item"><div class="ti-icon">&#128202;</div><div><strong>Returns structured data.</strong> Claude parses the DOM into clean text, not raw HTML.</div></div>
+          <div class="takeaway-item"><div class="ti-icon">&#129302;</div><div><strong>Fully autonomous.</strong> Forms, clicks, navigation &mdash; no manual steps required.</div></div>
+          <div class="takeaway-item"><div class="ti-icon">&#128279;</div><div><strong>Composable.</strong> Chain with file writes, GitHub MCP, or AWS CLI for full automation pipelines.</div></div>
+        </div>
+      </div>
+      <div class="section-divider" style="margin-top:40px;"></div>
+      <div style="display:flex;justify-content:center;margin:24px 0;">
+        <button class="btn btn-ghost" id="mark-complete-btn">Mark as Complete &#10003;</button>
+      </div>
+      <div id="module-nav"></div>
+    </div>
+  </div>
+</div>
+<script src="../nav.js"></script>
+<script>
+  window.addEventListener("scroll",()=>{
+    const el=document.documentElement;
+    document.getElementById("reading-progress-fill").style.width=(el.scrollTop/(el.scrollHeight-el.clientHeight))*100+"%";
+  });
+  let currentMode="without",animTimer=null;
+  const stepDone=["received","skill loaded","Chrome navigating","content extracted","done"];
+  function setPipelineMode(mode){
+    currentMode=mode; resetPipelineAnim();
+    document.querySelectorAll(".pipeline-btn").forEach(b=>b.classList.remove("active"));
+    document.querySelector("[data-mode="+JSON.stringify(mode)+"]").classList.add("active");
+    document.getElementById("scene-without").classList.toggle("visible",mode==="without");
+    document.getElementById("scene-with").classList.toggle("visible",mode==="with");
+  }
+  function resetPipelineAnim(){
+    if(animTimer){clearTimeout(animTimer);animTimer=null;}
+    for(let i=1;i<=5;i++){
+      const s=document.getElementById("ps-"+i); if(s)s.classList.remove("active","done");
+      const c=document.getElementById("pc-"+i); if(c)c.classList.remove("lit");
+      const st=document.getElementById("pst-"+i); if(st)st.textContent="waiting...";
+    }
+  }
+  function runPipelineAnim(){
+    if(currentMode==="without")return;
+    resetPipelineAnim();
+    function step(i){
+      if(i>5)return;
+      if(i>1){
+        const p=document.getElementById("ps-"+(i-1)); if(p){p.classList.remove("active");p.classList.add("done");}
+        const pt=document.getElementById("pst-"+(i-1)); if(pt)pt.textContent=stepDone[i-2];
+        const c=document.getElementById("pc-"+(i-1)); if(c)c.classList.add("lit");
+      }
+      const cur=document.getElementById("ps-"+i); if(cur)cur.classList.add("active");
+      const cst=document.getElementById("pst-"+i); if(cst)cst.textContent=stepDone[i-1];
+      animTimer=setTimeout(()=>step(i+1),850);
+    }
+    step(1);
+  }
+</script>
+</body>
+</html>

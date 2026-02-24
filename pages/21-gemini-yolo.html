@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gemini --yolo — Harness Engineering</title>
+<link rel="stylesheet" href="../site.css">
+<style>
+  #reading-progress{position:fixed;top:0;left:0;right:0;height:3px;background:var(--border);z-index:200;}
+  #reading-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));width:0%;}
+
+  .cli-compare { display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0; }
+  .cli-card { border-radius:var(--radius);padding:18px;border:1px solid var(--border);background:var(--surface); }
+  .cli-header { display:flex;align-items:center;gap:10px;margin-bottom:12px; }
+  .cli-icon  { font-size:22px; }
+  .cli-name  { font-size:14px;font-weight:800; }
+  .cli-price { font-size:11px;font-weight:700;padding:2px 8px;border-radius:8px;margin-top:2px; }
+  .cli-feat  { font-size:12px;color:var(--text-dim);margin-bottom:4px; }
+  .stars     { font-size:13px;margin-top:10px;letter-spacing:2px; }
+
+  /* Completion banner */
+  .completion-banner { background:linear-gradient(135deg,rgba(99,102,241,.12),rgba(34,197,94,.08));border:1px solid rgba(99,102,241,.3);border-radius:var(--radius);padding:32px;text-align:center;margin-top:40px; }
+  .completion-banner h2 { font-size:28px;font-weight:900;margin-bottom:12px; }
+  .completion-banner p  { font-size:15px;color:var(--text-dim);max-width:480px;margin:0 auto 20px; }
+
+  @media(max-width:640px){ .cli-compare{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+<div id="reading-progress"><div id="reading-progress-fill"></div></div>
+<div class="site-layout">
+  <div id="nav-sidebar" class="sidebar"></div>
+  <div class="main-content">
+    <div id="nav-topbar"></div>
+    <div class="page-content">
+
+      <div class="page-header">
+        <div class="module-eyebrow">Module 21 · Other Tools · ⏱ 8 min</div>
+        <h1>Gemini <span class="gradient-text">--yolo</span></h1>
+        <p class="lead">Gemini CLI is Google's free, open-source AI coding agent with a <code>--yolo</code> flag for full autonomous mode. With Google AI Studio's free tier, it's a powerful, cost-free complement to Claude Code.</p>
+      </div>
+
+      <div class="content-section">
+        <div class="section-title"><div class="icon" style="background:rgba(34,197,94,.15);">🐎</div>The Reliable Workhorse</div>
+        <p>If Claude Code is the thoroughbred — premium, trained for performance, built for precision work — Gemini CLI with <code>--yolo</code> is the reliable workhorse: free, tireless, good enough for most everyday tasks, and you can run it all day without watching the API meter.</p>
+        <p>Different tools, same stable. Senior AI engineers use both: Claude for complex autonomous work, Gemini for bulk tasks where cost or rate limits matter.</p>
+      </div>
+
+      <!-- CLI comparison -->
+      <div class="anim-box">
+        <div class="anim-box-header">
+          <div class="anim-box-title">🏆 AI CLI Comparison</div>
+        </div>
+        <div class="anim-box-body">
+          <div class="cli-compare">
+            <div class="cli-card" style="border-color:rgba(99,102,241,.3);">
+              <div class="cli-header">
+                <div class="cli-icon">⚙</div>
+                <div>
+                  <div class="cli-name" style="color:var(--accent3);">Claude Code</div>
+                  <div class="cli-price" style="background:rgba(99,102,241,.15);color:var(--accent);">$20/mo</div>
+                </div>
+              </div>
+              <div class="cli-feat">✓ Hooks &amp; MCP ecosystem</div>
+              <div class="cli-feat">✓ Agent teams</div>
+              <div class="cli-feat">✓ Opus 4.6 model</div>
+              <div class="cli-feat">✓ Best for complex tasks</div>
+              <div class="stars" style="color:var(--accent);">★★★★★</div>
+            </div>
+            <div class="cli-card" style="border-color:rgba(245,158,11,.3);">
+              <div class="cli-header">
+                <div class="cli-icon">🖊</div>
+                <div>
+                  <div class="cli-name" style="color:var(--orange);">Codex CLI</div>
+                  <div class="cli-price" style="background:rgba(245,158,11,.15);color:var(--orange);">Pay/token</div>
+                </div>
+              </div>
+              <div class="cli-feat">✓ GPT-4 quality</div>
+              <div class="cli-feat">✓ IDE integration</div>
+              <div class="cli-feat">✓ Cursor Composer</div>
+              <div class="cli-feat">→ Best for IDE work</div>
+              <div class="stars" style="color:var(--orange);">★★★★</div>
+            </div>
+            <div class="cli-card" style="border-color:rgba(34,197,94,.3);">
+              <div class="cli-header">
+                <div class="cli-icon">✨</div>
+                <div>
+                  <div class="cli-name" style="color:var(--green);">Gemini CLI</div>
+                  <div class="cli-price" style="background:rgba(34,197,94,.15);color:var(--green);">FREE</div>
+                </div>
+              </div>
+              <div class="cli-feat">✓ Free API tier</div>
+              <div class="cli-feat">✓ --yolo autonomous mode</div>
+              <div class="cli-feat">✓ Ctrl+Y in-session toggle</div>
+              <div class="cli-feat">→ Best for bulk/budget</div>
+              <div class="stars" style="color:var(--green);">★★★</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Yolo modes comparison -->
+      <div class="content-section">
+        <div class="section-title"><div class="icon" style="background:rgba(34,197,94,.15);">⚡</div>--yolo vs other autonomous modes</div>
+        <div class="code-snippet">
+<span class="c"># Gemini --yolo (per session)</span>
+<span class="g">gemini --yolo "refactor all files in src/"</span>
+<span class="g">gemini -y "refactor all files in src/"</span>  <span class="c"># short form</span>
+
+<span class="c"># Ctrl+Y toggles yolo mode mid-session (no restart needed)</span>
+<span class="c"># GEMINI_YOLO_MODE=true persists for the session</span>
+<span class="c">export GEMINI_YOLO_MODE=true</span>
+
+<span class="c"># vs Claude Code (per session)</span>
+<span class="g">claude --dangerously-skip-permissions</span>
+
+<span class="c"># vs Claude Code (persistent in settings.json)</span>
+{ <span class="k">"permissions"</span>: { <span class="k">"defaultMode"</span>: <span class="s">"bypassPermissions"</span> } }
+        </div>
+        <div class="callout warn" style="margin-top:12px;">
+          <div class="callout-icon">⚠</div>
+          <div class="callout-body"><strong>Same safety rules apply as Claude's bypass mode.</strong> --yolo executes file writes, bash commands, and deletions without confirmation. Use in isolated environments on well-scoped tasks only.</div>
+        </div>
+      </div>
+
+      <!-- Installation -->
+      <div class="content-section">
+        <div class="section-title"><div class="icon" style="background:rgba(99,102,241,.15);">🔧</div>Installation</div>
+        <div class="code-snippet">
+<span class="c"># Option 1: Install globally</span>
+<span class="g">npm install -g @google/gemini-cli</span>
+
+<span class="c"># Option 2: Run without installing (npx)</span>
+<span class="g">npx @google/gemini-cli "explain this codebase"</span>
+
+<span class="c"># Get free API key from Google AI Studio:</span>
+<span class="c"># → aistudio.google.com → Get API Key → Create API key</span>
+<span class="g">export GOOGLE_API_KEY=your_key_here</span>
+
+<span class="c"># Test it:</span>
+<span class="g">gemini "What files are in this directory?"</span>
+
+<span class="c"># Autonomous mode:</span>
+<span class="g">gemini --yolo "Add a copyright header comment to all .ts files in src/"</span>
+        </div>
+      </div>
+
+      <div class="terminal">
+        <div class="term-bar">
+          <div class="term-dot" style="background:#ff5f57"></div>
+          <div class="term-dot" style="background:#febc2e"></div>
+          <div class="term-dot" style="background:#28c840"></div>
+          <div class="term-title">bash — Gemini --yolo demo</div>
+        </div>
+        <div class="term-body">
+          <div><span class="prompt">$ </span><span class="cmd">export GOOGLE_API_KEY=AIzaSy...</span></div>
+          <div><span class="prompt">$ </span><span class="cmd">gemini "How many .ts files are in this project?"</span></div>
+          <div class="output">Found 23 TypeScript files across /src</div>
+          <br>
+          <div><span class="comment"># Try --yolo on a safe, bounded task:</span></div>
+          <div><span class="prompt">$ </span><span class="cmd">gemini --yolo "Add 'export' keyword to all function declarations in src/utils.ts"</span></div>
+          <div class="info">Autonomous mode active. No confirmations.</div>
+          <div class="output">Reading src/utils.ts...</div>
+          <div class="ok">✓ Added export to 6 function declarations</div>
+          <br>
+          <div><span class="comment"># In-session toggle with Ctrl+Y (interactive mode):</span></div>
+          <div><span class="prompt">$ </span><span class="cmd">gemini</span></div>
+          <div class="output">Gemini CLI. Press Ctrl+Y to toggle yolo mode.</div>
+          <div class="acc">&gt; How do I refactor this function?</div>
+          <div class="output">Here's how I would approach it...</div>
+          <div class="comment">  [Ctrl+Y] Yolo mode: ON</div>
+          <div class="acc">&gt; Apply the refactor now</div>
+          <div class="ok">✓ Applying changes autonomously...</div>
+        </div>
+      </div>
+
+      <div class="exercise-block">
+        <div class="exercise-header"><span>🔧</span><h3>Hands-On Exercise</h3></div>
+        <div class="exercise-body">
+          <div class="exercise-step">
+            <div class="step-badge">01</div>
+            <div class="step-content">
+              <h4>Get your free API key</h4>
+              <p>Go to <strong>aistudio.google.com</strong> → "Get API key" → "Create API key". The free tier gives generous usage for learning and development.</p>
+            </div>
+          </div>
+          <div class="exercise-step">
+            <div class="step-badge">02</div>
+            <div class="step-content">
+              <h4>Install and test</h4>
+              <p>Run: <code>npm install -g @google/gemini-cli && export GOOGLE_API_KEY=your_key && gemini "Hello"</code></p>
+            </div>
+          </div>
+          <div class="exercise-step">
+            <div class="step-badge">03</div>
+            <div class="step-content">
+              <h4>Try --yolo on a safe task</h4>
+              <p>In a test directory: <code>gemini --yolo "Add a README.md summarizing this project"</code>. Observe the autonomous behavior — no confirmations.</p>
+            </div>
+          </div>
+          <div class="exercise-step">
+            <div class="step-badge">04</div>
+            <div class="step-content">
+              <h4>Compare quality vs Claude Code</h4>
+              <p>Give the same task to both Claude Code and Gemini CLI. Compare output quality, approach, and style. Note where each excels — use this to decide which to use for future tasks.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="takeaways">
+        <h3>⚡ Key Takeaways</h3>
+        <div class="takeaway-item"><span class="ti-icon">✓</span><div>Gemini CLI = free Google AI coding agent. <code>--yolo</code> = autonomous mode (same safety rules apply).</div></div>
+        <div class="takeaway-item"><span class="ti-icon">✓</span><div><code>Ctrl+Y</code> toggles yolo mode mid-session. <code>GEMINI_YOLO_MODE=true</code> persists it.</div></div>
+        <div class="takeaway-item"><span class="ti-icon">✓</span><div>Free API tier from Google AI Studio — ideal for bulk tasks where Claude costs matter.</div></div>
+        <div class="takeaway-item"><span class="ti-icon">✓</span><div>Multi-AI engineering: use Claude for complex/precision work, Gemini for bulk/budget tasks.</div></div>
+      </div>
+
+      <!-- Completion banner -->
+      <div class="completion-banner">
+        <h2>🎉 You've completed the workshop!</h2>
+        <p>You now know the full Harness Engineering stack: subscriptions, Claude.md files, hooks, skills, MCP servers, context management, autonomous execution, and multi-agent systems.</p>
+        <a href="/" class="hero-cta" style="display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;text-decoration:none;font-weight:700;font-size:14px;">← Back to Course Home</a>
+      </div>
+
+      <div class="section-divider" style="margin-top:40px;"></div>
+      <div style="display:flex;justify-content:center;margin:24px 0;">
+        <button class="btn btn-ghost" id="mark-complete-btn">Mark as Complete ✓</button>
+      </div>
+      <div id="module-nav"></div>
+    </div>
+  </div>
+</div>
+<script src="../nav.js"></script>
+</body>
+</html>

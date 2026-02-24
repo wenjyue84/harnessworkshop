@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Install &amp; Subscribe &#8212; Harness Engineering</title>
+<link rel="stylesheet" href="../site.css">
+<style>
+  #reading-progress{position:fixed;top:0;left:0;right:0;height:3px;background:var(--border);z-index:200;}
+  #reading-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));width:0%;}
+  .ba-wrap{display:grid;grid-template-columns:1fr 1fr;border-radius:12px;overflow:hidden;border:1px solid var(--border);margin:16px 0;}
+  .ba-panel{padding:20px;}
+  .ba-panel.free{background:var(--surface);border-right:1px solid var(--border);}
+  .ba-panel.pro{background:linear-gradient(135deg,rgba(99,102,241,0.08),rgba(139,92,246,0.08));}
+  .ba-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px;}
+  .ba-row{display:flex;align-items:center;gap:10px;padding:6px 0;font-size:13px;transition:color 0.3s,transform 0.3s;}
+  .ba-row.locked{color:var(--text-muted);}
+  .ba-row.unlocked{color:var(--text);}
+  .sbar{height:6px;border-radius:3px;margin-top:4px;}
+  .slbl{font-size:11px;color:var(--text-muted);margin-bottom:2px;}
+  .swrap{padding:6px 0;}
+  .atrig{background:var(--surface2);border:1px solid var(--border2);color:var(--text);padding:8px 22px;border-radius:8px;cursor:pointer;font-size:13px;transition:all 0.2s;}
+  .atrig:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
+</style>
+</head>
+<body>
+<div id="reading-progress"><div id="reading-progress-fill"></div></div>
+<div class="site-layout">
+  <div id="nav-sidebar" class="sidebar"></div>
+  <div class="main-content">
+    <div id="nav-topbar"></div>
+    <div class="page-content">
+      <div class="page-header">
+        <div class="module-eyebrow">Module 01 &middot; Getting Started &middot; 5 min</div>
+        <h1>Install &amp; <span class="gradient-text">Subscribe</span></h1>
+        <p class="lead">Claude Pro unlocks the full model. Claude Code is your terminal-native AI engineer. Together, they are the foundation of everything in this workshop.</p>
+      </div>
+      <div class="content-section">
+        <h2 class="section-title">The Speed-Limited Ferrari</h2>
+        <p style="color:var(--text-dim);line-height:1.75;margin-bottom:16px;">Think of Claude Pro as renting the smartest engineer alive for $20/month. Claude Code is the terminal they work through. Without the subscription, you are using a demo &#8212; like test-driving a Ferrari with the speed limiter on.</p>
+        <p style="color:var(--text-dim);line-height:1.75;">The limiter is not just about speed. Free tier Claude uses smaller models. You lose extended thinking &#8212; the ability to reason through hard problems step by step. You lose priority access during peak hours. Most critically, you lose Claude Opus 4.6, the model that makes everything in this workshop actually work.</p>
+        <div class="callout tip" style="margin-top:20px;"><div class="callout-icon">&#128161;</div><div class="callout-body"><strong>One subscription, two tools.</strong> Claude Pro (claude.ai) and Claude Code (CLI) share the same subscription. Pay once &#8212; both tools upgrade simultaneously.</div></div>
+      </div>
+      <div class="content-section">
+        <h2 class="section-title">Free vs Pro &#8212; See the Difference</h2>
+        <div class="anim-box">
+          <div class="anim-box-header"><span class="anim-box-title">Claude Tier Comparison</span><span class="pill pill-accent">Interactive</span></div>
+          <div class="anim-box-body">
+            <div class="ba-wrap">
+              <div class="ba-panel free">
+                <div class="ba-label" style="color:var(--text-muted);">&#128274; Free Claude</div>
+                <div class="ba-row locked">&#10060; Opus 4.6 (locked)</div>
+                <div class="ba-row locked">&#10060; Extended thinking</div>
+                <div class="ba-row locked">&#10060; Projects &amp; file uploads</div>
+                <div class="ba-row locked">&#10060; Priority access</div>
+                <div class="ba-row locked">&#9888; Sonnet 4.5 only</div>
+                <div class="swrap"><div class="slbl">Response quality</div><div class="sbar" style="width:35%;background:var(--red);"></div></div>
+                <div class="swrap"><div class="slbl">Context window</div><div class="sbar" style="width:40%;background:var(--orange);"></div></div>
+              </div>
+              <div class="ba-panel pro" id="proPanel">
+                <div class="ba-label" style="color:var(--accent);">&#10024; Claude Pro &#8212; $20/mo</div>
+                <div class="ba-row unlocked" id="pf1">&#9989; Opus 4.6 &#8212; flagship model</div>
+                <div class="ba-row unlocked" id="pf2">&#9989; Extended thinking enabled</div>
+                <div class="ba-row unlocked" id="pf3">&#9989; Projects &amp; file uploads</div>
+                <div class="ba-row unlocked" id="pf4">&#9989; Priority access always</div>
+                <div class="ba-row unlocked" id="pf5">&#9989; Claude Code CLI included</div>
+                <div class="swrap"><div class="slbl">Response quality</div><div class="sbar" style="width:92%;background:linear-gradient(90deg,var(--accent),var(--green));"></div></div>
+                <div class="swrap"><div class="slbl">Context window</div><div class="sbar" style="width:88%;background:linear-gradient(90deg,var(--cyan),var(--accent));"></div></div>
+              </div>
+            </div>
+            <div style="display:flex;justify-content:center;margin-top:12px;"><button class="atrig" onclick="animatePro()">&#9889; Highlight Pro Features</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="content-section">
+        <h2 class="section-title">Installation Commands</h2>
+        <div class="terminal">
+          <div class="term-bar"><span class="term-dot" style="background:#ef4444;"></span><span class="term-dot" style="background:#f59e0b;"></span><span class="term-dot" style="background:#22c55e;"></span><span class="term-title">Terminal</span></div>
+          <div class="term-body">
+            <div><span class="comment"># Option A: Install Node.js via winget (Windows)</span></div>
+            <div><span class="prompt">$</span> <span class="cmd">winget install OpenJS.NodeJS</span></div>
+            <div class="output ok">Successfully installed Node.js v22.x</div>
+            <br>
+            <div><span class="comment"># Option B: Download from nodejs.org</span></div>
+            <div class="output info">&#8594; https://nodejs.org/en/download</div>
+            <br>
+            <div><span class="comment"># Install Claude Code globally</span></div>
+            <div><span class="prompt">$</span> <span class="cmd">npm install -g @anthropic-ai/claude-code</span></div>
+            <div class="output ok">added 1 package in 3.2s</div>
+            <br>
+            <div><span class="comment"># Verify installation</span></div>
+            <div><span class="prompt">$</span> <span class="cmd">claude --version</span></div>
+            <div class="output acc">claude v1.x.x</div>
+            <br>
+            <div><span class="comment"># Launch and authenticate via OAuth</span></div>
+            <div><span class="prompt">$</span> <span class="cmd">claude</span></div>
+            <div class="output ok">Opening browser for OAuth login...</div>
+            <div class="output ok">Authenticated as you@example.com</div>
+            <div class="output ok">Ready. Type a message or /help to begin.</div>
+            <span class="cursor">&#9610;</span>
+          </div>
+        </div>
+      </div>
+      <div class="content-section">
+        <h2 class="section-title">Hands-On Exercise</h2>
+        <div class="exercise-block">
+          <div class="exercise-header"><span>Exercise 01 &#8212; Install &amp; Authenticate</span><span class="pill pill-green">5 min</span></div>
+          <div class="exercise-body">
+            <div class="exercise-step"><div class="step-badge">1</div><div class="step-content"><strong>Subscribe to Claude Pro</strong><br>Go to <code>claude.ai</code> &#8594; click <strong>Upgrade</strong> &#8594; choose Pro at $20/month &#8594; confirm payment.</div></div>
+            <div class="exercise-step"><div class="step-badge">2</div><div class="step-content"><strong>Install Node.js</strong><br><code>winget install OpenJS.NodeJS</code> in PowerShell (as Administrator), or download from <code>nodejs.org</code>. Verify: <code>node --version</code></div></div>
+            <div class="exercise-step"><div class="step-badge">3</div><div class="step-content"><strong>Install Claude Code globally</strong><br><code>npm install -g @anthropic-ai/claude-code</code> &#8212; installs the <code>claude</code> binary system-wide.</div></div>
+            <div class="exercise-step"><div class="step-badge">4</div><div class="step-content"><strong>Verify the install</strong><br>Run <code>claude --version</code>. Should show a version number. If command not found, restart terminal and confirm npm global bin is in your PATH.</div></div>
+            <div class="exercise-step"><div class="step-badge">5</div><div class="step-content"><strong>Authenticate via OAuth</strong><br>Run <code>claude</code> with no arguments. Browser opens for OAuth. Log in with your Claude Pro account. Return to terminal &#8212; you will see a Ready confirmation.</div></div>
+          </div>
+        </div>
+        <div class="callout warn" style="margin-top:16px;"><div class="callout-icon">&#9888;</div><div class="callout-body"><strong>Windows users:</strong> Run PowerShell as Administrator for npm global installs. On permission errors: <code>npm config set prefix &quot;%APPDATA%
+pm&quot;</code> then retry.</div></div>
+      </div>
+      <div class="content-section">
+        <h2 class="section-title">Claude.ai vs Claude Code</h2>
+        <div class="compare-grid">
+          <div class="compare-card bad"><div style="font-weight:700;margin-bottom:10px;">Claude.ai (Web App)</div><ul style="color:var(--text-dim);font-size:13px;line-height:1.9;padding-left:16px;margin:0;"><li>Chat interface in the browser</li><li>Great for Q&amp;A, writing, analysis</li><li>Cannot read your local filesystem</li><li>Cannot run terminal commands</li><li>Conversations are largely isolated</li></ul></div>
+          <div class="compare-card good"><div style="font-weight:700;margin-bottom:10px;">Claude Code (CLI)</div><ul style="color:var(--text-dim);font-size:13px;line-height:1.9;padding-left:16px;margin:0;"><li>Terminal-native, runs in your project</li><li>Reads, writes, edits your actual files</li><li>Executes shell commands autonomously</li><li>Loads CLAUDE.md for persistent context</li><li>Supports hooks, plugins, automation</li></ul></div>
+        </div>
+      </div>
+      <div class="content-section">
+        <h2 class="section-title">Key Takeaways</h2>
+        <div class="takeaways">
+          <div class="takeaway-item"><div class="ti-icon">&#127919;</div><div><strong>Claude Pro = Opus 4.6 access.</strong> The flagship model with extended thinking. This is what makes advanced agentic workflows possible throughout this course.</div></div>
+          <div class="takeaway-item"><div class="ti-icon">&#9889;</div><div><strong>Claude Code CLI is a separate tool from the web app.</strong> Same subscription, different interface. The CLI is where autonomous engineering actually happens.</div></div>
+          <div class="takeaway-item"><div class="ti-icon">&#128295;</div><div><strong>One-time setup unlocks all 21 modules.</strong> The authentication token persists automatically across every session after the first login.</div></div>
+        </div>
+      </div>
+      <div class="section-divider" style="margin-top:40px;"></div>
+      <div style="display:flex;justify-content:center;margin:24px 0;"><button class="btn btn-ghost" id="mark-complete-btn">Mark as Complete &#10003;</button></div>
+      <div id="module-nav"></div>
+    </div>
+  </div>
+</div>
+<script src="../nav.js"></script>
+<script>
+  window.addEventListener("scroll",function(){var el=document.documentElement;document.getElementById("reading-progress-fill").style.width=(el.scrollTop/(el.scrollHeight-el.clientHeight)*100)+"%";});
+  function animatePro(){["pf1","pf2","pf3","pf4","pf5"].forEach(function(id,i){setTimeout(function(){var el=document.getElementById(id);el.style.color="var(--green)";el.style.transform="translateX(6px)";el.style.fontWeight="600";setTimeout(function(){el.style.color="";el.style.transform="";el.style.fontWeight="";},1000);},i*150);});}
+</script>
+</body>
+</html>

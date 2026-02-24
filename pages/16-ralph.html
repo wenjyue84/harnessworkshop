@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ralph &#x2014; Harness Engineering</title>
+<link rel="stylesheet" href="../site.css">
+<style>
+  #reading-progress{position:fixed;top:0;left:0;right:0;height:3px;background:var(--border);z-index:200;}
+  #reading-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));width:0%;}
+  .loop-diagram{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin:24px auto;max-width:700px;align-items:center;}
+  .loop-stage{background:var(--surface);border:2px solid var(--border);border-radius:10px;padding:14px 8px;text-align:center;position:relative;transition:border-color .3s,box-shadow .3s;}
+  .loop-stage.active{border-color:var(--accent);box-shadow:0 0 16px rgba(99,102,241,.35);}
+  .loop-stage.done{border-color:var(--green);}
+  .loop-stage .s-icon{font-size:1.4rem;display:block;margin-bottom:6px;}
+  .loop-stage .s-label{font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);}
+  .loop-stage .s-name{font-size:.85rem;font-weight:600;}
+  .loop-arrow{text-align:center;color:var(--accent);font-size:1.3rem;}
+  .ctx-meter{background:var(--bg);border-radius:6px;height:18px;position:relative;overflow:hidden;margin:8px 0;}
+  .ctx-fill{position:absolute;left:0;top:0;height:100%;background:linear-gradient(90deg,var(--green),var(--orange));border-radius:6px;transition:width .4s ease;}
+  .loop-stats{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0;}
+  .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center;}
+  .stat-num{font-size:2rem;font-weight:800;color:var(--accent);}
+  .stat-label{font-size:.75rem;color:var(--muted);margin-top:4px;}
+  .loop-ctrl{text-align:center;margin:16px 0;}
+  @media(max-width:640px){.loop-diagram{grid-template-columns:1fr;} .loop-arrow{transform:rotate(90deg);}}
+</style>
+</head>
+<body>
+<div id="reading-progress"><div id="reading-progress-fill"></div></div>
+<div class="site-layout">
+  <div id="nav-sidebar" class="sidebar"></div>
+  <div class="main-content">
+    <div id="nav-topbar"></div>
+    <div class="page-content">
+      <div class="page-header">
+        <div class="module-eyebrow">
+          <span class="pill pill-accent">Module 16</span>
+          <span class="pill pill-accent">Advanced</span>
+          <span class="pill">15 min</span>
+        </div>
+        <h1 class="gradient-text">Ralph</h1>
+        <p class="lead">Long-Running Background Agents</p>
+        <p class="lead">Ralph is a pattern for long-running Claude Code agents. While you sleep, Ralph plans tasks, executes them step by step, uses /compact to manage context, saves state to a file, and picks up where it left off. It is the foundation of autonomous multi-hour work sessions.</p>
+      </div>
+      <div class="content-section">
+        <div class="section-title"><div class="icon">&#x1F4CB;</div><h2>The Overnight Assistant Metaphor</h2></div>
+        <p>Most AI interactions are like asking for directions &mdash; you get an answer and walk away. Ralph is like hiring a trusted assistant who works overnight: they have a to-do list, they work through it methodically, they note what is done and what is blocked, they /compact when running low on context, and in the morning they leave you a status report.</p>
+      </div>
+      <div class="content-section">
+        <div class="section-title"><div class="icon">&#x1F504;</div><h2>Ralph&rsquo;s Plan &rarr; Act &rarr; Observe &rarr; Save Loop</h2></div>
+        <p>Ralph cycles through 5 stages continuously. The context meter fills as work progresses &mdash; at 80%, Ralph runs <code>/compact</code> and continues. Watch the loop below.</p>
+        <div class="loop-diagram">
+          <div class="loop-stage" id="ls-plan"><span class="s-icon">&#x1F4D6;</span><div class="s-name">PLAN</div><div class="s-label">Read task file</div></div>
+          <div class="loop-arrow">&#x25B6;</div>
+          <div class="loop-stage" id="ls-act"><span class="s-icon">&#x26A1;</span><div class="s-name">ACT</div><div class="s-label">Execute subtask</div></div>
+          <div class="loop-arrow">&#x25B6;</div>
+          <div class="loop-stage" id="ls-obs"><span class="s-icon">&#x1F50D;</span><div class="s-name">OBSERVE</div><div class="s-label">Check output</div></div>
+          <div class="loop-arrow">&#x25B6;</div>
+          <div class="loop-stage" id="ls-save"><span class="s-icon">&#x1F4BE;</span><div class="s-name">SAVE</div><div class="s-label">Write state</div></div>
+          <div class="loop-arrow">&#x25B6;</div>
+          <div class="loop-stage" id="ls-compact"><span class="s-icon">&#x1F9F9;</span><div class="s-name">/COMPACT</div><div class="s-label">At 80% ctx</div></div>
+        </div>
+        <div style="max-width:500px;margin:0 auto;">
+          <div style="display:flex;justify-content:space-between;font-size:.75rem;color:var(--muted);margin-bottom:4px;">
+            <span>Context Window</span><span id="ctx-pct">0%</span>
+          </div>
+          <div class="ctx-meter"><div class="ctx-fill" id="ctx-fill" style="width:0%"></div></div>
+        </div>
+        <div class="loop-stats">
+          <div class="stat-card"><div class="stat-num" id="tasks-done">0</div><div class="stat-label">Tasks Completed</div></div>
+          <div class="stat-card"><div class="stat-num" id="compact-count">0</div><div class="stat-label">Context Compacts</div></div>
+        </div>
+        <div class="loop-ctrl">
+          <button class="btn btn-primary" id="loop-btn" onclick="startLoop()">&#x25B6; Start Ralph Loop</button>
+          <button class="btn btn-ghost" id="pause-btn" onclick="pauseLoop()" style="margin-left:8px;display:none;">&#x23F8; Pause</button>
+        </div>
+      </div>
+      <div class="content-section">
+        <div class="section-title"><div class="icon">&#x1F4DC;</div><h2>Ralph&rsquo;s Operating Instructions</h2></div>
+        <div class="terminal">
+          <div class="term-bar"><span class="term-dot"></span><span class="term-dot"></span><span class="term-dot"></span><span class="term-title">ralph.md</span></div>
+          <div class="term-body">
+            <span class="comment"># ralph.md &mdash; Ralph&rsquo;s operating instructions</span><br>
+            <span class="output">You are Ralph, a long-running autonomous agent.</span><br><br>
+            <span class="comment">## Your loop:</span><br>
+            <span class="output">1. Read task-list.md</span><br>
+            <span class="output">2. Pick the next incomplete task</span><br>
+            <span class="output">3. Execute it using available tools</span><br>
+            <span class="output">4. Mark it done in task-list.md</span><br>
+            <span class="output">5. If context &gt; 80%: run /compact</span><br>
+            <span class="output">6. Repeat until all tasks done</span><br>
+            <span class="output">7. Write final report to RALPH-REPORT.md</span><br><br>
+            <span class="comment"># Launch Ralph:</span><br>
+            <span class="prompt">$</span> <span class="cmd">claude --dangerously-skip-permissions ""</span>
+          </div>
+        </div>
+      </div>
+      <div class="content-section">
+        <div class="section-title"><div class="icon">&#x1F4BE;</div><h2>State Persistence Between Compacts</h2></div>
+        <div class="terminal">
+          <div class="term-bar"><span class="term-dot"></span><span class="term-dot"></span><span class="term-dot"></span><span class="term-title">terminal</span></div>
+          <div class="term-body">
+            <span class="comment"># Save state between /compact cycles</span><br>
+            <span class="prompt">$</span> <span class="cmd">echo "Tue, Feb 24, 2026 10:04:01 AM: Completed task 3, starting task 4" &gt;&gt; ralph-log.txt</span><br><br>
+            <span class="comment"># Ralph reads this log at startup after /compact</span><br>
+            <span class="comment"># to restore context about what was done</span>
+          </div>
+        </div>
+      </div>
+      <div class="content-section">
+        <div class="section-title"><div class="icon">&#x1F6E0;&#xFE0F;</div><h2>Exercise: Run Ralph</h2></div>
+        <div class="exercise-block">
+          <div class="exercise-header"><h3>Build a Ralph Loop Agent</h3></div>
+          <div class="exercise-body">
+            <div class="exercise-step"><span class="step-badge">1</span><div class="step-content"><h4>Create ralph-tasks.md</h4><p>Write 5 simple tasks: create files, analyze code, write summaries.</p></div></div>
+            <div class="exercise-step"><span class="step-badge">2</span><div class="step-content"><h4>Create ralph.md</h4><p>Write the operating loop instructions shown above.</p></div></div>
+            <div class="exercise-step"><span class="step-badge">3</span><div class="step-content"><h4>Launch Ralph</h4><p><code>claude --dangerously-skip-permissions ""</code></p></div></div>
+            <div class="exercise-step"><span class="step-badge">4</span><div class="step-content"><h4>Watch Ralph work</h4><p>Ralph works through the task list autonomously.</p></div></div>
+            <div class="exercise-step"><span class="step-badge">5</span><div class="step-content"><h4>Check the outputs</h4><p>Review ralph-log.txt and RALPH-REPORT.md when done.</p></div></div>
+            <div class="exercise-step"><span class="step-badge">6</span><div class="step-content"><h4>Advanced: /compact trigger</h4><p>Add context monitoring: if context exceeds 80%, trigger /compact.</p></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="content-section">
+        <div class="takeaways"><h3>Key Takeaways</h3>
+          <div class="takeaway-item"><span class="ti-icon">&#x1F504;</span>Ralph = autonomous loop agent with Plan-Act-Observe-Save cycle.</div>
+          <div class="takeaway-item"><span class="ti-icon">&#x1F4CB;</span>Needs a task list, operating instructions, and state file.</div>
+          <div class="takeaway-item"><span class="ti-icon">&#x1F9F9;</span>/compact is essential for long runs &mdash; prevents context overflow.</div>
+          <div class="takeaway-item"><span class="ti-icon">&#x1F3AF;</span>Works best with well-defined, discrete subtasks.</div>
+          <div class="takeaway-item"><span class="ti-icon">&#x1F50D;</span>Always review the output after a Ralph run.</div>
+        </div>
+      </div>
+      <div class="section-divider" style="margin-top:40px;"></div>
+      <div style="display:flex;justify-content:center;margin:24px 0;">
+        <button class="btn btn-ghost" id="mark-complete-btn">Mark as Complete &#x2713;</button>
+      </div>
+      <div id="module-nav"></div>
+    </div>
+  </div>
+</div>
+<script src="../nav.js"></script>
+<script>
+  window.addEventListener('scroll', function() {
+    var pct = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+    document.getElementById('reading-progress-fill').style.width = Math.min(pct, 100) + '%';
+  });
+  var stages = ['ls-plan','ls-act','ls-obs','ls-save','ls-compact'];
+  var stageIdx = 0, tasksDone = 0, compacts = 0, ctxPct = 0;
+  var loopTimer = null, loopRunning = false;
+  function startLoop() {
+    if (loopRunning) return; loopRunning = true;
+    document.getElementById('loop-btn').style.display = 'none';
+    document.getElementById('pause-btn').style.display = 'inline-block';
+    runStage();
+  }
+  function pauseLoop() {
+    loopRunning = false; clearTimeout(loopTimer);
+    document.getElementById('loop-btn').textContent = '▶ Resume';
+    document.getElementById('loop-btn').style.display = 'inline-block';
+    document.getElementById('pause-btn').style.display = 'none';
+  }
+  function runStage() {
+    if (!loopRunning) return;
+    stages.forEach(function(id) { document.getElementById(id).classList.remove('active','done'); });
+    var sid = stages[stageIdx];
+    document.getElementById(sid).classList.add('active');
+    if (stageIdx === 4) {
+      compacts++; ctxPct = Math.max(0, ctxPct - 65);
+      document.getElementById('compact-count').textContent = compacts;
+    }
+    if (stageIdx === 3) {
+      tasksDone++; ctxPct = Math.min(95, ctxPct + 18);
+      document.getElementById('tasks-done').textContent = tasksDone;
+      document.getElementById('ctx-fill').style.width = ctxPct + '%';
+      document.getElementById('ctx-pct').textContent = ctxPct + '%';
+    }
+    document.getElementById(sid).classList.add('done');
+    stageIdx = (stageIdx + 1) % stages.length;
+    if (stageIdx === 4 && ctxPct < 78) stageIdx = 0;
+    loopTimer = setTimeout(runStage, 900);
+  }
+</script>
+</body>
+</html>

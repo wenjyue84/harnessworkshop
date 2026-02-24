@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub MCP — Harness Engineering</title>
+<link rel="stylesheet" href="../site.css">
+<style>
+  #reading-progress{position:fixed;top:0;left:0;right:0;height:3px;background:var(--border);z-index:200;}
+  #reading-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));width:0%;}
+  .workflow-step { display:flex;align-items:flex-start;gap:14px;padding:12px 0;border-bottom:1px solid var(--border); }
+  .workflow-step:last-child { border-bottom:none; }
+  .wf-icon { width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0; }
+  .wf-body h4 { font-size:14px;font-weight:700;margin-bottom:3px; }
+  .wf-body p  { font-size:13px;color:var(--text-dim);margin:0; }
+  .context-switch { display:inline-block;background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.2);color:var(--orange);font-size:10px;font-weight:700;padding:1px 7px;border-radius:4px;margin:2px; }
+</style>
+</head>
+<body>
+<div id="reading-progress"><div id="reading-progress-fill"></div></div>
+<div class="site-layout">
+  <div id="nav-sidebar" class="sidebar"></div>
+  <div class="main-content">
+    <div id="nav-topbar"></div>
+    <div class="page-content">
+
+      <div class="page-header">
+        <div class="module-eyebrow">Module 11 · MCP Servers · ⏱ 10 min</div>
+        <h1>GitHub <span class="gradient-text">MCP</span></h1>
+        <p class="lead">The GitHub MCP server connects Claude directly to the GitHub API. Read issues, create PRs, review code, search repositories — all without leaving the terminal or manually switching to the browser.</p>
+      </div>
+
+      <div class="content-section">
+        <div class="section-title"><div class="icon" style="background:rgba(99,102,241,.15);">🔄</div>The Context Switch Tax</div>
+        <p>Normal GitHub workflow looks like this: read the issue in the browser <span class="context-switch">switch</span>, open your editor <span class="context-switch">switch</span>, write the code, open the terminal <span class="context-switch">switch</span>, push, open the browser again <span class="context-switch">switch</span>, create the PR, write the description, request a review <span class="context-switch">switch</span>.</p>
+        <p>Each context switch costs 20+ minutes of refocusing. GitHub MCP <strong>eliminates all the switches</strong>. Claude reads the issue, writes the code, creates the branch, opens the PR, and writes the description — in one continuous flow inside your terminal.</p>
+      </div>
+
+      <!-- Workflow visualization -->
+      <div class="anim-box">
+        <div class="anim-box-header">
+          <div class="anim-box-title">🐙 What Claude can do with GitHub MCP</div>
+        </div>
+        <div class="anim-box-body">
+          <div class="workflow-step">
+            <div class="wf-icon" style="background:rgba(99,102,241,.15);">📋</div>
+            <div class="wf-body"><h4>Read &amp; Create Issues</h4><p>List open issues, read issue details, create new issues, add comments, update labels and assignees</p></div>
+          </div>
+          <div class="workflow-step">
+            <div class="wf-icon" style="background:rgba(34,197,94,.15);">🔀</div>
+            <div class="wf-body"><h4>Pull Request Workflow</h4><p>Create branches, list PRs, read PR diffs, create pull requests with descriptions, request reviewers, merge PRs</p></div>
+          </div>
+          <div class="workflow-step">
+            <div class="wf-icon" style="background:rgba(245,158,11,.15);">🔍</div>
+            <div class="wf-body"><h4>Search &amp; Explore</h4><p>Search code across repositories, find issues by keyword, search users, browse file contents</p></div>
+          </div>
+          <div class="workflow-step">
+            <div class="wf-icon" style="background:rgba(6,182,212,.15);">📊</div>
+            <div class="wf-body"><h4>Reviews &amp; Status</h4><p>Get PR review status, read review comments, check CI/CD status, view commit history</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Config -->
+      <div class="content-section">
+        <div class="section-title"><div class="icon" style="background:rgba(245,158,11,.15);">⚙️</div>Configuration</div>
+        <div class="code-snippet">
+<span class="c">// ~/.claude/.mcp.json</span>
+{
+  <span class="k">"mcpServers"</span>: {
+    <span class="k">"github"</span>: {
+      <span class="k">"command"</span>: <span class="s">"npx"</span>,
+      <span class="k">"args"</span>: [<span class="s">"-y"</span>, <span class="s">"@modelcontextprotocol/server-github"</span>],
+      <span class="k">"env"</span>: {
+        <span class="k">"GITHUB_PERSONAL_ACCESS_TOKEN"</span>: <span class="s">"ghp_your_token_here"</span>
+      }
+    }
+  }
+}
+        </div>
+      </div>
+
+      <div class="terminal">
+        <div class="term-bar">
+          <div class="term-dot" style="background:#ff5f57"></div>
+          <div class="term-dot" style="background:#febc2e"></div>
+          <div class="term-dot" style="background:#28c840"></div>
+          <div class="term-title">Claude Code — GitHub MCP in action</div>
+        </div>
+        <div class="term-body">
+          <div><span class="acc">&gt; </span><span class="cmd">List all open issues in my-org/my-repo that are labeled "bug"</span></div>
+          <br>
+          <div class="output">Found 3 open bugs:</div>
+          <div class="output">#42 — Login fails on mobile (opened 3 days ago, Jay)</div>
+          <div class="output">#38 — Payment webhook timeout (opened 5 days ago, Sarah)</div>
+          <div class="output">#31 — Dark mode flicker on dashboard (opened 8 days ago, Alex)</div>
+          <br>
+          <div><span class="acc">&gt; </span><span class="cmd">Read issue #42 and create a fix branch</span></div>
+          <div class="output">Issue #42: "Login fails on mobile — iOS Safari 17.x, specifically after..."</div>
+          <div class="ok">✓ Branch created: fix/issue-42-mobile-login</div>
+          <br>
+          <div><span class="acc">&gt; </span><span class="cmd">Create a PR for the fix branch with a proper description</span></div>
+          <div class="ok">✓ PR #47 created: "fix: resolve iOS Safari login failure (closes #42)"</div>
+          <div class="ok">  → https://github.com/my-org/my-repo/pull/47</div>
+        </div>
+      </div>
+
+      <div class="exercise-block">
+        <div class="exercise-header"><span>🔧</span><h3>Hands-On Exercise</h3></div>
+        <div class="exercise-body">
+          <div class="exercise-step">
+            <div class="step-badge">01</div>
+            <div class="step-content">
+              <h4>Create a Personal Access Token</h4>
+              <p>Go to <strong>github.com → Settings → Developer settings → Personal access tokens → Tokens (classic)</strong> → Generate new token. Select scopes: <code>repo</code>, <code>issues</code>, <code>pull_requests</code>.</p>
+            </div>
+          </div>
+          <div class="exercise-step">
+            <div class="step-badge">02</div>
+            <div class="step-content">
+              <h4>Add to ~/.claude/.mcp.json</h4>
+              <p>Create or edit <code>~/.claude/.mcp.json</code> with the configuration above. Replace <code>ghp_your_token_here</code> with your PAT.</p>
+            </div>
+          </div>
+          <div class="exercise-step">
+            <div class="step-badge">03</div>
+            <div class="step-content">
+              <h4>Restart and verify</h4>
+              <p>Restart Claude Code and run <code>claude mcp list</code> — you should see <code>github</code> in the list.</p>
+            </div>
+          </div>
+          <div class="exercise-step">
+            <div class="step-badge">04</div>
+            <div class="step-content">
+              <h4>Test it</h4>
+              <p>Ask: <em>"List the last 5 issues in [your-org/your-repo]"</em> then <em>"Create a test issue titled 'GitHub MCP test'"</em></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="takeaways">
+        <h3>⚡ Key Takeaways</h3>
+        <div class="takeaway-item"><span class="ti-icon">✓</span><div>GitHub MCP = GitHub API access in Claude Code. Requires a PAT with appropriate scopes.</div></div>
+        <div class="takeaway-item"><span class="ti-icon">✓</span><div>Eliminates context switches: read issue → write code → create PR → done, all in terminal.</div></div>
+        <div class="takeaway-item"><span class="ti-icon">✓</span><div>Claude can create branches, PRs, review comments, and merge — full GitHub workflow.</div></div>
+        <div class="takeaway-item"><span class="ti-icon">✓</span><div>Add to <code>~/.claude/.mcp.json</code> — applies to all sessions once configured.</div></div>
+      </div>
+
+      <div class="section-divider" style="margin-top:40px;"></div>
+      <div style="display:flex;justify-content:center;margin:24px 0;">
+        <button class="btn btn-ghost" id="mark-complete-btn">Mark as Complete ✓</button>
+      </div>
+      <div id="module-nav"></div>
+    </div>
+  </div>
+</div>
+<script src="../nav.js"></script>
+</body>
+</html>

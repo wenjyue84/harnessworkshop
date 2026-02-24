@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Other Hooks — Harness Engineering</title>
+<link rel="stylesheet" href="../site.css">
+<style>
+  #reading-progress{position:fixed;top:0;left:0;right:0;height:3px;background:var(--border);z-index:200;}
+  #reading-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));width:0%;}
+  .hook-table { width:100%;border-collapse:collapse;font-size:13px;margin:16px 0; }
+  .hook-table th { text-align:left;padding:8px 12px;background:var(--surface2);color:var(--text-muted);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border); }
+  .hook-table td { padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text-dim);vertical-align:top; }
+  .hook-table tr:last-child td { border-bottom:none; }
+  .hook-name { font-family:var(--font-mono);font-size:12px;color:var(--accent3); }
+  .hook-can-block { display:inline-block;background:rgba(239,68,68,.15);color:var(--red);font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;margin-left:4px; }
+</style>
+</head>
+<body>
+<div id="reading-progress"><div id="reading-progress-fill"></div></div>
+<div class="site-layout">
+  <div id="nav-sidebar" class="sidebar"></div>
+  <div class="main-content">
+    <div id="nav-topbar"></div>
+    <div class="page-content">
+
+      <div class="page-header">
+        <div class="module-eyebrow">Module 07 · Hooks &amp; Automation · ⏱ 12 min</div>
+        <h1>Other <span class="gradient-text">Hooks</span></h1>
+        <p class="lead">Beyond SessionStart, Claude Code exposes hooks at every lifecycle stage: before tool calls, after tool calls, on notification, and on stop. Build audit trails, safety checks, auto-formatters, and alerts.</p>
+      </div>
+
+      <div class="content-section">
+        <div class="section-title"><div class="icon" style="background:rgba(99,102,241,.15);">🍳</div>The Kitchen Stations</div>
+        <p>A professional kitchen has quality control stations: the prep station checks ingredients before cooking, the pass checks plates before they leave. If anything is wrong, it gets stopped before reaching the customer.</p>
+        <p>Claude Code hooks are those stations. <code>PreToolUse</code> can inspect and <strong>block</strong> actions before they happen. <code>PostToolUse</code> can log, notify, or trigger follow-up actions after. You're adding control points to the AI's workflow.</p>
+      </div>
+
+      <!-- Hook types table -->
+      <div class="anim-box">
+        <div class="anim-box-header">
+          <div class="anim-box-title">📋 All Hook Events</div>
+        </div>
+        <div class="anim-box-body">
+          <table class="hook-table">
+            <tr>
+              <th>Event</th>
+              <th>When it fires</th>
+              <th>Can block?</th>
+              <th>Best for</th>
+            </tr>
+            <tr>
+              <td><span class="hook-name">SessionStart</span></td>
+              <td>Session opens, before any message</td>
+              <td>No</td>
+              <td>Injecting context, date, git status</td>
+            </tr>
+            <tr>
+              <td><span class="hook-name">PreToolUse</span></td>
+              <td>Before Claude calls any tool</td>
+              <td><span class="hook-can-block">YES</span></td>
+              <td>Safety checks, confirmations, validation</td>
+            </tr>
+            <tr>
+              <td><span class="hook-name">PostToolUse</span></td>
+              <td>After a tool call completes</td>
+              <td>No</td>
+              <td>Audit logs, notifications, auto-formatting</td>
+            </tr>
+            <tr>
+              <td><span class="hook-name">Notification</span></td>
+              <td>Claude sends a notification</td>
+              <td>No</td>
+              <td>Desktop alerts, Slack/webhook forwarding</td>
+            </tr>
+            <tr>
+              <td><span class="hook-name">Stop</span></td>
+              <td>Claude finishes responding</td>
+              <td>No</td>
+              <td>Summary writes, CI triggers, cleanup</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- PostToolUse audit log example -->
+      <div class="content-section">
+        <div class="section-title"><div class="icon" style="background:rgba(34,197,94,.15);">📝</div>PostToolUse: Audit Log</div>
+        <p>Every file write gets logged automatically. No manual tracking needed.</p>
+        <div class="code-snippet">
+<span class="c">// ~/.claude/settings.json</span>
+{
+  <span class="k">"hooks"</span>: {
+    <span class="k">"PostToolUse"</span>: [{
+      <span class="k">"matcher"</span>: <span class="s">"Write|Edit|Bash"</span>,
+      <span class="k">"hooks"</span>: [{
+        <span class="k">"type"</span>: <span class="s">"command"</span>,
+        <span class="k">"command"</span>: <span class="s">"echo \"$(date +%Y-%m-%dT%H:%M:%S) TOOL=$CLAUDE_TOOL_NAME\" >> ~/claude-audit.log"</span>
+      }]
+    }]
+  }
+}
+        </div>
+      </div>
+
+      <!-- PreToolUse block example -->
+      <div class="content-section">
+        <div class="section-title"><div class="icon" style="background:rgba(239,68,68,.15);">🛡️</div>PreToolUse: Safety Block</div>
+        <p>Exit with code 2 from a PreToolUse hook to <strong>block</strong> the tool call. Claude receives your error message and adjusts.</p>
+        <div class="code-snippet">
+<span class="c">// Block deletion of .env files</span>
+{
+  <span class="k">"PreToolUse"</span>: [{
+    <span class="k">"matcher"</span>: <span class="s">"Bash"</span>,
+    <span class="k">"hooks"</span>: [{
+      <span class="k">"type"</span>: <span class="s">"command"</span>,
+      <span class="k">"command"</span>: <span class="g">"bash -c 'if echo \"$CLAUDE_TOOL_INPUT\" | grep -q \"rm.*\\.env\"; then echo \"BLOCKED: cannot delete .env files\" >&2; exit 2; fi'"</span>
+    }]
+  }]
+}
+        </div>
+        <div class="callout warn" style="margin-top:12px;">
+          <div class="callout-icon">⚠</div>
+          <div class="callout-body"><strong>Exit code 2 = block.</strong> Any other non-zero exit = error (hook failed but tool still runs). Exit 0 = success, tool proceeds. The error message in stderr is shown to Claude.</div>
+        </div>
+      </div>
+
+      <div class="terminal">
+        <div class="term-bar">
+          <div class="term-dot" style="background:#ff5f57"></div>
+          <div class="term-dot" style="background:#febc2e"></div>
+          <div class="term-dot" style="background:#28c840"></div>
+          <div class="term-title">bash — hook in action</div>
+        </div>
+        <div class="term-body">
+          <div><span class="comment"># Claude tries to delete a .env file</span></div>
+          <div><span class="acc">&gt; </span><span class="output">running: rm .env.local</span></div>
+          <div class="err">Hook blocked: cannot delete .env files</div>
+          <div class="warn">PreToolUse hook rejected the action.</div>
+          <br>
+          <div><span class="comment"># Claude receives the block and adjusts:</span></div>
+          <div class="output">I won't delete .env.local. Should I move it to .env.backup instead?</div>
+          <div><span class="cursor"></span></div>
+        </div>
+      </div>
+
+      <div class="exercise-block">
+        <div class="exercise-header"><span>🔧</span><h3>Hands-On Exercise</h3></div>
+        <div class="exercise-body">
+          <div class="exercise-step">
+            <div class="step-badge">01</div>
+            <div class="step-content">
+              <h4>Add a PostToolUse audit log</h4>
+              <p>Add the audit log hook above to your settings.json. Ask Claude to edit any file, then check <code>~/claude-audit.log</code> to confirm logging works.</p>
+            </div>
+          </div>
+          <div class="exercise-step">
+            <div class="step-badge">02</div>
+            <div class="step-content">
+              <h4>Add a PreToolUse safety check</h4>
+              <p>Add the .env protection hook. Then ask Claude: <em>"Delete all files in my project"</em> and verify it gets blocked.</p>
+            </div>
+          </div>
+          <div class="exercise-step">
+            <div class="step-badge">03</div>
+            <div class="step-content">
+              <h4>Create a desktop notification</h4>
+              <p>Add a <code>Stop</code> hook that notifies you when Claude finishes a long task:</p>
+              <div class="code-snippet"><span class="c"># Windows (PowerShell):</span>
+<span class="g">powershell -command "Add-Type -AssemblyName System.Windows.Forms; [System.Windows.Forms.MessageBox]::Show('Claude finished!')"</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="takeaways">
+        <h3>⚡ Key Takeaways</h3>
+        <div class="takeaway-item"><span class="ti-icon">✓</span><div>5 hook events: SessionStart, PreToolUse, PostToolUse, Notification, Stop.</div></div>
+        <div class="takeaway-item"><span class="ti-icon">✓</span><div><strong>PreToolUse can block</strong> — exit code 2 prevents the tool call. Claude receives your error message.</div></div>
+        <div class="takeaway-item"><span class="ti-icon">✓</span><div>PostToolUse is perfect for audit logging — use <code>$CLAUDE_TOOL_NAME</code> and <code>$CLAUDE_TOOL_INPUT</code> env vars.</div></div>
+        <div class="takeaway-item"><span class="ti-icon">✓</span><div>matcher pattern (e.g., "Write|Edit") filters which tool calls trigger the hook.</div></div>
+      </div>
+
+      <div class="section-divider" style="margin-top:40px;"></div>
+      <div style="display:flex;justify-content:center;margin:24px 0;">
+        <button class="btn btn-ghost" id="mark-complete-btn">Mark as Complete ✓</button>
+      </div>
+      <div id="module-nav"></div>
+    </div>
+  </div>
+</div>
+<script src="../nav.js"></script>
+</body>
+</html>

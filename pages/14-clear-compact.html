@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>/clear and /compact — Harness Engineering</title>
+<link rel="stylesheet" href="../site.css">
+<style>
+  #reading-progress{position:fixed;top:0;left:0;right:0;height:3px;background:var(--border);z-index:200;}
+  #reading-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));width:0%;}
+
+  /* Context meter */
+  .ctx-meter-wrap { margin:20px 0; }
+  .ctx-meter-bar  { height:28px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;overflow:hidden;position:relative;margin-bottom:8px; }
+  .ctx-fill { height:100%;border-radius:8px;transition:width .6s ease,background .4s; display:flex;align-items:center;padding-left:12px;font-size:11px;font-weight:700;color:white; }
+  .ctx-fill.green  { background:linear-gradient(90deg,#22c55e,#16a34a); }
+  .ctx-fill.orange { background:linear-gradient(90deg,#f59e0b,#d97706); }
+  .ctx-fill.red    { background:linear-gradient(90deg,#ef4444,#dc2626); }
+  .ctx-actions { display:flex;gap:8px;margin-top:12px; }
+
+  /* Comparison cards */
+  .cmd-compare { display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0; }
+  .cmd-card { border-radius:var(--radius);padding:20px;border:1px solid; }
+  .cmd-card.clear   { background:rgba(239,68,68,.05);border-color:rgba(239,68,68,.25); }
+  .cmd-card.compact { background:rgba(99,102,241,.05);border-color:rgba(99,102,241,.25); }
+  .cmd-title { font-size:18px;font-weight:900;font-family:var(--font-mono);margin-bottom:10px; }
+  .cmd-card.clear   .cmd-title { color:var(--red); }
+  .cmd-card.compact .cmd-title { color:var(--accent3); }
+  .cmd-list { font-size:13px;color:var(--text-dim);padding-left:18px; }
+  .cmd-list li { margin-bottom:6px; }
+
+  @media(max-width:640px){.cmd-compare{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div id="reading-progress"><div id="reading-progress-fill"></div></div>
+<div class="site-layout">
+  <div id="nav-sidebar" class="sidebar"></div>
+  <div class="main-content">
+    <div id="nav-topbar"></div>
+    <div class="page-content">
+
+      <div class="page-header">
+        <div class="module-eyebrow">Module 14 · Memory &amp; Context · ⏱ 8 min</div>
+        <h1>/clear and <span class="gradient-text">/compact</span></h1>
+        <p class="lead">Claude's context window is finite. <code>/clear</code> resets it completely. <code>/compact</code> summarizes and compresses it — keeping important decisions but clearing the bulk. Knowing when to use each prevents context overflow.</p>
+      </div>
+
+      <div class="content-section">
+        <div class="section-title"><div class="icon" style="background:rgba(99,102,241,.15);">🗄️</div>The Desk Analogy</div>
+        <p>After hours of work, your desk is covered in notes, printouts, sticky notes, and half-finished documents. You have two options:</p>
+        <ul>
+          <li><strong>/compact</strong> — take a photo of the important stuff, file the rest. Your desk gets clean but you still know what mattered.</li>
+          <li><strong>/clear</strong> — sweep everything off. Completely fresh. Whatever was there is gone.</li>
+        </ul>
+        <p>Context window management is exactly that tradeoff: preserve continuity vs start fresh.</p>
+      </div>
+
+      <!-- Interactive context meter -->
+      <div class="anim-box">
+        <div class="anim-box-header">
+          <div class="anim-box-title">📊 Context Window Simulator</div>
+        </div>
+        <div class="anim-box-body">
+          <div style="font-size:13px;color:var(--text-dim);margin-bottom:12px;">Simulate a long coding session and see when to use /compact vs /clear:</div>
+          <div class="ctx-meter-wrap">
+            <div class="ctx-meter-bar">
+              <div class="ctx-fill green" id="ctx-fill" style="width:15%;">15%</div>
+            </div>
+            <div style="font-size:12px;color:var(--text-muted);" id="ctx-status">Context: <strong>15%</strong> — Plenty of space. Keep going.</div>
+          </div>
+          <div class="ctx-actions">
+            <button class="btn btn-ghost" onclick="addContext()" style="font-size:12px;">+ Add context (continue working)</button>
+            <button class="btn btn-ghost" onclick="doCompact()" style="font-size:12px;" id="compact-btn">⟰ /compact</button>
+            <button class="btn btn-ghost" onclick="doClear()" style="font-size:12px;" id="clear-btn">✕ /clear</button>
+          </div>
+          <div id="ctx-log" style="margin-top:12px;font-size:12px;font-family:var(--font-mono);color:var(--text-dim);min-height:40px;"></div>
+        </div>
+      </div>
+
+      <!-- Command comparison -->
+      <div class="content-section">
+        <div class="section-title"><div class="icon" style="background:rgba(245,158,11,.15);">⚖️</div>/clear vs /compact</div>
+        <div class="cmd-compare">
+          <div class="cmd-card clear">
+            <div class="cmd-title">/clear</div>
+            <ul class="cmd-list">
+              <li>Wipes everything completely</li>
+              <li>Claude forgets all context</li>
+              <li>Context drops to 0%</li>
+              <li>Fastest option</li>
+            </ul>
+            <div style="margin-top:12px;font-size:12px;"><strong style="color:var(--red);">Use when:</strong>
+              <div style="color:var(--text-muted);margin-top:4px;">Starting a completely new task, context is corrupted or off-track, switching to a different project</div>
+            </div>
+          </div>
+          <div class="cmd-card compact">
+            <div class="cmd-title">/compact</div>
+            <ul class="cmd-list">
+              <li>Summarizes the conversation</li>
+              <li>Keeps key decisions &amp; code</li>
+              <li>Context drops to ~20-30%</li>
+              <li>Continuity preserved</li>
+            </ul>
+            <div style="margin-top:12px;font-size:12px;"><strong style="color:var(--accent3);">Use when:</strong>
+              <div style="color:var(--text-muted);margin-top:4px;">Context is getting full mid-task, you want to continue from where you are, long-running sessions (Ralph loop)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="terminal">
+        <div class="term-bar">
+          <div class="term-dot" style="background:#ff5f57"></div>
+          <div class="term-dot" style="background:#febc2e"></div>
+          <div class="term-dot" style="background:#28c840"></div>
+          <div class="term-title">Claude Code — /compact in action</div>
+        </div>
+        <div class="term-body">
+          <div><span class="comment"># After a long session, context is getting full</span></div>
+          <div><span class="acc">&gt; </span><span class="cmd">How full is your context?</span></div>
+          <div class="warn">Context: ~78% full. Consider /compact soon.</div>
+          <br>
+          <div><span class="acc">&gt; </span><span class="cmd">/compact</span></div>
+          <div class="output">Summarizing conversation...</div>
+          <div class="output">Keeping: auth.ts refactor (complete), users API (in progress)</div>
+          <div class="output">Keeping: decision to use JWT with 24h expiry</div>
+          <div class="output">Discarding: 48 intermediate messages</div>
+          <div class="ok">✓ Context reduced to 22%. Ready to continue.</div>
+          <br>
+          <div><span class="acc">&gt; </span><span class="cmd">Continue the users API — where were we?</span></div>
+          <div class="output">We were implementing the GET /users/:id endpoint.</div>
+          <div class="output">Auth is done, JWT validation middleware is in middleware/auth.ts</div>
+          <div><span class="cursor"></span></div>
+        </div>
+      </div>
+
+      <div class="exercise-block">
+        <div class="exercise-header"><span>🔧</span><h3>Hands-On Exercise</h3></div>
+        <div class="exercise-body">
+          <div class="exercise-step">
+            <div class="step-badge">01</div>
+            <div class="step-content">
+              <h4>Build up context</h4>
+              <p>Start a Claude Code session and ask it to write 5+ files or analyze a codebase. Build up significant context over 10+ messages.</p>
+            </div>
+          </div>
+          <div class="exercise-step">
+            <div class="step-badge">02</div>
+            <div class="step-content">
+              <h4>Check context usage</h4>
+              <p>Ask: <em>"How full is your context window?"</em> — note the percentage. Most sessions will show it filling up after significant work.</p>
+            </div>
+          </div>
+          <div class="exercise-step">
+            <div class="step-badge">03</div>
+            <div class="step-content">
+              <h4>Run /compact</h4>
+              <p>Type <code>/compact</code>. Watch Claude summarize. Then ask <em>"What do you remember from our session?"</em> — verify the key decisions were kept.</p>
+            </div>
+          </div>
+          <div class="exercise-step">
+            <div class="step-badge">04</div>
+            <div class="step-content">
+              <h4>Try /clear on a new task</h4>
+              <p>Start a different task. Type <code>/clear</code> first to reset context. Notice the difference — Claude has no memory of the previous session.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="takeaways">
+        <h3>⚡ Key Takeaways</h3>
+        <div class="takeaway-item"><span class="ti-icon">✓</span><div>Context window = limited RAM. It fills up during long sessions.</div></div>
+        <div class="takeaway-item"><span class="ti-icon">✓</span><div><code>/compact</code> = smart compression. Keeps key decisions, drops chatter. Drops to ~20-30%.</div></div>
+        <div class="takeaway-item"><span class="ti-icon">✓</span><div><code>/clear</code> = full reset. Drops to 0%. Use when switching tasks entirely.</div></div>
+        <div class="takeaway-item"><span class="ti-icon">✓</span><div>Autonomous agents (like Ralph) use <code>/compact</code> automatically at ~80% to keep running.</div></div>
+      </div>
+
+      <div class="section-divider" style="margin-top:40px;"></div>
+      <div style="display:flex;justify-content:center;margin:24px 0;">
+        <button class="btn btn-ghost" id="mark-complete-btn">Mark as Complete ✓</button>
+      </div>
+      <div id="module-nav"></div>
+    </div>
+  </div>
+</div>
+<script src="../nav.js"></script>
+<script>
+let ctxLevel = 15;
+const fill = document.getElementById('ctx-fill');
+const status = document.getElementById('ctx-status');
+const log = document.getElementById('ctx-log');
+
+function updateMeter() {
+  fill.style.width = ctxLevel + '%';
+  fill.textContent = ctxLevel + '%';
+  fill.className = 'ctx-fill ' + (ctxLevel < 50 ? 'green' : ctxLevel < 80 ? 'orange' : 'red');
+  const msg = ctxLevel < 50 ? 'Plenty of space. Keep going.' :
+              ctxLevel < 80 ? '⚠ Getting full. Consider /compact soon.' :
+              '🔴 Critical! Run /compact or /clear now!';
+  status.innerHTML = `Context: <strong>${ctxLevel}%</strong> — ${msg}`;
+}
+
+function addContext() {
+  if (ctxLevel >= 95) {
+    log.innerHTML = '<span style="color:var(--red)">Context overflow! Run /compact or /clear before continuing.</span>';
+    return;
+  }
+  ctxLevel = Math.min(95, ctxLevel + Math.floor(Math.random() * 12 + 8));
+  log.innerHTML = `<span style="color:var(--text-muted)">Added context... now at ${ctxLevel}%</span>`;
+  updateMeter();
+}
+
+function doCompact() {
+  if (ctxLevel < 20) { log.innerHTML = '<span style="color:var(--text-muted)">Context is already lean — no need to compact yet.</span>'; return; }
+  const before = ctxLevel;
+  ctxLevel = Math.max(18, Math.floor(ctxLevel * 0.27));
+  log.innerHTML = `<span style="color:var(--green)">✓ /compact: ${before}% → ${ctxLevel}%. Key decisions preserved.</span>`;
+  updateMeter();
+}
+
+function doClear() {
+  const before = ctxLevel;
+  ctxLevel = 5;
+  log.innerHTML = `<span style="color:var(--red)">✕ /clear: ${before}% → 5%. All context erased. Fresh start.</span>`;
+  updateMeter();
+}
+</script>
+</body>
+</html>

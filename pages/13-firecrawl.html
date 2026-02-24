@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Firecrawl MCP — Harness Engineering</title>
+<link rel="stylesheet" href="../site.css">
+<style>
+  #reading-progress{position:fixed;top:0;left:0;right:0;height:3px;background:var(--border);z-index:200;}
+  #reading-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));width:0%;}
+  .tool-grid { display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:16px 0; }
+  .tool-card { background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px; }
+  .tool-name { font-family:var(--font-mono);font-size:12px;font-weight:700;color:var(--accent3);margin-bottom:4px; }
+  .tool-desc { font-size:12px;color:var(--text-dim); }
+  /* Transform animation */
+  .transform-demo { display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;margin:16px 0; }
+  .td-box { background:#080810;border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;font-size:11px;font-family:var(--font-mono);min-height:120px; }
+  .td-arrow { font-size:24px;color:var(--accent);text-align:center; }
+  @media(max-width:640px){.tool-grid{grid-template-columns:1fr;}.transform-demo{grid-template-columns:1fr;}.td-arrow{transform:rotate(90deg);}}
+</style>
+</head>
+<body>
+<div id="reading-progress"><div id="reading-progress-fill"></div></div>
+<div class="site-layout">
+  <div id="nav-sidebar" class="sidebar"></div>
+  <div class="main-content">
+    <div id="nav-topbar"></div>
+    <div class="page-content">
+
+      <div class="page-header">
+        <div class="module-eyebrow">Module 13 · MCP Servers · ⏱ 10 min</div>
+        <h1>Firecrawl <span class="gradient-text">MCP</span></h1>
+        <p class="lead">Firecrawl converts any URL to clean, LLM-ready markdown. The MCP server adds scraping, crawling, search, and structured extraction directly to Claude — 11 tools for web intelligence.</p>
+      </div>
+
+      <div class="content-section">
+        <div class="section-title"><div class="icon" style="background:rgba(239,68,68,.15);">🔥</div>The Paper Mill</div>
+        <p>The web is 99% HTML noise: ads, navigation bars, cookie banners, tracking scripts, sidebars, footers. Dumping raw HTML into a context window is wasteful — most of it is irrelevant.</p>
+        <p>Firecrawl is the paper mill. A messy forest of HTML goes in; clean, dry markdown comes out. One URL in, structured content that fits your context window out. <strong>45,000 characters of HTML → 3,200 characters of clean markdown.</strong></p>
+      </div>
+
+      <!-- Transform demo -->
+      <div class="anim-box">
+        <div class="anim-box-header">
+          <div class="anim-box-title">🔄 HTML → Markdown transformation</div>
+        </div>
+        <div class="anim-box-body">
+          <div class="transform-demo">
+            <div class="td-box">
+              <div style="color:var(--red);margin-bottom:6px;">RAW HTML (45,000 chars)</div>
+              <div style="color:var(--text-muted);">&lt;div class="nav-wrapper"&gt;</div>
+              <div style="color:var(--text-muted);">&lt;header id="..."&gt;</div>
+              <div style="color:var(--text-muted);">&lt;script async src="..."&gt;</div>
+              <div style="color:var(--text-muted);">&lt;div class="ad-container"&gt;</div>
+              <div style="color:var(--text-muted);">... (40,000 more chars of noise)</div>
+            </div>
+            <div class="td-arrow">→<br><span style="font-size:11px;color:var(--text-muted);">Firecrawl</span></div>
+            <div class="td-box">
+              <div style="color:var(--green);margin-bottom:6px;">CLEAN MARKDOWN (3,200 chars)</div>
+              <div style="color:var(--text-dim)"># Getting Started</div>
+              <div style="color:var(--text-dim)">Install with npm:</div>
+              <div style="color:var(--text-dim)">`npm install firecrawl`</div>
+              <div style="color:var(--text-dim)"></div>
+              <div style="color:var(--text-dim)">## Configuration</div>
+              <div style="color:var(--text-dim)">Add your API key to...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 11 tools -->
+      <div class="content-section">
+        <div class="section-title"><div class="icon" style="background:rgba(245,158,11,.15);">🛠️</div>11 MCP Tools</div>
+        <div class="tool-grid">
+          <div class="tool-card">
+            <div class="tool-name">firecrawl_scrape</div>
+            <div class="tool-desc">Single URL → clean markdown/HTML/JSON</div>
+          </div>
+          <div class="tool-card">
+            <div class="tool-name">firecrawl_search</div>
+            <div class="tool-desc">Web search with optional result scraping</div>
+          </div>
+          <div class="tool-card">
+            <div class="tool-name">firecrawl_crawl</div>
+            <div class="tool-desc">Async multi-page crawl with depth control</div>
+          </div>
+          <div class="tool-card">
+            <div class="tool-name">firecrawl_map</div>
+            <div class="tool-desc">Discover all indexed URLs on a site</div>
+          </div>
+          <div class="tool-card">
+            <div class="tool-name">firecrawl_extract</div>
+            <div class="tool-desc">Structured data extraction with custom schema</div>
+          </div>
+          <div class="tool-card">
+            <div class="tool-name">firecrawl_agent</div>
+            <div class="tool-desc">Autonomous research agent — browses independently</div>
+          </div>
+        </div>
+        <p style="font-size:13px;color:var(--text-muted);">Plus: <code>check_crawl_status</code>, <code>browser_create/execute/delete/list</code> for persistent browser sessions.</p>
+      </div>
+
+      <!-- Quick install -->
+      <div class="content-section">
+        <div class="section-title"><div class="icon" style="background:rgba(34,197,94,.15);">⚡</div>One-Command Install</div>
+        <div class="code-snippet">
+<span class="c"># Easiest way — Claude Code CLI installer:</span>
+<span class="g">claude mcp add firecrawl -e FIRECRAWL_API_KEY=your-api-key -- npx -y firecrawl-mcp</span>
+
+<span class="c"># Or manually in ~/.claude/.mcp.json:</span>
+{
+  <span class="k">"mcpServers"</span>: {
+    <span class="k">"firecrawl"</span>: {
+      <span class="k">"command"</span>: <span class="s">"npx"</span>,
+      <span class="k">"args"</span>: [<span class="s">"-y"</span>, <span class="s">"firecrawl-mcp"</span>],
+      <span class="k">"env"</span>: { <span class="k">"FIRECRAWL_API_KEY"</span>: <span class="s">"fc-your-key"</span> }
+    }
+  }
+}
+        </div>
+        <p style="margin-top:8px;font-size:13px;color:var(--text-dim);">Get a free API key at <strong>firecrawl.dev/app/api-keys</strong>. Free tier is generous for learning.</p>
+      </div>
+
+      <div class="terminal">
+        <div class="term-bar">
+          <div class="term-dot" style="background:#ff5f57"></div>
+          <div class="term-dot" style="background:#febc2e"></div>
+          <div class="term-dot" style="background:#28c840"></div>
+          <div class="term-title">Claude Code — Firecrawl in action</div>
+        </div>
+        <div class="term-body">
+          <div><span class="acc">&gt; </span><span class="cmd">Scrape the README from github.com/upstash/context7 and summarize it</span></div>
+          <div class="info">firecrawl_scrape: https://github.com/upstash/context7</div>
+          <div class="output">Fetched 4,200 chars of clean markdown</div>
+          <div class="ok">Summary: Context7 is an MCP server by Upstash that fetches live docs...</div>
+          <br>
+          <div><span class="acc">&gt; </span><span class="cmd">Search the web for "Claude Code hooks documentation" and summarize top 3 results</span></div>
+          <div class="info">firecrawl_search: "Claude Code hooks documentation"</div>
+          <div class="output">Found 5 results, scraping top 3...</div>
+          <div class="ok">Summary: Hooks are shell commands that run at lifecycle events...</div>
+          <br>
+          <div><span class="acc">&gt; </span><span class="cmd">Use the research agent to analyze our top 3 competitors' pricing pages</span></div>
+          <div class="info">firecrawl_agent: autonomous research started...</div>
+        </div>
+      </div>
+
+      <div class="exercise-block">
+        <div class="exercise-header"><span>🔧</span><h3>Hands-On Exercise</h3></div>
+        <div class="exercise-body">
+          <div class="exercise-step">
+            <div class="step-badge">01</div>
+            <div class="step-content">
+              <h4>Get your API key</h4>
+              <p>Sign up at <strong>firecrawl.dev</strong> and go to API Keys. Copy your key (starts with <code>fc-</code>).</p>
+            </div>
+          </div>
+          <div class="exercise-step">
+            <div class="step-badge">02</div>
+            <div class="step-content">
+              <h4>Install Firecrawl MCP</h4>
+              <p>Run the one-liner: <code>claude mcp add firecrawl -e FIRECRAWL_API_KEY=fc-your-key -- npx -y firecrawl-mcp</code></p>
+            </div>
+          </div>
+          <div class="exercise-step">
+            <div class="step-badge">03</div>
+            <div class="step-content">
+              <h4>Scrape a documentation page</h4>
+              <p>Ask Claude: <em>"Scrape docs.anthropic.com/claude/docs/tool-use and extract the key concepts"</em></p>
+            </div>
+          </div>
+          <div class="exercise-step">
+            <div class="step-badge">04</div>
+            <div class="step-content">
+              <h4>Do competitive research</h4>
+              <p>Ask Claude: <em>"Search for '[your product category] pricing 2025' and summarize the pricing models you find"</em></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="takeaways">
+        <h3>⚡ Key Takeaways</h3>
+        <div class="takeaway-item"><span class="ti-icon">✓</span><div>Firecrawl converts messy HTML to clean markdown — 10–15× smaller for LLM consumption.</div></div>
+        <div class="takeaway-item"><span class="ti-icon">✓</span><div>11 MCP tools: scrape, search, crawl, map, extract, agent, and browser sessions.</div></div>
+        <div class="takeaway-item"><span class="ti-icon">✓</span><div>Install with one command: <code>claude mcp add firecrawl -e FIRECRAWL_API_KEY=...</code></div></div>
+        <div class="takeaway-item"><span class="ti-icon">✓</span><div>Free API tier is sufficient for learning. <code>firecrawl_agent</code> does fully autonomous research.</div></div>
+      </div>
+
+      <div class="section-divider" style="margin-top:40px;"></div>
+      <div style="display:flex;justify-content:center;margin:24px 0;">
+        <button class="btn btn-ghost" id="mark-complete-btn">Mark as Complete ✓</button>
+      </div>
+      <div id="module-nav"></div>
+    </div>
+  </div>
+</div>
+<script src="../nav.js"></script>
+</body>
+</html>

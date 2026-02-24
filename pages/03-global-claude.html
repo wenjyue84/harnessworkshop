@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Global Claude.md — Harness Engineering</title>
+<link rel="stylesheet" href="../site.css">
+<style>
+  #reading-progress{position:fixed;top:0;left:0;right:0;height:3px;background:var(--border);z-index:200;}
+  #reading-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));width:0%;}
+  .layer-stack { display:flex;flex-direction:column;gap:8px;margin:20px 0; }
+  .layer { border-radius:var(--radius-sm);padding:14px 18px;cursor:pointer;transition:transform .2s,box-shadow .2s;border:1px solid transparent; }
+  .layer:hover { transform:translateX(4px); }
+  .layer.default  { background:rgba(120,120,160,.08);border-color:rgba(120,120,160,.2); }
+  .layer.global   { background:rgba(99,102,241,.08); border-color:rgba(99,102,241,.3); }
+  .layer.project  { background:rgba(139,92,246,.12); border-color:rgba(139,92,246,.4); }
+  .layer-label  { font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px; }
+  .layer-desc   { font-size:13px;color:var(--text-dim); }
+  .layer-badge  { font-size:10px;background:var(--surface2);padding:2px 8px;border-radius:8px;float:right;margin-top:-2px; }
+</style>
+</head>
+<body>
+<div id="reading-progress"><div id="reading-progress-fill"></div></div>
+<div class="site-layout">
+  <div id="nav-sidebar" class="sidebar"></div>
+  <div class="main-content">
+    <div id="nav-topbar"></div>
+    <div class="page-content">
+
+      <div class="page-header">
+        <div class="module-eyebrow">Module 03 · Getting Started · ⏱ 10 min</div>
+        <h1>Global <span class="gradient-text">Claude.md</span></h1>
+        <p class="lead">A global CLAUDE.md loads in <em>every</em> Claude Code session, across all your projects. It's your universal AI constitution — rules that apply everywhere, before any project-specific instructions.</p>
+      </div>
+
+      <div class="content-section">
+        <div class="section-title"><div class="icon" style="background:rgba(99,102,241,.15);">🏛️</div>The Laminated Card</div>
+        <p>Imagine you could give every employee across every company you ever work with a laminated card: <em>"I always use uv for Python. I never permanently delete files. I write tests first."</em> No matter what project, no matter who you're working with — those rules always apply.</p>
+        <p>That's global CLAUDE.md. It loads before any project instructions and sets your baseline defaults across your entire AI workflow.</p>
+      </div>
+
+      <!-- Hierarchy visualization -->
+      <div class="anim-box">
+        <div class="anim-box-header">
+          <div class="anim-box-title">📐 Instruction Hierarchy</div>
+        </div>
+        <div class="anim-box-body">
+          <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px;">Instructions are merged in this order. Higher layers override lower ones when there's a conflict.</p>
+          <div class="layer-stack">
+            <div class="layer default">
+              <div class="layer-label" style="color:var(--text-muted);">Base Layer <span class="layer-badge">always present</span></div>
+              <div class="layer-desc">Claude's built-in defaults and safety behaviors</div>
+            </div>
+            <div class="layer global" style="margin-left:16px;">
+              <div class="layer-label" style="color:var(--accent3);">Global CLAUDE.md <span class="layer-badge">~/.claude/CLAUDE.md</span></div>
+              <div class="layer-desc">Your personal rules — applies to every project on this machine</div>
+            </div>
+            <div class="layer project" style="margin-left:32px;">
+              <div class="layer-label" style="color:var(--accent2);">Project CLAUDE.md <span class="layer-badge">./CLAUDE.md</span></div>
+              <div class="layer-desc">Project-specific rules — overrides global for this repo</div>
+            </div>
+          </div>
+          <div class="callout tip" style="margin-top:12px;">
+            <div class="callout-icon">💡</div>
+            <div class="callout-body">When there's a conflict, <strong>the more specific layer wins</strong>. A project rule "always use pip" overrides a global rule "always use uv" for that project.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Example global claude.md -->
+      <div class="content-section">
+        <div class="section-title"><div class="icon" style="background:rgba(245,158,11,.15);">📝</div>Example Global CLAUDE.md</div>
+        <div class="code-snippet">
+<span class="c"># ~/.claude/CLAUDE.md — Global Rules (applies everywhere)</span>
+
+<span class="g">## Critical Rules</span>
+<span class="s">- Use `uv` for ALL Python operations. Never use pip directly.</span>
+<span class="s">- Read a file before editing it. Never edit without reading first.</span>
+<span class="s">- Archive instead of delete. Move to _archive/ if uncertain.</span>
+
+<span class="g">## File Naming</span>
+<span class="s">- Documents: YYYY-MM-DD_name.ext prefix</span>
+<span class="s">- Code: kebab-case for files, camelCase for variables</span>
+
+<span class="g">## Communication Style</span>
+<span class="s">- Be concise. No cheerleading or excessive affirmations.</span>
+<span class="s">- No emojis unless explicitly requested.</span>
+<span class="s">- When you don't know something, say so directly.</span>
+
+<span class="g">## Platform</span>
+<span class="s">- Windows 11. Use PowerShell-compatible syntax.</span>
+<span class="s">- Default region: ap-southeast-1</span>
+        </div>
+      </div>
+
+      <div class="terminal">
+        <div class="term-bar">
+          <div class="term-dot" style="background:#ff5f57"></div>
+          <div class="term-dot" style="background:#febc2e"></div>
+          <div class="term-dot" style="background:#28c840"></div>
+          <div class="term-title">bash — find global Claude.md</div>
+        </div>
+        <div class="term-body">
+          <div><span class="comment"># Find the global CLAUDE.md path</span></div>
+          <div><span class="prompt">$ </span><span class="cmd">claude</span></div>
+          <div><span class="acc">&gt; </span><span class="cmd">/config</span></div>
+          <div class="output">Global config: ~/.claude/CLAUDE.md</div>
+          <div class="output">Project config: ./CLAUDE.md (not found)</div>
+          <br>
+          <div><span class="comment"># Create or edit the global file</span></div>
+          <div><span class="prompt">$ </span><span class="cmd">notepad ~/.claude/CLAUDE.md</span></div>
+          <div class="comment">  (or: code ~/.claude/CLAUDE.md  for VS Code)</div>
+          <div class="comment">  (or: cursor ~/.claude/CLAUDE.md  for Cursor)</div>
+        </div>
+      </div>
+
+      <div class="exercise-block">
+        <div class="exercise-header"><span>🔧</span><h3>Hands-On Exercise</h3></div>
+        <div class="exercise-body">
+          <div class="exercise-step">
+            <div class="step-badge">01</div>
+            <div class="step-content">
+              <h4>Find your global CLAUDE.md</h4>
+              <p>Open Claude Code and run <code>/config</code> to see the exact path. On Windows, it's typically <code>C:\Users\[you]\.claude\CLAUDE.md</code>.</p>
+            </div>
+          </div>
+          <div class="exercise-step">
+            <div class="step-badge">02</div>
+            <div class="step-content">
+              <h4>Write your critical rules</h4>
+              <p>Open the file and write at least 3 rules you want applied in every session. Think about: your preferred tools (Python env, package manager), your deletion policy, your communication style preferences.</p>
+            </div>
+          </div>
+          <div class="exercise-step">
+            <div class="step-badge">03</div>
+            <div class="step-content">
+              <h4>Add platform context</h4>
+              <p>Tell Claude your OS, shell, and any special environment facts. This prevents Claude from suggesting Linux commands when you're on Windows, or using the wrong path separators.</p>
+            </div>
+          </div>
+          <div class="exercise-step">
+            <div class="step-badge">04</div>
+            <div class="step-content">
+              <h4>Test it in a new session</h4>
+              <p>Exit Claude Code, restart it, and verify: ask "What are your rules?" — it should reference your global CLAUDE.md content.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="takeaways">
+        <h3>⚡ Key Takeaways</h3>
+        <div class="takeaway-item"><span class="ti-icon">✓</span><div>Global CLAUDE.md loads in every Claude Code session on your machine.</div></div>
+        <div class="takeaway-item"><span class="ti-icon">✓</span><div>It has lower priority than project CLAUDE.md — project rules win when they conflict.</div></div>
+        <div class="takeaway-item"><span class="ti-icon">✓</span><div>Use it for your personal engineering standards: tools, naming, deletion policy, communication style.</div></div>
+        <div class="takeaway-item"><span class="ti-icon">✓</span><div>This is the foundation of consistent AI behavior across all your projects.</div></div>
+      </div>
+
+      <div class="section-divider" style="margin-top:40px;"></div>
+      <div style="display:flex;justify-content:center;margin:24px 0;">
+        <button class="btn btn-ghost" id="mark-complete-btn">Mark as Complete ✓</button>
+      </div>
+      <div id="module-nav"></div>
+    </div>
+  </div>
+</div>
+<script src="../nav.js"></script>
+</body>
+</html>

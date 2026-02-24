@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Session Start Hook — Harness Engineering</title>
+<link rel="stylesheet" href="../site.css">
+<style>
+  #reading-progress{position:fixed;top:0;left:0;right:0;height:3px;background:var(--border);z-index:200;}
+  #reading-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));width:0%;}
+  .timeline-flow { display:flex;align-items:center;gap:0;flex-wrap:wrap;margin:20px 0; }
+  .tl-step { display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;min-width:90px; }
+  .tl-circle { width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;border:2px solid transparent; }
+  .tl-label { font-size:11px;font-weight:600;color:var(--text-muted);text-align:center;line-height:1.3; }
+  .tl-arrow { font-size:20px;color:var(--border);flex-shrink:0; }
+  .tl-step.active .tl-circle { border-color:var(--accent);background:rgba(99,102,241,.12); }
+  .tl-step.active .tl-label { color:var(--accent3); }
+  .tl-step.hook .tl-circle { border-color:var(--green);background:rgba(34,197,94,.12); }
+  .tl-step.hook .tl-label { color:var(--green); }
+</style>
+</head>
+<body>
+<div id="reading-progress"><div id="reading-progress-fill"></div></div>
+<div class="site-layout">
+  <div id="nav-sidebar" class="sidebar"></div>
+  <div class="main-content">
+    <div id="nav-topbar"></div>
+    <div class="page-content">
+
+      <div class="page-header">
+        <div class="module-eyebrow">Module 06 · Hooks &amp; Automation · ⏱ 10 min</div>
+        <h1>Session Start <span class="gradient-text">Hook</span></h1>
+        <p class="lead">The <code>SessionStart</code> hook fires every time Claude Code opens — before any conversation. Use it to automatically load context: git status, today's date, health checks, reminders.</p>
+      </div>
+
+      <div class="content-section">
+        <div class="section-title"><div class="icon" style="background:rgba(34,197,94,.15);">🏥</div>The Pre-Flight Checklist</div>
+        <p>Before any surgery, the team runs a checklist: patient verified, instruments counted, team briefed. No surgeon skips this. It takes 2 minutes and prevents costly mistakes.</p>
+        <p>A SessionStart hook is your AI's pre-flight checklist. Every time Claude Code opens, it automatically runs your commands, injects the output into context, and Claude starts the session already informed. <strong>Zero effort, every session.</strong></p>
+      </div>
+
+      <!-- Session lifecycle -->
+      <div class="anim-box">
+        <div class="anim-box-header">
+          <div class="anim-box-title">🔄 Session Lifecycle</div>
+        </div>
+        <div class="anim-box-body">
+          <div class="timeline-flow">
+            <div class="tl-step active">
+              <div class="tl-circle">📂</div>
+              <div class="tl-label">Session Opens</div>
+            </div>
+            <div class="tl-arrow">→</div>
+            <div class="tl-step hook">
+              <div class="tl-circle">⚡</div>
+              <div class="tl-label">SessionStart Hook Runs</div>
+            </div>
+            <div class="tl-arrow">→</div>
+            <div class="tl-step hook">
+              <div class="tl-circle">📤</div>
+              <div class="tl-label">Output Injected into Context</div>
+            </div>
+            <div class="tl-arrow">→</div>
+            <div class="tl-step active">
+              <div class="tl-circle">💬</div>
+              <div class="tl-label">Conversation Starts</div>
+            </div>
+          </div>
+          <p style="font-size:13px;color:var(--text-dim);margin-top:12px;">The hook output is injected as context <em>before</em> your first message. Claude reads it automatically — you don't have to paste anything.</p>
+        </div>
+      </div>
+
+      <!-- Hook config -->
+      <div class="content-section">
+        <div class="section-title"><div class="icon" style="background:rgba(99,102,241,.15);">⚙️</div>How to configure it</div>
+        <p>Hooks live in <code>~/.claude/settings.json</code>. The <code>SessionStart</code> key takes an array of hook objects, each with a <code>command</code> field.</p>
+        <div class="code-snippet">
+<span class="c">// ~/.claude/settings.json</span>
+{
+  <span class="k">"hooks"</span>: {
+    <span class="k">"SessionStart"</span>: [
+      {
+        <span class="k">"matcher"</span>: <span class="s">""</span>,
+        <span class="k">"hooks"</span>: [
+          {
+            <span class="k">"type"</span>: <span class="s">"command"</span>,
+            <span class="k">"command"</span>: <span class="s">"echo '=== Session Start ===' && date && git status --short 2>/dev/null || echo 'Not a git repo'"</span>
+          }
+        ]
+      }
+    ]
+  }
+}
+        </div>
+      </div>
+
+      <div class="terminal">
+        <div class="term-bar">
+          <div class="term-dot" style="background:#ff5f57"></div>
+          <div class="term-dot" style="background:#febc2e"></div>
+          <div class="term-dot" style="background:#28c840"></div>
+          <div class="term-title">Claude Code — session start with hook</div>
+        </div>
+        <div class="term-body">
+          <div class="comment"># What Claude sees at session start with the hook active:</div>
+          <div class="info">=== Session Start ===</div>
+          <div class="output">Mon Feb 24 09:30:00 +08 2026</div>
+          <div class="warn">M  src/auth.ts</div>
+          <div class="warn">M  src/api/users.ts</div>
+          <div class="output">?? src/api/payments.ts</div>
+          <br>
+          <div class="comment"># Claude is now aware of the current date and pending changes</div>
+          <div class="comment"># before you type a single message.</div>
+          <div><span class="cursor"></span></div>
+        </div>
+      </div>
+
+      <!-- Useful hook ideas -->
+      <div class="content-section">
+        <div class="section-title"><div class="icon" style="background:rgba(245,158,11,.15);">💡</div>Useful hook commands</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;">
+          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;">
+            <div style="font-size:11px;font-weight:700;color:var(--accent3);margin-bottom:6px;">DATE &amp; CONTEXT</div>
+            <div class="code-snippet" style="margin:0;font-size:11px;padding:8px;">echo "Today: $(date +%Y-%m-%d)"</div>
+          </div>
+          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;">
+            <div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:6px;">GIT STATUS</div>
+            <div class="code-snippet" style="margin:0;font-size:11px;padding:8px;">git log --oneline -5 && git status --short</div>
+          </div>
+          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;">
+            <div style="font-size:11px;font-weight:700;color:var(--orange);margin-bottom:6px;">LOAD NOTES</div>
+            <div class="code-snippet" style="margin:0;font-size:11px;padding:8px;">cat ~/daily-notes/$(date +%Y-%m-%d).md 2>/dev/null</div>
+          </div>
+          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;">
+            <div style="font-size:11px;font-weight:700;color:var(--cyan);margin-bottom:6px;">HEALTH CHECK</div>
+            <div class="code-snippet" style="margin:0;font-size:11px;padding:8px;">node --version && npm --version</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="exercise-block">
+        <div class="exercise-header"><span>🔧</span><h3>Hands-On Exercise</h3></div>
+        <div class="exercise-body">
+          <div class="exercise-step">
+            <div class="step-badge">01</div>
+            <div class="step-content">
+              <h4>Open settings.json</h4>
+              <p>Open <code>~/.claude/settings.json</code> in your editor. If it doesn't exist, create it with <code>{}</code>.</p>
+            </div>
+          </div>
+          <div class="exercise-step">
+            <div class="step-badge">02</div>
+            <div class="step-content">
+              <h4>Add the SessionStart hook</h4>
+              <p>Add the JSON structure shown above. Start with a simple command: <code>"echo 'Today is $(date +%Y-%m-%d)'; git status --short 2>/dev/null"</code></p>
+            </div>
+          </div>
+          <div class="exercise-step">
+            <div class="step-badge">03</div>
+            <div class="step-content">
+              <h4>Restart Claude Code</h4>
+              <p>Exit and reopen Claude Code in a git repository. You should see the hook output appear before your first message.</p>
+            </div>
+          </div>
+          <div class="exercise-step">
+            <div class="step-badge">04</div>
+            <div class="step-content">
+              <h4>Enhance it</h4>
+              <p>Add more useful commands: show the last 3 git commits, load a project-specific status file, or print any TODOs from your notes.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="takeaways">
+        <h3>⚡ Key Takeaways</h3>
+        <div class="takeaway-item"><span class="ti-icon">✓</span><div>SessionStart hook runs before every conversation — automatic context loading.</div></div>
+        <div class="takeaway-item"><span class="ti-icon">✓</span><div>Configured in <code>~/.claude/settings.json</code> under the <code>hooks.SessionStart</code> key.</div></div>
+        <div class="takeaway-item"><span class="ti-icon">✓</span><div>Hook output is injected into context — Claude reads it before your first message.</div></div>
+        <div class="takeaway-item"><span class="ti-icon">✓</span><div>Great for: date/time injection, git status, loading daily notes, environment health checks.</div></div>
+      </div>
+
+      <div class="section-divider" style="margin-top:40px;"></div>
+      <div style="display:flex;justify-content:center;margin:24px 0;">
+        <button class="btn btn-ghost" id="mark-complete-btn">Mark as Complete ✓</button>
+      </div>
+      <div id="module-nav"></div>
+    </div>
+  </div>
+</div>
+<script src="../nav.js"></script>
+</body>
+</html>

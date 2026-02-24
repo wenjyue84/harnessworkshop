@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AWS CLI - Harness Engineering</title>
+<link rel="stylesheet" href="../site.css">
+<style>
+  #reading-progress{position:fixed;top:0;left:0;right:0;height:3px;background:var(--border);z-index:200;}
+  #reading-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));width:0%;}
+  .pipeline-flow{display:flex;align-items:center;gap:0;margin:20px 0;flex-wrap:wrap;}
+  .flow-node{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--text);text-align:center;min-width:110px;transition:all 0.4s;}
+  .flow-node.active{border-color:var(--accent);background:rgba(99,102,241,0.08);color:var(--accent);}
+  .flow-node.done{border-color:var(--green);background:rgba(34,197,94,0.08);color:var(--green);}
+  .flow-arrow{font-size:18px;color:var(--border);padding:0 6px;transition:color 0.4s;flex-shrink:0;}
+  .flow-arrow.lit{color:var(--accent);}
+  .flow-sub{font-size:10px;color:var(--text-muted);display:block;margin-top:2px;font-family:var(--font-mono);}
+  .service-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin:16px 0;}
+  .service-card{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center;}
+  .service-card .sc-name{font-size:12px;font-weight:600;color:var(--text);margin-top:6px;}
+  .service-card .sc-cmd{font-size:10px;font-family:var(--font-mono);color:var(--text-muted);margin-top:3px;}
+</style>
+</head>
+<body>
+<div id="reading-progress"><div id="reading-progress-fill"></div></div>
+<div class="site-layout">
+  <div id="nav-sidebar" class="sidebar"></div>
+  <div class="main-content">
+    <div id="nav-topbar"></div>
+    <div class="page-content">
+      <div class="page-header">
+        <div class="module-eyebrow">Module 10 &middot; Skills &amp; Tools &middot; 12 min</div>
+        <h1 class="gradient-text">AWS CLI</h1>
+        <p class="lead">Cloud Ops from Your AI &mdash; natural language infrastructure management.</p>
+      </div>
+      <div class="content-section">
+        <p style="font-size:16px;line-height:1.8;color:var(--text-dim);">With AWS CLI configured, Claude can describe your EC2 instances, list S3 buckets, check CloudWatch logs, deploy Lambda functions, and manage your entire cloud infrastructure &mdash; all through natural language in the terminal.</p>
+      </div>
+      <div class="callout callout-info" style="margin:24px 0;">
+        <div class="callout-icon">&#128161;</div>
+        <div class="callout-body"><strong>The Mental Model</strong><br>Before CLI access, asking Claude about your AWS infrastructure was like describing your kitchen to a chef over the phone &mdash; they could advise but could not act. With AWS CLI, Claude can open the fridge itself, check what is there, and start cooking.</div>
+      </div>
+      <div class="content-section">
+        <h2 class="section-title"><span class="icon">&#9889;</span> The Pipeline: Natural Language to Cloud</h2>
+        <p style="color:var(--text-dim);margin-bottom:16px;">Claude translates your natural language request into an AWS CLI command, executes it, parses the JSON response, and presents a human-readable result. Click run to watch the pipeline execute.</p>
+        <div class="anim-box">
+          <div class="anim-box-header"><span class="anim-box-title">Request: &ldquo;Show me all running EC2 instances in ap-southeast-1&rdquo;</span></div>
+          <div class="anim-box-body">
+            <div class="pipeline-flow" id="aws-flow">
+              <div class="flow-node" id="fn-1">&#128172;<br><span class="flow-sub">Natural Language</span></div>
+              <div class="flow-arrow" id="fa-1">&#8594;</div>
+              <div class="flow-node" id="fn-2">&#129302;<br><span class="flow-sub">Claude translates</span></div>
+              <div class="flow-arrow" id="fa-2">&#8594;</div>
+              <div class="flow-node" id="fn-3">&#128187;<br><span class="flow-sub">aws cli command</span></div>
+              <div class="flow-arrow" id="fa-3">&#8594;</div>
+              <div class="flow-node" id="fn-4">&#9749;<br><span class="flow-sub">JSON response</span></div>
+              <div class="flow-arrow" id="fa-4">&#8594;</div>
+              <div class="flow-node" id="fn-5">&#128202;<br><span class="flow-sub">Readable output</span></div>
+            </div>
+            <div id="aws-cmd-display" style="margin:16px 0;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:12px;font-family:var(--font-mono);font-size:12px;color:var(--text-muted);min-height:60px;">
+              Press Run to see the generated CLI command...
+            </div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-primary" onclick="runAwsAnim()">&#9654; Run Animation</button>
+              <button class="btn btn-ghost" onclick="resetAwsAnim()">&#8634; Reset</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="content-section">
+        <h2 class="section-title"><span class="icon">&#128295;</span> What You Can Do</h2>
+        <div class="service-grid">
+          <div class="service-card"><div style="font-size:22px;">&#128424;&#65039;</div><div class="sc-name">EC2</div><div class="sc-cmd">aws ec2 describe-instances</div></div>
+          <div class="service-card"><div style="font-size:22px;">&#128164;</div><div class="sc-name">S3</div><div class="sc-cmd">aws s3 ls / cp / sync</div></div>
+          <div class="service-card"><div style="font-size:22px;">&#128203;</div><div class="sc-name">CloudWatch</div><div class="sc-cmd">aws logs get-log-events</div></div>
+          <div class="service-card"><div style="font-size:22px;">&#955;</div><div class="sc-name">Lambda</div><div class="sc-cmd">aws lambda invoke</div></div>
+          <div class="service-card"><div style="font-size:22px;">&#128272;</div><div class="sc-name">IAM</div><div class="sc-cmd">aws iam list-users</div></div>
+          <div class="service-card"><div style="font-size:22px;">&#128260;</div><div class="sc-name">RDS</div><div class="sc-cmd">aws rds describe-db-instances</div></div>
+          <div class="service-card"><div style="font-size:22px;">&#128241;</div><div class="sc-name">SNS / SQS</div><div class="sc-cmd">aws sns publish</div></div>
+          <div class="service-card"><div style="font-size:22px;">&#9989;</div><div class="sc-name">Any Service</div><div class="sc-cmd">aws &lt;service&gt; &lt;action&gt;</div></div>
+        </div>
+      </div>
+      <div class="content-section">
+        <h2 class="section-title"><span class="icon">&#128187;</span> Terminal Demo</h2>
+        <div class="terminal">
+          <div class="term-bar"><span class="term-dot" style="background:var(--red)"></span><span class="term-dot" style="background:var(--orange)"></span><span class="term-dot" style="background:var(--green)"></span><span class="term-title">bash &mdash; aws cli setup &amp; claude</span></div>
+          <div class="term-body">
+            <div><span class="comment"># Step 1: Install and configure AWS CLI</span></div>
+            <div><span class="prompt">$</span> <span class="cmd">aws configure</span></div>
+            <div><span class="output">AWS Access Key ID [None]: AKIA...</span></div>
+            <div><span class="output">AWS Secret Access Key [None]: ****</span></div>
+            <div><span class="output">Default region name [None]: ap-southeast-1</span></div>
+            <div><span class="output">Default output format [None]: json</span></div>
+            <br>
+            <div><span class="comment"># Verify identity</span></div>
+            <div><span class="prompt">$</span> <span class="cmd">aws sts get-caller-identity</span></div>
+            <div><span class="output">{</span></div>
+            <div><span class="output">&nbsp;&nbsp;&quot;Account&quot;: &quot;123456789012&quot;,</span></div>
+            <div><span class="output">&nbsp;&nbsp;&quot;Arn&quot;: &quot;arn:aws:iam::123456789012:user/jay&quot;</span></div>
+            <div><span class="output">}</span></div>
+            <br>
+            <div><span class="comment"># Now in Claude Code:</span></div>
+            <div><span class="prompt">$</span> <span class="cmd">claude</span></div>
+            <div><span class="prompt">&gt;</span> <span class="cmd">Show me all running EC2 instances</span></div>
+            <br>
+            <div><span class="ok">Running: aws ec2 describe-instances --filters Name=instance-state-name,Values=running \</span></div>
+            <div><span class="ok">&nbsp;&nbsp;--query Reservations[].Instances[].[InstanceId,InstanceType,State.Name,PublicIpAddress] \</span></div>
+            <div><span class="ok">&nbsp;&nbsp;--output table</span></div>
+            <br>
+            <div><span class="output">----------------------------------------------------------</span></div>
+            <div><span class="output">| i-0abc123def | t3.medium | running | 13.229.45.12 |</span></div>
+            <div><span class="output">| i-0def456abc | t3.small  | running | 18.141.23.55 |</span></div>
+            <div><span class="output">----------------------------------------------------------</span></div>
+            <br>
+            <div><span class="prompt">&gt;</span> <span class="cmd">Show me CloudWatch logs for the Lambda named user-service from the last hour<span class="cursor"></span></span></div>
+          </div>
+        </div>
+      </div>
+      <div class="callout callout-danger" style="margin:24px 0;">
+        <div class="callout-icon">&#128683;</div>
+        <div class="callout-body"><strong>Safety: Principle of Least Privilege</strong><br>Claude will use whatever permissions your CLI credentials have. Always use dedicated IAM roles with only the permissions needed. Never configure Claude Code with root credentials or admin access. Review generated commands before allowing execution on production accounts.</div>
+      </div>
+      <div class="content-section">
+        <h2 class="section-title"><span class="icon">&#127947;</span> Exercise</h2>
+        <div class="exercise-block">
+          <div class="exercise-header">Hands-On: Configure AWS CLI with Claude</div>
+          <div class="exercise-body">
+            <div class="exercise-step"><div class="step-badge">1</div><div class="step-content"><strong>Install AWS CLI</strong><br>Windows: <code>winget install Amazon.AWSCLI</code> or download from aws.amazon.com/cli. Mac: <code>brew install awscli</code>.</div></div>
+            <div class="exercise-step"><div class="step-badge">2</div><div class="step-content"><strong>Configure credentials</strong><br>Run <code>aws configure</code>. Enter your Access Key ID, Secret, default region (<code>ap-southeast-1</code> for Singapore), and output format (<code>json</code>).</div></div>
+            <div class="exercise-step"><div class="step-badge">3</div><div class="step-content"><strong>Verify identity</strong><br>Run <code>aws sts get-caller-identity</code>. Should return your Account ID and User ARN. If it fails, check your credentials.</div></div>
+            <div class="exercise-step"><div class="step-badge">4</div><div class="step-content"><strong>First Claude query</strong><br>In Claude Code, ask: <em>List all my S3 buckets.</em> Claude will run <code>aws s3 ls</code> and present the results in readable form.</div></div>
+            <div class="exercise-step"><div class="step-badge">5</div><div class="step-content"><strong>Log query</strong><br>Ask: <em>Show me CloudWatch logs for [your service name] from the last hour.</em> Claude will find the log group and fetch recent entries.</div></div>
+            <div class="exercise-step"><div class="step-badge">6</div><div class="step-content"><strong>Advanced</strong><br>Ask Claude to help set up a new EC2 instance with your preferred AMI, instance type, and security group. Review the generated commands before running them.</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="content-section">
+        <h2 class="section-title"><span class="icon">&#127919;</span> Key Takeaways</h2>
+        <div class="takeaways"><h3>What to Remember</h3>
+          <div class="takeaway-item"><div class="ti-icon">&#9729;&#65039;</div><div><strong>AWS CLI + Claude = natural language cloud ops.</strong> No more memorising command flags.</div></div>
+          <div class="takeaway-item"><div class="ti-icon">&#128269;</div><div><strong>Claude can read, describe, and manage infrastructure.</strong> EC2, S3, Lambda, CloudWatch, IAM &mdash; all services.</div></div>
+          <div class="takeaway-item"><div class="ti-icon">&#128272;</div><div><strong>Always use least-privilege IAM roles.</strong> Claude runs with exactly the permissions you give it.</div></div>
+          <div class="takeaway-item"><div class="ti-icon">&#127381;</div><div><strong>Works with all AWS services.</strong> If it has a CLI command, Claude can use it.</div></div>
+        </div>
+      </div>
+      <div class="section-divider" style="margin-top:40px;"></div>
+      <div style="display:flex;justify-content:center;margin:24px 0;">
+        <button class="btn btn-ghost" id="mark-complete-btn">Mark as Complete &#10003;</button>
+      </div>
+      <div id="module-nav"></div>
+    </div>
+  </div>
+</div>
+<script src="../nav.js"></script>
+<script>
+  window.addEventListener("scroll",()=>{
+    const el=document.documentElement;
+    document.getElementById("reading-progress-fill").style.width=(el.scrollTop/(el.scrollHeight-el.clientHeight))*100+"%";
+  });
+  let awsTimer=null;
+  const flowNodes=[1,2,3,4,5];
+  const cmds=[
+    "Parsing your request...",
+    "aws ec2 describe-instances --filters Name=instance-state-name,Values=running",
+    "Running AWS API call in region ap-southeast-1...",
+    "Parsing JSON response (14 fields per instance)...",
+    "Formatted table: 2 instances found"
+  ];
+  function resetAwsAnim(){
+    if(awsTimer){clearTimeout(awsTimer);awsTimer=null;}
+    flowNodes.forEach(i=>{
+      const n=document.getElementById("fn-"+i); if(n)n.className="flow-node";
+      const a=document.getElementById("fa-"+i); if(a)a.className="flow-arrow";
+    });
+    document.getElementById("aws-cmd-display").textContent="Press Run to see the generated CLI command...";
+    document.getElementById("aws-cmd-display").style.color="var(--text-muted)";
+  }
+  function runAwsAnim(){
+    resetAwsAnim();
+    function step(i){
+      if(i>5)return;
+      if(i>1){
+        const prev=document.getElementById("fn-"+(i-1)); if(prev){prev.classList.remove("active");prev.classList.add("done");}
+        const a=document.getElementById("fa-"+(i-1)); if(a)a.classList.add("lit");
+      }
+      const cur=document.getElementById("fn-"+i); if(cur)cur.classList.add("active");
+      const disp=document.getElementById("aws-cmd-display");
+      disp.textContent=cmds[i-1];
+      disp.style.color=i===2?"var(--accent)":i===5?"var(--green)":"var(--text-muted)";
+      awsTimer=setTimeout(()=>step(i+1),900);
+    }
+    step(1);
+  }
+</script>
+</body>
+</html>

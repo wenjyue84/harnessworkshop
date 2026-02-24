@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comprehensive Test Suites &#x2014; Harness Engineering</title>
+<link rel="stylesheet" href="../site.css">
+<style>
+  #reading-progress{position:fixed;top:0;left:0;right:0;height:3px;background:var(--border);z-index:200;}
+  #reading-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));width:0%;}
+  .tdd-loop{display:flex;flex-direction:column;gap:0;margin:24px 0;max-width:560px;}
+  .tdd-step{display:flex;align-items:flex-start;gap:14px;padding:14px 0;border-bottom:1px solid var(--border);}
+  .tdd-step:last-child{border-bottom:none;}
+  .tdd-badge{min-width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;}
+  .tdd-badge.you{background:rgba(99,102,241,.2);color:var(--accent);}
+  .tdd-badge.claude{background:rgba(34,197,94,.15);color:var(--green);}
+  .tdd-badge.tests{background:rgba(239,68,68,.15);color:var(--red);}
+  .tdd-badge.pass{background:rgba(34,197,94,.2);color:var(--green);}
+  .progress-board{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;margin:20px 0;}
+  .pb-title{font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;}
+  .test-row{display:flex;align-items:center;gap:10px;padding:6px 0;font-size:.85rem;font-family:var(--font-mono);}
+  .test-dot{width:14px;height:14px;border-radius:50%;background:var(--border);flex-shrink:0;transition:background .3s;}
+  .test-dot.fail{background:var(--red);}
+  .test-dot.pass{background:var(--green);}
+  .pass-rate{font-size:1.6rem;font-weight:800;color:var(--green);margin-top:12px;}
+  .iter-ctrl{text-align:center;margin:12px 0;}
+  .compare-code{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0;}
+  @media(max-width:640px){.compare-code{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div id="reading-progress"><div id="reading-progress-fill"></div></div>
+<div class="site-layout">
+  <div id="nav-sidebar" class="sidebar"></div>
+  <div class="main-content">
+    <div id="nav-topbar"></div>
+    <div class="page-content">
+      <div class="page-header">
+        <div class="module-eyebrow">
+          <span class="pill pill-green">Module 17</span>
+          <span class="pill pill-accent">Advanced</span>
+          <span class="pill">12 min</span>
+        </div>
+        <h1 class="gradient-text">Comprehensive Test Suites</h1>
+        <p class="lead">Let AI Self-Improve via Tests</p>
+        <p class="lead">Tests are the contract between intent and implementation. When you write comprehensive tests before asking Claude to code, you give it a clear success criterion. Claude then writes, runs, fails, and iterates &mdash; self-correcting until all tests pass.</p>
+      </div>
+      <div class="content-section">
+        <div class="section-title"><div class="icon">&#x1F3D7;&#xFE0F;</div><h2>The Blueprint Metaphor</h2></div>
+        <p>Asking Claude to write code without tests is like telling a builder &ldquo;build me a house&rdquo; with no blueprints. Asking Claude to write code against tests is like handing them the blueprints, the inspection checklist, and the city building code &mdash; and saying &ldquo;it passes inspection when every checkbox is green.&rdquo;</p>
+      </div>
+      <div class="content-section">
+        <div class="section-title"><div class="icon">&#x1F504;</div><h2>The Test-Driven AI Feedback Loop</h2></div>
+        <p>Watch test pass rate increase from 0/10 to 10/10 across iterations. Click Next Iteration to advance.</p>
+        <div class="progress-board">
+          <div class="pb-title">Test Results &mdash; <span id="iter-label">Iteration 0 (before code)</span></div>
+          <div id="test-rows"></div>
+          <div class="pass-rate"><span id="pass-num">0</span> / 10 passing</div>
+        </div>
+        <div class="iter-ctrl">
+          <button class="btn btn-primary" id="iter-btn" onclick="nextIter()">Next Iteration &rarr;</button>
+          <button class="btn btn-ghost" onclick="resetIter()" style="margin-left:8px;">Reset</button>
+        </div>
+      </div>
+      <div class="content-section">
+        <div class="section-title"><div class="icon">&#x1F4AC;</div><h2>Without Tests vs With Tests</h2></div>
+        <div class="compare-grid">
+          <div class="compare-card bad">
+            <strong>Without tests</strong>
+            <div class="code-snippet" style="margin-top:10px;">
+              <span class="comment">// Claude writes SOMETHING</span><br>
+              <span class="comment">// You don&rsquo;t know if it&rsquo;s right.</span><br><br>
+              <span class="output">Write a function that</span><br>
+              <span class="output">calculates compound interest</span>
+            </div>
+          </div>
+          <div class="compare-card good">
+            <strong>With tests</strong>
+            <div class="code-snippet" style="margin-top:10px;">
+              <span class="comment">// Claude iterates until all pass</span><br>
+              <span class="k">test</span>(<span class="s">"1000, 5%, 10yr = 1628.89"</span>, ...)<br>
+              <span class="k">test</span>(<span class="s">"negative rate throws"</span>, ...)<br>
+              <span class="k">test</span>(<span class="s">"0 years = principal"</span>, ...)
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="content-section">
+        <div class="section-title"><div class="icon">&#x2705;</div><h2>Test Types That Guide Claude Best</h2></div>
+        <div class="tdd-loop">
+          <div class="tdd-step"><div class="tdd-badge you">U</div><div><strong>Unit tests</strong> &mdash; exact input/output expectations. The clearest signal for Claude.</div></div>
+          <div class="tdd-step"><div class="tdd-badge claude">I</div><div><strong>Integration tests</strong> &mdash; end-to-end flows. Catches hidden coupling bugs.</div></div>
+          <div class="tdd-step"><div class="tdd-badge tests">E</div><div><strong>Edge cases</strong> &mdash; nulls, empty arrays, negative numbers, huge inputs. Makes the spec airtight.</div></div>
+          <div class="tdd-step"><div class="tdd-badge pass">T</div><div><strong>Type tests</strong> &mdash; TypeScript compilation passes. Prevents an entire class of runtime errors.</div></div>
+        </div>
+      </div>
+      <div class="content-section">
+        <div class="section-title"><div class="icon">&#x1F6E0;&#xFE0F;</div><h2>Exercise: Write Tests First</h2></div>
+        <div class="exercise-block">
+          <div class="exercise-header"><h3>TDD with Claude</h3></div>
+          <div class="exercise-body">
+            <div class="exercise-step"><span class="step-badge">1</span><div class="step-content"><h4>Pick a function</h4><p>Choose something concrete: format a date to YYYY-MM-DD.</p></div></div>
+            <div class="exercise-step"><span class="step-badge">2</span><div class="step-content"><h4>Write 5 test cases first</h4><p>Use Jest/Vitest syntax. Write tests BEFORE asking Claude to implement.</p></div></div>
+            <div class="exercise-step"><span class="step-badge">3</span><div class="step-content"><h4>Ask Claude to implement</h4><p>Implement formatDate(date) so these tests pass: [paste tests]</p></div></div>
+            <div class="exercise-step"><span class="step-badge">4</span><div class="step-content"><h4>Watch Claude iterate</h4><p>Claude runs tests, reads failures, updates code, repeats.</p></div></div>
+            <div class="exercise-step"><span class="step-badge">5</span><div class="step-content"><h4>Add 3 edge case tests</h4><p>Ask Claude to fix those too. Watch quality improve.</p></div></div>
+            <div class="exercise-step"><span class="step-badge">6</span><div class="step-content"><h4>Reflect</h4><p>The tests became your specification &mdash; not Claude&rsquo;s guesses.</p></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="content-section">
+        <div class="takeaways"><h3>Key Takeaways</h3>
+          <div class="takeaway-item"><span class="ti-icon">&#x1F4DC;</span>Tests = specification for AI. Write tests first, code second.</div>
+          <div class="takeaway-item"><span class="ti-icon">&#x1F504;</span>The AI iterates until all tests pass &mdash; it self-corrects.</div>
+          <div class="takeaway-item"><span class="ti-icon">&#x1F4CF;</span>More edge case tests = higher quality output.</div>
+          <div class="takeaway-item"><span class="ti-icon">&#x2705;</span>This is the key to reliable AI-generated code.</div>
+        </div>
+      </div>
+      <div class="section-divider" style="margin-top:40px;"></div>
+      <div style="display:flex;justify-content:center;margin:24px 0;">
+        <button class="btn btn-ghost" id="mark-complete-btn">Mark as Complete &#x2713;</button>
+      </div>
+      <div id="module-nav"></div>
+    </div>
+  </div>
+</div>
+<script src="../nav.js"></script>
+<script>
+  window.addEventListener('scroll', function() {
+    var pct = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+    document.getElementById('reading-progress-fill').style.width = Math.min(pct, 100) + '%';
+  });
+  var iterations = [
+    [false,false,false,false,false,false,false,false,false,false],
+    [true,true,false,false,true,false,false,false,false,false],
+    [true,true,true,true,true,false,false,true,false,false],
+    [true,true,true,true,true,true,true,true,false,false],
+    [true,true,true,true,true,true,true,true,true,true]
+  ];
+  var iterLabels = ['Iteration 0 (before code)','Iteration 1 (first attempt)','Iteration 2 (fixing failures)','Iteration 3 (almost there)','Iteration 4 — ALL PASS ✓'];
+  var testNames = [
+    'basic: 1000, 5%, 10yr','negative rate throws','zero years = principal',
+    'floating point precision','very large principal','null input throws',
+    'string rate parsed','monthly compounding','annual vs monthly match','zero rate = principal'
+  ];
+  var curIter = 0;
+  function renderTests() {
+    var rows = document.getElementById('test-rows');
+    rows.innerHTML = '';
+    var passed = 0;
+    iterations[curIter].forEach(function(p, i) {
+      var row = document.createElement('div');
+      row.className = 'test-row';
+      var dot = document.createElement('div');
+      dot.className = 'test-dot ' + (p ? 'pass' : 'fail');
+      var label = document.createElement('span');
+      label.style.color = p ? 'var(--green)' : 'var(--red)';
+      label.textContent = (p ? '✓ ' : '✗ ') + testNames[i];
+      row.appendChild(dot); row.appendChild(label);
+      rows.appendChild(row);
+      if (p) passed++;
+    });
+    document.getElementById('pass-num').textContent = passed;
+    document.getElementById('iter-label').textContent = iterLabels[curIter];
+    document.getElementById('iter-btn').disabled = (curIter >= iterations.length - 1);
+    if (curIter >= iterations.length - 1) document.getElementById('iter-btn').textContent = 'All Tests Pass! ✓';
+  }
+  function nextIter() { if (curIter < iterations.length - 1) { curIter++; renderTests(); } }
+  function resetIter() { curIter = 0; renderTests(); document.getElementById('iter-btn').disabled = false; document.getElementById('iter-btn').textContent = 'Next Iteration →'; }
+  renderTests();
+</script>
+</body>
+</html>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent Team — Harness Engineering</title>
+<link rel="stylesheet" href="../site.css">
+<style>
+  #reading-progress{position:fixed;top:0;left:0;right:0;height:3px;background:var(--border);z-index:200;}
+  #reading-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));width:0%;}
+
+  .team-diagram { display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin:20px 0;justify-content:center; }
+  .agent-node { background:var(--surface2);border:2px solid;border-radius:var(--radius);padding:16px 18px;text-align:center;min-width:130px;transition:all .3s; }
+  .agent-node.coder    { border-color:var(--accent); }
+  .agent-node.tester   { border-color:var(--red); }
+  .agent-node.reviewer { border-color:var(--orange); }
+  .agent-node.active   { box-shadow:0 0 20px rgba(99,102,241,.35);transform:translateY(-3px); }
+  .agent-icon   { font-size:28px;margin-bottom:6px; }
+  .agent-label  { font-size:13px;font-weight:700; }
+  .agent-role   { font-size:11px;color:var(--text-muted);margin-top:3px; }
+  .team-arrow   { font-size:24px;color:var(--border);font-weight:700; }
+
+  .message-feed { background:#080810;border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;min-height:100px;margin:12px 0; }
+  .msg-item { display:flex;gap:10px;margin-bottom:8px;font-size:12px;font-family:var(--font-mono); }
+  .msg-from { font-weight:700;flex-shrink:0; }
+</style>
+</head>
+<body>
+<div id="reading-progress"><div id="reading-progress-fill"></div></div>
+<div class="site-layout">
+  <div id="nav-sidebar" class="sidebar"></div>
+  <div class="main-content">
+    <div id="nav-topbar"></div>
+    <div class="page-content">
+
+      <div class="page-header">
+        <div class="module-eyebrow">Module 19 · Multi-Agent · ⏱ 15 min</div>
+        <h1>Agent <span class="gradient-text">Team</span></h1>
+        <p class="lead">A single agent makes mistakes without accountability. A team of specialized agents — Coder, Tester, Reviewer — creates adversarial pressure. The Tester breaks what the Coder builds; the Reviewer critiques what both produce.</p>
+      </div>
+
+      <div class="content-section">
+        <div class="section-title"><div class="icon" style="background:rgba(99,102,241,.15);">👥</div>The Code Review Effect</div>
+        <p>One developer reviewing their own code misses ~60% of bugs — they read what they <em>meant</em> to write, not what they actually wrote. Add a second developer for code review and the catch rate triples. Add a dedicated QA engineer and it triples again.</p>
+        <p>Agent teams replicate this dynamic. The <strong>Coder</strong> is optimistic — focused on shipping. The <strong>Tester</strong> is adversarial — their job is to break things. The <strong>Reviewer</strong> is balanced — critiques both. When these three collaborate, quality is enforced structurally, not by hoping one agent is careful enough.</p>
+      </div>
+
+      <!-- Team diagram with animation -->
+      <div class="anim-box">
+        <div class="anim-box-header">
+          <div class="anim-box-title">⚙️ The Team Pipeline</div>
+          <button class="btn btn-ghost" id="team-btn" onclick="animateTeam()" style="font-size:12px;">▶ Run Pipeline</button>
+        </div>
+        <div class="anim-box-body">
+          <div class="team-diagram">
+            <div class="agent-node coder" id="an-coder">
+              <div class="agent-icon">👨‍💻</div>
+              <div class="agent-label" style="color:var(--accent);">Coder</div>
+              <div class="agent-role">Implements</div>
+            </div>
+            <div class="team-arrow">→</div>
+            <div class="agent-node tester" id="an-tester">
+              <div class="agent-icon">🔨</div>
+              <div class="agent-label" style="color:var(--red);">Tester</div>
+              <div class="agent-role">Breaks it</div>
+            </div>
+            <div class="team-arrow">→</div>
+            <div class="agent-node reviewer" id="an-reviewer">
+              <div class="agent-icon">🔍</div>
+              <div class="agent-label" style="color:var(--orange);">Reviewer</div>
+              <div class="agent-role">Critiques all</div>
+            </div>
+            <div class="team-arrow">→</div>
+            <div class="agent-node" style="border-color:var(--green);" id="an-done">
+              <div class="agent-icon">✅</div>
+              <div class="agent-label" style="color:var(--green);">Done</div>
+              <div class="agent-role">Approved</div>
+            </div>
+          </div>
+          <div class="message-feed" id="team-feed">
+            <div style="color:var(--text-muted);font-size:12px;font-family:var(--font-mono);">Press Run to see the team collaborate...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Prompts for each role -->
+      <div class="content-section">
+        <div class="section-title"><div class="icon" style="background:rgba(34,197,94,.15);">📝</div>System prompts for each role</div>
+        <div class="code-snippet">
+<span class="c">// Coder: optimistic, focused on shipping</span>
+<span class="g">"You are the Coder. Implement clean, working code for the given task.
+Write idiomatic TypeScript with proper types. When done, describe
+what you implemented and hand off to the Tester."</span>
+
+<span class="c">// Tester: adversarial, focused on breaking</span>
+<span class="g">"You are the Tester. Your JOB is to break the Coder's implementation.
+Write tests for: happy paths, edge cases, null/undefined, empty arrays,
+concurrent calls, error conditions. Report ALL failures with specific
+reproduction cases."</span>
+
+<span class="c">// Reviewer: balanced, focused on quality</span>
+<span class="g">"You are the Reviewer. Read the code AND the test results critically.
+Flag: poor naming, missing error handling, security issues, performance
+problems, incomplete test coverage. Approve ONLY when both code quality
+and test coverage meet senior engineer standards."</span>
+        </div>
+      </div>
+
+      <!-- Claude Code team setup -->
+      <div class="content-section">
+        <div class="section-title"><div class="icon" style="background:rgba(99,102,241,.15);">⚙️</div>Team setup in Claude Code</div>
+        <div class="code-snippet">
+<span class="c"># Claude Code has native team support via TeamCreate + Task tools</span>
+
+<span class="c"># The orchestrator creates a team:</span>
+<span class="g">TeamCreate({ team_name: "code-review-team", description: "Coder + Tester + Reviewer" })</span>
+
+<span class="c"># Spawn each role as a named teammate:</span>
+<span class="g">Task({ name: "coder",    subagent_type: "general-purpose", prompt: coderPrompt })</span>
+<span class="g">Task({ name: "tester",   subagent_type: "general-purpose", prompt: testerPrompt })</span>
+<span class="g">Task({ name: "reviewer", subagent_type: "general-purpose", prompt: reviewerPrompt })</span>
+
+<span class="c"># Teammates communicate via SendMessage:</span>
+<span class="g">SendMessage({ type: "message", recipient: "tester", content: "Implementation ready for testing" })</span>
+        </div>
+      </div>
+
+      <div class="exercise-block">
+        <div class="exercise-header"><span>🔧</span><h3>Hands-On Exercise</h3></div>
+        <div class="exercise-body">
+          <div class="exercise-step">
+            <div class="step-badge">01</div>
+            <div class="step-content">
+              <h4>Pick a function to implement</h4>
+              <p>Choose something non-trivial: <em>parseCSV(string) → Record[]</em>, <em>validatePassword(string) → {valid, reasons}</em>, or <em>deepMerge(obj1, obj2) → merged</em>.</p>
+            </div>
+          </div>
+          <div class="exercise-step">
+            <div class="step-badge">02</div>
+            <div class="step-content">
+              <h4>Simulate the Coder role</h4>
+              <p>Ask Claude: <em>"Act as the Coder. Implement [function] in TypeScript with proper error handling."</em></p>
+            </div>
+          </div>
+          <div class="exercise-step">
+            <div class="step-badge">03</div>
+            <div class="step-content">
+              <h4>Switch to Tester</h4>
+              <p>Ask Claude: <em>"Now act as the Tester. Your job is to BREAK this implementation. Write tests for every edge case you can think of. What fails?"</em></p>
+            </div>
+          </div>
+          <div class="exercise-step">
+            <div class="step-badge">04</div>
+            <div class="step-content">
+              <h4>Switch to Reviewer</h4>
+              <p>Ask: <em>"Act as the Reviewer. Critically evaluate the code AND the test results. What issues do you see? What's missing? Approve or reject with reasons."</em></p>
+            </div>
+          </div>
+          <div class="exercise-step">
+            <div class="step-badge">05</div>
+            <div class="step-content">
+              <h4>Coder addresses feedback</h4>
+              <p>Ask: <em>"Act as the Coder again. Address all the Tester failures and Reviewer feedback."</em> Compare the final version to the initial implementation — notice the quality jump.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="takeaways">
+        <h3>⚡ Key Takeaways</h3>
+        <div class="takeaway-item"><span class="ti-icon">✓</span><div>Three roles create adversarial pressure: Coder ships, Tester breaks, Reviewer critiques.</div></div>
+        <div class="takeaway-item"><span class="ti-icon">✓</span><div>Quality is enforced structurally — not by hoping one agent is careful.</div></div>
+        <div class="takeaway-item"><span class="ti-icon">✓</span><div>Claude Code's TeamCreate + Task tools enable native multi-agent team coordination.</div></div>
+        <div class="takeaway-item"><span class="ti-icon">✓</span><div>Even simulated (sequential) role-switching gives significant quality improvement over single-agent.</div></div>
+      </div>
+
+      <div class="section-divider" style="margin-top:40px;"></div>
+      <div style="display:flex;justify-content:center;margin:24px 0;">
+        <button class="btn btn-ghost" id="mark-complete-btn">Mark as Complete ✓</button>
+      </div>
+      <div id="module-nav"></div>
+    </div>
+  </div>
+</div>
+<script src="../nav.js"></script>
+<script>
+const messages = [
+  { from: 'Human', color: 'var(--text-muted)', text: 'Task: Implement validateEmail(email) → boolean' },
+  { from: 'Coder', color: 'var(--accent)', text: 'Implementing... done. Returns true for valid emails using RFC 5321 regex.' },
+  { from: 'Tester', color: 'var(--red)', text: '❌ FAIL: validateEmail("") → true (should be false)' },
+  { from: 'Tester', color: 'var(--red)', text: '❌ FAIL: validateEmail("a@b") → true (missing TLD)' },
+  { from: 'Tester', color: 'var(--red)', text: '❌ FAIL: validateEmail(null) → throws (should return false)' },
+  { from: 'Coder', color: 'var(--accent)', text: 'Fixing all 3 failures. Added null guard, TLD check, empty string check.' },
+  { from: 'Tester', color: 'var(--green)', text: '✅ All tests pass. 12/12 cases passing.' },
+  { from: 'Reviewer', color: 'var(--orange)', text: '⚠ Issue: regex is 47 chars — extract to named constant for readability.' },
+  { from: 'Reviewer', color: 'var(--orange)', text: '⚠ Issue: no JSDoc comment explaining edge cases.' },
+  { from: 'Coder', color: 'var(--accent)', text: 'Applied both suggestions. Ready for final review.' },
+  { from: 'Reviewer', color: 'var(--green)', text: '✅ APPROVED. Code quality and test coverage meet standards.' },
+];
+
+let animIdx = 0;
+function animateTeam() {
+  const feed = document.getElementById('team-feed');
+  if (animIdx === 0) feed.innerHTML = '';
+  if (animIdx >= messages.length) {
+    animIdx = 0;
+    document.getElementById('team-btn').textContent = '↺ Restart';
+    return;
+  }
+
+  // Highlight active agent
+  const roles = { 'Coder': 'an-coder', 'Tester': 'an-tester', 'Reviewer': 'an-reviewer' };
+  document.querySelectorAll('.agent-node').forEach(n => n.classList.remove('active'));
+  const nodeId = roles[messages[animIdx].from];
+  if (nodeId) document.getElementById(nodeId).classList.add('active');
+
+  const msg = messages[animIdx];
+  const el = document.createElement('div');
+  el.className = 'msg-item';
+  el.innerHTML = `<span class="msg-from" style="color:${msg.color}">[${msg.from}]</span><span style="color:var(--text-dim)">${msg.text}</span>`;
+  feed.appendChild(el);
+  feed.scrollTop = feed.scrollHeight;
+
+  animIdx++;
+  const btn = document.getElementById('team-btn');
+  btn.textContent = animIdx >= messages.length ? '↺ Restart' : '▶ Next Message';
+}
+</script>
+</body>
+</html>

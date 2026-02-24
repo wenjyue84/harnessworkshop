@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent / Subagent — Harness Engineering</title>
+<link rel="stylesheet" href="../site.css">
+<style>
+  #reading-progress{position:fixed;top:0;left:0;right:0;height:3px;background:var(--border);z-index:200;}
+  #reading-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));width:0%;}
+
+  .ctx-diagram { display:flex;flex-direction:column;align-items:center;gap:12px;margin:20px 0; }
+  .ctx-box { border-radius:var(--radius-sm);padding:14px 20px;border:1px solid;text-align:center;position:relative; }
+  .ctx-box.main   { background:rgba(99,102,241,.08); border-color:rgba(99,102,241,.4); width:100%;max-width:500px; }
+  .ctx-box.sub    { background:rgba(34,197,94,.06);  border-color:rgba(34,197,94,.3);  width:80%;max-width:420px; }
+  .ctx-box-label  { font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px; }
+  .ctx-token-bar  { height:6px;background:var(--surface2);border-radius:3px;overflow:hidden;margin-top:8px; }
+  .ctx-token-fill { height:100%;border-radius:3px; }
+  .sub-row { display:flex;gap:12px;justify-content:center;width:100%; }
+
+  .quote-box { border-left:3px solid var(--accent);padding:12px 16px;background:rgba(99,102,241,.06);border-radius:0 var(--radius-sm) var(--radius-sm) 0;margin:16px 0;font-style:italic;font-size:14px;color:var(--accent3);line-height:1.65; }
+  .quote-box cite { display:block;margin-top:6px;font-style:normal;font-size:11px;color:var(--text-muted); }
+</style>
+</head>
+<body>
+<div id="reading-progress"><div id="reading-progress-fill"></div></div>
+<div class="site-layout">
+  <div id="nav-sidebar" class="sidebar"></div>
+  <div class="main-content">
+    <div id="nav-topbar"></div>
+    <div class="page-content">
+
+      <div class="page-header">
+        <div class="module-eyebrow">Module 18 · Multi-Agent · ⏱ 12 min</div>
+        <h1>Agent / <span class="gradient-text">Subagent</span></h1>
+        <p class="lead">Agents are not roles or personas. They are systems that engineer <strong>exactly what tokens sit in the context window</strong> at each step. Split large tasks: main agent coordinates, subagents execute in isolated contexts.</p>
+      </div>
+
+      <div class="quote-box">
+        "Context engineering is the delicate art and science of filling the context window with just the right information for the next step."
+        <cite>— Andrej Karpathy, June 2025</cite>
+      </div>
+
+      <div class="content-section">
+        <div class="section-title"><div class="icon" style="background:rgba(99,102,241,.15);">🏗️</div>The Project Manager Model</div>
+        <p>A project manager doesn't personally write every line of code, conduct every interview, and draft every email. They <strong>spawn specialists</strong>: the coder handles the implementation, the researcher handles the documentation, the writer handles the copy. Each specialist has their own focused workspace.</p>
+        <p>The PM synthesizes results. That's the agent/subagent pattern. One context window coordinates; multiple isolated context windows execute. The main agent stays lean. Subagents do the heavy lifting without polluting each other's context.</p>
+      </div>
+
+      <!-- Context hierarchy diagram -->
+      <div class="anim-box">
+        <div class="anim-box-header">
+          <div class="anim-box-title">🧠 Context Window Architecture</div>
+        </div>
+        <div class="anim-box-body">
+          <div class="ctx-diagram">
+            <div class="ctx-box main">
+              <div class="ctx-box-label" style="color:var(--accent);">Main Agent (Orchestrator)</div>
+              <div style="font-size:13px;color:var(--text-dim);">Holds: plan, high-level state, task list, synthesized results</div>
+              <div class="ctx-token-bar"><div class="ctx-token-fill" style="width:25%;background:var(--accent);"></div></div>
+              <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">Context: 25% used (stays lean)</div>
+            </div>
+            <div style="font-size:20px;color:var(--accent);">↓ spawns</div>
+            <div class="sub-row">
+              <div class="ctx-box sub" style="flex:1;max-width:180px;">
+                <div class="ctx-box-label" style="color:var(--green);">Subagent A</div>
+                <div style="font-size:12px;color:var(--text-dim);">Task: Auth module analysis</div>
+                <div class="ctx-token-bar"><div class="ctx-token-fill" style="width:82%;background:var(--green);"></div></div>
+                <div style="font-size:10px;color:var(--text-muted);margin-top:3px;">Context: 82% — heavy lifting</div>
+              </div>
+              <div class="ctx-box sub" style="flex:1;max-width:180px;">
+                <div class="ctx-box-label" style="color:var(--green);">Subagent B</div>
+                <div style="font-size:12px;color:var(--text-dim);">Task: DB schema migration</div>
+                <div class="ctx-token-bar"><div class="ctx-token-fill" style="width:76%;background:var(--green);"></div></div>
+                <div style="font-size:10px;color:var(--text-muted);margin-top:3px;">Context: 76% — heavy lifting</div>
+              </div>
+              <div class="ctx-box sub" style="flex:1;max-width:180px;">
+                <div class="ctx-box-label" style="color:var(--green);">Subagent C</div>
+                <div style="font-size:12px;color:var(--text-dim);">Task: Write test suites</div>
+                <div class="ctx-token-bar"><div class="ctx-token-fill" style="width:68%;background:var(--green);"></div></div>
+                <div style="font-size:10px;color:var(--text-muted);margin-top:3px;">Context: 68% — heavy lifting</div>
+              </div>
+            </div>
+            <div style="font-size:20px;color:var(--accent);">↑ returns results</div>
+            <div style="font-size:13px;color:var(--text-dim);">Main agent synthesizes findings without ever loading the raw work into its context</div>
+          </div>
+
+          <div class="callout tip">
+            <div class="callout-icon">💡</div>
+            <div class="callout-body"><strong>The key insight:</strong> Subagent isolation means each agent gets only what it needs. No cross-contamination. Main agent stays lean for coordination. This is how you scale beyond a single context window.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Claude Code Task tool -->
+      <div class="content-section">
+        <div class="section-title"><div class="icon" style="background:rgba(34,197,94,.15);">⚙️</div>How Claude Code spawns subagents</div>
+        <p>Claude Code has a built-in <code>Task</code> tool that spawns subagents. You don't need to configure anything — it's available by default.</p>
+        <div class="code-snippet">
+<span class="c">// Claude Code's internal Task tool — orchestrator uses this:</span>
+<span class="g">Task</span>({
+  <span class="k">description</span>: <span class="s">"Analyze auth module for vulnerabilities"</span>,
+  <span class="k">prompt</span>: <span class="s">"Read /src/auth/* thoroughly. Find all security vulnerabilities. Return structured JSON findings with severity, file, line number."</span>,
+  <span class="k">subagent_type</span>: <span class="s">"general-purpose"</span>
+})
+
+<span class="c">// The subagent:</span>
+<span class="c">// - Gets its own isolated context window</span>
+<span class="c">// - Runs the task independently</span>
+<span class="c">// - Returns structured findings</span>
+<span class="c">// - Main agent never loads the raw /src/auth/* files</span>
+        </div>
+      </div>
+
+      <div class="quote-box" style="border-left-color:var(--orange);">
+        "Most of the time when an agent is not performing reliably the underlying cause is that the appropriate context, instructions and tools have not been communicated to the model."
+        <cite>— Harrison Chase, LangChain founder, June 2025</cite>
+      </div>
+
+      <div class="exercise-block">
+        <div class="exercise-header"><span>🔧</span><h3>Hands-On Exercise</h3></div>
+        <div class="exercise-body">
+          <div class="exercise-step">
+            <div class="step-badge">01</div>
+            <div class="step-content">
+              <h4>Choose a task too big for one context</h4>
+              <p>Pick something large: "Analyze my entire codebase for dead code", "Review all API endpoints for missing error handling", "Audit all SQL queries for injection risks".</p>
+            </div>
+          </div>
+          <div class="exercise-step">
+            <div class="step-badge">02</div>
+            <div class="step-content">
+              <h4>Break it into parallel subtasks</h4>
+              <p>Ask Claude: <em>"Break this task into 3-5 independent subtasks that could each run in their own context window."</em></p>
+            </div>
+          </div>
+          <div class="exercise-step">
+            <div class="step-badge">03</div>
+            <div class="step-content">
+              <h4>Ask Claude to orchestrate</h4>
+              <p>Say: <em>"You are the orchestrator. Spawn subagents for each subtask using the Task tool, then synthesize their findings."</em></p>
+            </div>
+          </div>
+          <div class="exercise-step">
+            <div class="step-badge">04</div>
+            <div class="step-content">
+              <h4>Review the synthesized result</h4>
+              <p>Compare the quality vs asking Claude to do the entire task in a single context. Note how much more thorough the subagent approach is — each specialist went deep on their slice.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="takeaways">
+        <h3>⚡ Key Takeaways</h3>
+        <div class="takeaway-item"><span class="ti-icon">✓</span><div>Agents = context engineering. Not personas, not roleplay — precise control of what's in the window.</div></div>
+        <div class="takeaway-item"><span class="ti-icon">✓</span><div>Main agent stays lean; subagents do heavy lifting in isolated contexts.</div></div>
+        <div class="takeaway-item"><span class="ti-icon">✓</span><div>Claude Code's <code>Task</code> tool spawns subagents with their own context windows.</div></div>
+        <div class="takeaway-item"><span class="ti-icon">✓</span><div>Give subagents only what they need: specific files, clear success criteria, structured output format.</div></div>
+      </div>
+
+      <div class="section-divider" style="margin-top:40px;"></div>
+      <div style="display:flex;justify-content:center;margin:24px 0;">
+        <button class="btn btn-ghost" id="mark-complete-btn">Mark as Complete ✓</button>
+      </div>
+      <div id="module-nav"></div>
+    </div>
+  </div>
+</div>
+<script src="../nav.js"></script>
+</body>
+</html>
