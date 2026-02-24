@@ -43,11 +43,11 @@
         </div>
         <h1 class="gradient-text">Codex in Cursor</h1>
         <p class="lead">GPT-4 Coding Agent Setup</p>
-        <p class="lead">Codex CLI is OpenAI&rsquo;s coding agent, powered by GPT-4. Cursor is the AI-first code editor. Together, they give you another powerful coding workflow &mdash; useful as a complement to Claude Code, especially for projects where you prefer GPT-4&rsquo;s style or for teams already using the OpenAI ecosystem.</p>
+        <p class="lead">Codex CLI is OpenAI&rsquo;s coding agent, powered by GPT-4. Cursor is the AI-first code editor. For Prisma Technology Solution, Cursor shines when doing inline TypeScript completions on the IoT dashboard's React components &mdash; seeing sensor data types autocomplete in real time as you type.</p>
       </div>
       <div class="content-section">
         <div class="section-title"><div class="icon">&#x1F528;</div><h2>The Multi-Tool Craftsman</h2></div>
-        <p>A master craftsman owns more than one tool. A carpenter has chisels AND a router, a lathe AND a hand plane &mdash; each for different jobs. Codex in Cursor is another tool in your AI engineering kit: useful in different contexts, complementary to Claude Code, not a replacement.</p>
+        <p>A master craftsman owns more than one tool. Prisma uses Claude Code for autonomous overnight IoT builds and payroll system scaffolding, and Cursor/Codex for inline editing when writing React dashboard components or TypeScript IoT data type definitions. Each tool has its job &mdash; complementary, not competing.</p>
       </div>
       <div class="content-section">
         <div class="section-title"><div class="icon">&#x2194;&#xFE0F;</div><h2>Claude Code vs Codex/Cursor &mdash; Compare</h2></div>
@@ -67,7 +67,7 @@
               <li><span class="dot" style="background:var(--accent)"></span>Long autonomous sessions</li>
               <li><span class="dot" style="background:var(--accent)"></span>Multi-agent orchestration</li>
             </ul>
-            <div class="best-for" id="bf-claude"><strong>Best for:</strong>Long autonomous tasks, system-level access, hook-driven workflows, MCP integration.</div>
+            <div class="best-for" id="bf-claude"><strong>Best for:</strong>Overnight IoT builds, payroll system scaffolding, hook-driven workflows, GitHub MCP integration for Prisma repos.</div>
           </div>
           <div class="tool-card" id="card-codex" onclick="selectTool('codex')">
             <h4 class="right-title">&#x1F4DD; Codex / Cursor</h4>
@@ -79,7 +79,7 @@
               <li><span class="dot" style="background:var(--cyan)"></span>Cursor Composer multi-file</li>
               <li><span class="dot" style="background:var(--cyan)"></span>OpenAI ecosystem native</li>
             </ul>
-            <div class="best-for" id="bf-codex"><strong>Best for:</strong>Inline edits, IDE pair programming, quick GPT-4 responses, OpenAI teams.</div>
+            <div class="best-for" id="bf-codex"><strong>Best for:</strong>Inline TypeScript completions for IoT sensor types, React dashboard component edits, quick GPT-4 responses while coding.</div>
           </div>
         </div>
       </div>
@@ -92,11 +92,11 @@
             <span class="prompt">$</span> <span class="cmd">npm install -g @openai/codex</span><br><br>
             <span class="comment"># Configure with API key:</span><br>
             <span class="prompt">$</span> <span class="cmd">export OPENAI_API_KEY=sk-...</span><br><br>
-            <span class="comment"># Run in any project:</span><br>
-            <span class="prompt">$</span> <span class="cmd">codex "Refactor this function to use async/await"</span><br><br>
+            <span class="comment"># Run in Prisma's IoT dashboard project:</span><br>
+            <span class="prompt">$</span> <span class="cmd">codex "Add TypeScript types to all sensor data interfaces in src/types/"</span><br><br>
             <span class="comment"># Yolo mode (like dangerously-skip-permissions):</span><br>
-            <span class="prompt">$</span> <span class="cmd">codex --full-auto "Add error handling to all API calls in src/"</span><br>
-            <span class="ok">Running autonomously...</span>
+            <span class="prompt">$</span> <span class="cmd">codex --full-auto "Add error handling to all MQTT API calls in src/mqtt/"</span><br>
+            <span class="ok">Running autonomously across all MQTT handler files...</span>
           </div>
         </div>
       </div>
@@ -120,20 +120,20 @@
             <div class="exercise-step"><span class="step-badge">1</span><div class="step-content"><h4>Install Cursor</h4><p>Download from cursor.sh and install.</p></div></div>
             <div class="exercise-step"><span class="step-badge">2</span><div class="step-content"><h4>Install Codex CLI</h4><p><code>npm install -g @openai/codex</code></p></div></div>
             <div class="exercise-step"><span class="step-badge">3</span><div class="step-content"><h4>Add API key</h4><p>Add your OpenAI API key to your environment variables.</p></div></div>
-            <div class="exercise-step"><span class="step-badge">4</span><div class="step-content"><h4>Open a project in Cursor</h4><p>Open any existing project folder in the Cursor IDE.</p></div></div>
-            <div class="exercise-step"><span class="step-badge">5</span><div class="step-content"><h4>Try Cmd+K</h4><p>Use Cmd+K to ask Cursor to add type annotations to a function.</p></div></div>
-            <div class="exercise-step"><span class="step-badge">6</span><div class="step-content"><h4>Try Codex CLI</h4><p><code>codex "Write a README for this project"</code> in terminal inside Cursor.</p></div></div>
-            <div class="exercise-step"><span class="step-badge">7</span><div class="step-content"><h4>Compare to Claude Code</h4><p>Note the differences in style, speed, and context awareness.</p></div></div>
+            <div class="exercise-step"><span class="step-badge">4</span><div class="step-content"><h4>Open Prisma's IoT dashboard in Cursor</h4><p>Open <code>prisma-iot-counter/src/</code> in the Cursor IDE. See how Cursor understands the React component tree immediately.</p></div></div>
+            <div class="exercise-step"><span class="step-badge">5</span><div class="step-content"><h4>Try Cmd+K for TypeScript IoT types</h4><p>Place cursor in a sensor data handler function and press Cmd+K: <em>"Add TypeScript interface for MQTT sensor payload with machineId, count, timestamp, status."</em></p></div></div>
+            <div class="exercise-step"><span class="step-badge">6</span><div class="step-content"><h4>Try Codex CLI on IoT components</h4><p><code>codex "Add PropTypes to all React components in src/components/ of the Prisma IoT dashboard"</code> in the Cursor terminal.</p></div></div>
+            <div class="exercise-step"><span class="step-badge">7</span><div class="step-content"><h4>Compare to Claude Code</h4><p>Use Claude Code for the same task. Note: Cursor excels at inline suggestions within the file you are editing. Claude Code excels at multi-file autonomous changes across the whole IoT codebase.</p></div></div>
           </div>
         </div>
       </div>
       <div class="content-section">
         <div class="takeaways"><h3>Key Takeaways</h3>
-          <div class="takeaway-item"><span class="ti-icon">&#x1F4DD;</span>Codex = OpenAI coding agent. Cursor = best AI-native IDE.</div>
-          <div class="takeaway-item"><span class="ti-icon">&#x2795;</span>Both complement Claude Code, not replace it.</div>
-          <div class="takeaway-item"><span class="ti-icon">&#x1F9F5;</span>Use Claude Code for autonomous, hook-driven workflows.</div>
-          <div class="takeaway-item"><span class="ti-icon">&#x1F5A5;&#xFE0F;</span>Use Cursor/Codex for IDE-integrated pair programming.</div>
-          <div class="takeaway-item"><span class="ti-icon">&#x1F528;</span>Multi-tool AI engineering is more effective than single-tool.</div>
+          <div class="takeaway-item"><span class="ti-icon">&#x1F4DD;</span>Cursor excels at inline TypeScript completions for Prisma's IoT sensor interfaces and React dashboard components.</div>
+          <div class="takeaway-item"><span class="ti-icon">&#x2795;</span>Both complement Claude Code, not replace it. Use each for what it does best.</div>
+          <div class="takeaway-item"><span class="ti-icon">&#x1F9F5;</span>Use Claude Code for overnight IoT builds, payroll scaffolding, and hook-driven autonomous workflows.</div>
+          <div class="takeaway-item"><span class="ti-icon">&#x1F5A5;&#xFE0F;</span>Use Cursor/Codex when actively editing React dashboard components or typing MQTT handler logic inline.</div>
+          <div class="takeaway-item"><span class="ti-icon">&#x1F528;</span>Prisma's 3-person team punches above its weight by picking the right AI tool for each task type.</div>
         </div>
       </div>
       <div class="section-divider" style="margin-top:40px;"></div>

@@ -42,11 +42,11 @@
         <p class="lead">Browser Tab Context Capture &mdash; one shortcut, full page awareness.</p>
       </div>
       <div class="content-section">
-        <p style="font-size:16px;line-height:1.8;color:var(--text-dim);">Pinchtab is a browser extension that captures your currently active browser tab &mdash; the URL, page title, selected text, and full page content &mdash; and injects it as context into Claude Code. Instead of copy-pasting, you pinch the tab and Claude instantly knows what you are looking at.</p>
+        <p style="font-size:16px;line-height:1.8;color:var(--text-dim);">Pinchtab is a browser extension that captures your currently active browser tab &mdash; the URL, page title, selected text, and full page content &mdash; and injects it as context into Claude Code. Instead of copy-pasting LHDN tax form specifications or client requirement sheets from Google Docs, you pinch the tab and Claude instantly knows what you are looking at.</p>
       </div>
       <div class="callout callout-info" style="margin:24px 0;">
         <div class="callout-icon">&#128161;</div>
-        <div class="callout-body"><strong>The Mental Model</strong><br>Imagine having a colleague who can glance at exactly what is on your screen and immediately understand it &mdash; without you having to explain or copy anything. Pinchtab is that glance: one shortcut, and Claude gets full context of your browser tab.</div>
+        <div class="callout-body"><strong>The Mental Model</strong><br>Imagine a Prisma developer reading the LHDN CP22 form specification and wanting Claude to generate the matching database schema. Instead of copy-pasting the entire page, one Pinchtab shortcut delivers full page context instantly. Claude sees exactly what you see and can act on it immediately.</div>
       </div>
       <div class="content-section">
         <h2 class="section-title"><span class="icon">&#9889;</span> How It Works</h2>
@@ -62,13 +62,13 @@
                     <div class="browser-bar-dot" style="background:#ef4444"></div>
                     <div class="browser-bar-dot" style="background:#f59e0b"></div>
                     <div class="browser-bar-dot" style="background:#22c55e"></div>
-                    <div class="browser-bar-url">docs.anthropic.com/claude/hooks</div>
+                    <div class="browser-bar-url">hasil.gov.my/cp22-form-guide</div>
                   </div>
                   <div class="browser-body">
-                    <strong>Claude Code Hooks</strong><br>
-                    Hooks let you intercept tool calls before and after they execute.
-                    <span class="selected-text" id="selected-highlight"> You can run scripts, validate inputs, track usage, and send notifications.</span>
-                    Use PreToolUse to block dangerous operations...
+                    <strong>LHDN CP22 &#8212; Notification of New Employee</strong><br>
+                    Employers must submit CP22 within 30 days of commencement of employment.
+                    <span class="selected-text" id="selected-highlight"> Required fields: Employee name, NRIC/passport, date of commencement, monthly gross salary, EPF number.</span>
+                    Failure to submit is an offence under Section 83 ITA 1967...
                   </div>
                 </div>
               </div>
@@ -125,9 +125,9 @@
           <div class="exercise-body">
             <div class="exercise-step"><div class="step-badge">1</div><div class="step-content"><strong>Install the extension</strong><br>Search for Pinchtab in the Chrome Web Store or Firefox Add-ons. Install and pin it to your toolbar.</div></div>
             <div class="exercise-step"><div class="step-badge">2</div><div class="step-content"><strong>Configure Claude Code integration</strong><br>Follow the extension setup wizard. It will ask for the Claude Code endpoint URL and shortcut key preference (default: Ctrl+Shift+P on Windows, Cmd+Shift+P on Mac).</div></div>
-            <div class="exercise-step"><div class="step-badge">3</div><div class="step-content"><strong>Open any webpage</strong><br>Navigate to any page you want to discuss with Claude &mdash; docs, a bug report, a competitor page, a Stack Overflow answer.</div></div>
-            <div class="exercise-step"><div class="step-badge">4</div><div class="step-content"><strong>Highlight text</strong><br>Select a specific paragraph or code block on the page. This becomes the priority content Claude focuses on first.</div></div>
-            <div class="exercise-step"><div class="step-badge">5</div><div class="step-content"><strong>Press the shortcut</strong><br>Hit Ctrl+Shift+P (or your configured shortcut). Switch to Claude Code and ask a question about the page &mdash; Claude already has full context.</div></div>
+            <div class="exercise-step"><div class="step-badge">3</div><div class="step-content"><strong>Open a Prisma-relevant page</strong><br>Good candidates: the LHDN CP21/CP22 form guide at <code>hasil.gov.my</code>, the Baileys WhatsApp library docs on GitHub, or a client spec sheet shared via Google Docs.</div></div>
+            <div class="exercise-step"><div class="step-badge">4</div><div class="step-content"><strong>Highlight the key section</strong><br>Select the specific paragraph containing form field requirements, API method signatures, or client requirements. This becomes the priority content Claude focuses on first.</div></div>
+            <div class="exercise-step"><div class="step-badge">5</div><div class="step-content"><strong>Press the shortcut and ask Claude to act</strong><br>Hit Ctrl+Shift+P (or your configured shortcut). In Claude Code, ask: "Based on the LHDN page I just shared, generate the CP22 form schema as a Supabase table definition." Claude already has full context &#8212; no copy-paste needed.</div></div>
           </div>
         </div>
       </div>
@@ -165,10 +165,10 @@
     inject.innerHTML='<div style="color:var(--accent);font-size:11px;margin-bottom:6px;">&#9654; Pinchtab injecting...</div>';
     ptTimer=setTimeout(()=>{
       inject.innerHTML=[
-        '<div class="inject-line"><span class="inject-tag">URL</span><span class="inject-content">https://docs.anthropic.com/claude/hooks</span></div>',
-        '<div class="inject-line"><span class="inject-tag">TITLE</span><span class="inject-content">Claude Code Hooks - Anthropic</span></div>',
-        '<div class="inject-line"><span class="inject-tag">SEL</span><span class="inject-content">You can run scripts, validate inputs, track usage, and send notifications.</span></div>',
-        '<div class="inject-line"><span class="inject-tag">BODY</span><span class="inject-content">4,200 chars of page content injected into context window</span></div>',
+        '<div class="inject-line"><span class="inject-tag">URL</span><span class="inject-content">https://hasil.gov.my/cp22-form-guide</span></div>',
+        '<div class="inject-line"><span class="inject-tag">TITLE</span><span class="inject-content">LHDN CP22 - Notification of New Employee</span></div>',
+        '<div class="inject-line"><span class="inject-tag">SEL</span><span class="inject-content">Required fields: Employee name, NRIC/passport, date of commencement, monthly gross salary, EPF number.</span></div>',
+        '<div class="inject-line"><span class="inject-tag">BODY</span><span class="inject-content">5,800 chars of LHDN CP22 form specification injected into context window</span></div>',
         '<div style="margin-top:8px;color:var(--green);font-size:11px;">&#10003; Context ready &mdash; ask Claude about this page</div>'
       ].join("");
     },600);

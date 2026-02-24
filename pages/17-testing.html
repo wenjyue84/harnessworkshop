@@ -43,11 +43,11 @@
         </div>
         <h1 class="gradient-text">Comprehensive Test Suites</h1>
         <p class="lead">Let AI Self-Improve via Tests</p>
-        <p class="lead">Tests are the contract between intent and implementation. When you write comprehensive tests before asking Claude to code, you give it a clear success criterion. Claude then writes, runs, fails, and iterates &mdash; self-correcting until all tests pass.</p>
+        <p class="lead">Tests are the contract between intent and implementation. For Prisma's payroll system, Malaysian statutory deductions (EPF/SOCSO/EIS/PCB) must be exact &mdash; errors cost clients money. When you write comprehensive tests first, Claude iterates until every deduction is correct.</p>
       </div>
       <div class="content-section">
         <div class="section-title"><div class="icon">&#x1F3D7;&#xFE0F;</div><h2>The Blueprint Metaphor</h2></div>
-        <p>Asking Claude to write code without tests is like telling a builder &ldquo;build me a house&rdquo; with no blueprints. Asking Claude to write code against tests is like handing them the blueprints, the inspection checklist, and the city building code &mdash; and saying &ldquo;it passes inspection when every checkbox is green.&rdquo;</p>
+        <p>Asking Claude to write Prisma's payroll deductions without tests is like telling a builder &ldquo;build the house&rdquo; with no blueprints. Asking Claude to write code against EPF/SOCSO/PCB test cases is like handing them the KWSP contribution tables, LHDN inspection checklist, and Akta Kerja &mdash; and saying &ldquo;every employee payslip passes audit when every deduction test is green.&rdquo;</p>
       </div>
       <div class="content-section">
         <div class="section-title"><div class="icon">&#x1F504;</div><h2>The Test-Driven AI Feedback Loop</h2></div>
@@ -69,18 +69,18 @@
             <strong>Without tests</strong>
             <div class="code-snippet" style="margin-top:10px;">
               <span class="comment">// Claude writes SOMETHING</span><br>
-              <span class="comment">// You don&rsquo;t know if it&rsquo;s right.</span><br><br>
+              <span class="comment">// You don&rsquo;t know if EPF is right.</span><br><br>
               <span class="output">Write a function that</span><br>
-              <span class="output">calculates compound interest</span>
+              <span class="output">calculates EPF deduction</span>
             </div>
           </div>
           <div class="compare-card good">
             <strong>With tests</strong>
             <div class="code-snippet" style="margin-top:10px;">
               <span class="comment">// Claude iterates until all pass</span><br>
-              <span class="k">test</span>(<span class="s">"1000, 5%, 10yr = 1628.89"</span>, ...)<br>
-              <span class="k">test</span>(<span class="s">"negative rate throws"</span>, ...)<br>
-              <span class="k">test</span>(<span class="s">"0 years = principal"</span>, ...)
+              <span class="k">test</span>(<span class="s">"RM3000 salary = RM330 EPF"</span>, ...)<br>
+              <span class="k">test</span>(<span class="s">"negative salary throws"</span>, ...)<br>
+              <span class="k">test</span>(<span class="s">"age 60+ uses reduced rate"</span>, ...)
             </div>
           </div>
         </div>
@@ -110,10 +110,10 @@
       </div>
       <div class="content-section">
         <div class="takeaways"><h3>Key Takeaways</h3>
-          <div class="takeaway-item"><span class="ti-icon">&#x1F4DC;</span>Tests = specification for AI. Write tests first, code second.</div>
-          <div class="takeaway-item"><span class="ti-icon">&#x1F504;</span>The AI iterates until all tests pass &mdash; it self-corrects.</div>
-          <div class="takeaway-item"><span class="ti-icon">&#x1F4CF;</span>More edge case tests = higher quality output.</div>
-          <div class="takeaway-item"><span class="ti-icon">&#x2705;</span>This is the key to reliable AI-generated code.</div>
+          <div class="takeaway-item"><span class="ti-icon">&#x1F4DC;</span>Tests = LHDN specification for AI. Write EPF/SOCSO/PCB tests first, implementation second.</div>
+          <div class="takeaway-item"><span class="ti-icon">&#x1F504;</span>The AI iterates on payroll deductions until all statutory tests pass &mdash; it self-corrects against KWSP tables.</div>
+          <div class="takeaway-item"><span class="ti-icon">&#x1F4CF;</span>More edge cases (overtime, age 60+, RM5000 ceiling) = higher quality payroll output. Also applies to IoT sensor validation.</div>
+          <div class="takeaway-item"><span class="ti-icon">&#x2705;</span>This is how Prisma's payroll software stays LHDN-compliant every year &mdash; update the tests when rates change, Claude fixes the code.</div>
         </div>
       </div>
       <div class="section-divider" style="margin-top:40px;"></div>
@@ -137,11 +137,11 @@
     [true,true,true,true,true,true,true,true,false,false],
     [true,true,true,true,true,true,true,true,true,true]
   ];
-  var iterLabels = ['Iteration 0 (before code)','Iteration 1 (first attempt)','Iteration 2 (fixing failures)','Iteration 3 (almost there)','Iteration 4 — ALL PASS ✓'];
+  var iterLabels = ['Iteration 0 (before code)','Iteration 1 (EPF first attempt)','Iteration 2 (fixing SOCSO/EIS)','Iteration 3 (PCB edge cases)','Iteration 4 — ALL DEDUCTIONS PASS ✓'];
   var testNames = [
-    'basic: 1000, 5%, 10yr','negative rate throws','zero years = principal',
-    'floating point precision','very large principal','null input throws',
-    'string rate parsed','monthly compounding','annual vs monthly match','zero rate = principal'
+    'EPF: RM3000 salary = RM330','SOCSO ceiling RM5000/mo','EIS 0.4% capped at RM86.65',
+    'PCB: RM5000 gross single = RM220','negative salary throws error','null input throws error',
+    'age 60+ uses reduced EPF rate','overtime included in gross','no SOCSO for salary > RM5000','zero salary = zero deductions'
   ];
   var curIter = 0;
   function renderTests() {

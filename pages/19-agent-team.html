@@ -46,11 +46,11 @@
         </div>
         <h1 class="gradient-text">Agent Team</h1>
         <p class="lead">Coder + Tester + Reviewer</p>
-        <p class="lead">A single agent makes mistakes without accountability. A team of specialized agents &mdash; Coder, Tester, Reviewer &mdash; creates adversarial pressure that produces higher-quality output. The Tester breaks what the Coder builds; the Reviewer critiques what both produce.</p>
+        <p class="lead">A single agent makes mistakes without accountability. For Prisma's payroll system, Malaysian tax rates must be exact. A Coder, Tester, and Reviewer working in adversarial roles catches the edge cases a single agent would miss &mdash; overtime pay, age 60+ EPF rates, SOCSO ceiling breaches.</p>
       </div>
       <div class="content-section">
         <div class="section-title"><div class="icon">&#x1F465;</div><h2>The Code Review Metaphor</h2></div>
-        <p>One developer reviewing their own code misses 60% of bugs &mdash; they read what they meant to write, not what they wrote. Add a second developer for code review and the catch rate triples. Add a dedicated QA engineer and it triples again. Agent teams replicate this dynamic: each agent has a mandate to be critical of the others.</p>
+        <p>One developer reviewing their own EPF calculation misses 60% of edge cases &mdash; they check what they intended, not what the code actually computes at salary boundaries. Add a Tester agent and the bug catch rate triples. Add a Reviewer and it triples again. For Prisma's payroll, a wrong PCB deduction means client audit risk &mdash; adversarial agent teams are the quality gate.</p>
       </div>
       <div class="content-section">
         <div class="section-title"><div class="icon">&#x1F500;</div><h2>The Agent Team Pipeline</h2></div>
@@ -77,15 +77,15 @@
         <div class="role-cards">
           <div class="role-card coder">
             <h4>&#x1F4BB; Coder</h4>
-            <div class="code-snippet" style="font-size:.75rem;">You are the Coder.<br>Implement clean, working<br>code for the given task.<br>When done, mark coding<br>task complete.</div>
+            <div class="code-snippet" style="font-size:.75rem;">You are the Coder.<br>Implement calculateEPF()<br>using KWSP 2025 rates.<br>Employee 11%, employer<br>13%. Handle all cases.</div>
           </div>
           <div class="role-card tester">
             <h4>&#x1F9EA; Tester</h4>
-            <div class="code-snippet" style="font-size:.75rem;">You are the Tester.<br>Your job is to BREAK<br>the Coder&rsquo;s output.<br>Write tests for every<br>edge case. Try to fail.</div>
+            <div class="code-snippet" style="font-size:.75rem;">You are the Tester.<br>BREAK calculateEPF().<br>Try: salary RM5001,<br>age 60+, zero salary,<br>negative input, RM0.01.</div>
           </div>
           <div class="role-card reviewer">
             <h4>&#x1F440; Reviewer</h4>
-            <div class="code-snippet" style="font-size:.75rem;">You are the Reviewer.<br>Critique code AND tests.<br>Flag: poor naming,<br>missing error handling,<br>security issues.</div>
+            <div class="code-snippet" style="font-size:.75rem;">You are the Reviewer.<br>Critique the payroll code.<br>Flag: wrong rate bands,<br>missing LHDN compliance,<br>no audit trail logging.</div>
           </div>
         </div>
       </div>
@@ -94,21 +94,21 @@
         <div class="exercise-block">
           <div class="exercise-header"><h3>Three-Role Agent Exercise</h3></div>
           <div class="exercise-body">
-            <div class="exercise-step"><span class="step-badge">1</span><div class="step-content"><h4>Pick a small function</h4><p>e.g. validate an email address</p></div></div>
-            <div class="exercise-step"><span class="step-badge">2</span><div class="step-content"><h4>Coder role</h4><p>Ask Claude: Act as Coder and implement the function.</p></div></div>
-            <div class="exercise-step"><span class="step-badge">3</span><div class="step-content"><h4>Tester role</h4><p>Ask Claude: Now act as Tester and try to break it with edge cases.</p></div></div>
-            <div class="exercise-step"><span class="step-badge">4</span><div class="step-content"><h4>Reviewer role</h4><p>Ask Claude: Now act as Reviewer and critique the implementation.</p></div></div>
-            <div class="exercise-step"><span class="step-badge">5</span><div class="step-content"><h4>Coder addresses feedback</h4><p>Have the Coder fix all issues raised by Tester and Reviewer.</p></div></div>
-            <div class="exercise-step"><span class="step-badge">6</span><div class="step-content"><h4>Observe quality improvement</h4><p>Compare final output vs a single-agent approach on the same task.</p></div></div>
+            <div class="exercise-step"><span class="step-badge">1</span><div class="step-content"><h4>Pick Prisma's payroll function</h4><p>Use <code>calculateEPF(grossSalary, age)</code> &mdash; a function that must comply with KWSP 2025 contribution tables. Wrong output = client audit failure.</p></div></div>
+            <div class="exercise-step"><span class="step-badge">2</span><div class="step-content"><h4>Coder role</h4><p>Ask Claude: <em>Act as Coder and implement calculateEPF(grossSalary, age) using KWSP 2025 rates. Employee 11%, employer 13% if salary under RM5,000.</em></p></div></div>
+            <div class="exercise-step"><span class="step-badge">3</span><div class="step-content"><h4>Tester role</h4><p>Ask Claude: <em>Now act as Tester. Try to break calculateEPF with: salary exactly RM5,000, salary RM5,001, age 60+, zero salary, negative salary, RM0.01. Report each failure.</em></p></div></div>
+            <div class="exercise-step"><span class="step-badge">4</span><div class="step-content"><h4>Reviewer role</h4><p>Ask Claude: <em>Act as Reviewer. Critique the EPF implementation for LHDN compliance, missing rate bands, incorrect employer percentage, and absent audit logging.</em></p></div></div>
+            <div class="exercise-step"><span class="step-badge">5</span><div class="step-content"><h4>Coder addresses all feedback</h4><p>Have the Coder fix every failure the Tester found and every concern the Reviewer raised. This loop continues until the payslip is LHDN-compliant.</p></div></div>
+            <div class="exercise-step"><span class="step-badge">6</span><div class="step-content"><h4>Observe quality improvement</h4><p>Compare the final calculateEPF vs a single-agent attempt. The three-role team catches the age 60+ rate edge case and salary ceiling that a single agent misses.</p></div></div>
           </div>
         </div>
       </div>
       <div class="content-section">
         <div class="takeaways"><h3>Key Takeaways</h3>
-          <div class="takeaway-item"><span class="ti-icon">&#x2694;&#xFE0F;</span>Multi-agent teams create adversarial accountability.</div>
-          <div class="takeaway-item"><span class="ti-icon">&#x1F4BB;</span>Coder writes, Tester breaks, Reviewer critiques.</div>
-          <div class="takeaway-item"><span class="ti-icon">&#x1F465;</span>Mirrors senior engineering team dynamics.</div>
-          <div class="takeaway-item"><span class="ti-icon">&#x2B06;&#xFE0F;</span>The quality improvement over single-agent is significant.</div>
+          <div class="takeaway-item"><span class="ti-icon">&#x2694;&#xFE0F;</span>Multi-agent teams create adversarial accountability. Critical for Prisma's LHDN-compliant payroll calculations.</div>
+          <div class="takeaway-item"><span class="ti-icon">&#x1F4BB;</span>Coder implements calculateEPF(), Tester finds the age 60+ edge case, Reviewer flags the missing audit log.</div>
+          <div class="takeaway-item"><span class="ti-icon">&#x1F465;</span>Mirrors the Kae Shyong + Jay + Sin Chiek team dynamic &mdash; each director reviews from a different angle.</div>
+          <div class="takeaway-item"><span class="ti-icon">&#x2B06;&#xFE0F;</span>A wrong EPF deduction in Prisma's payroll costs a client real money. Three-agent review prevents that.</div>
         </div>
       </div>
       <div class="section-divider" style="margin-top:40px;"></div>
@@ -127,17 +127,17 @@
   });
   var pipeRunning = false;
   var pipeSeq = [
-    {node:'pn-coder', status:'ps-coder', msg:'&#x1F4BB; Coder: Writing implementation...', color:'var(--green)', statusTxt:'Writing...'},
-    {node:'pn-coder', status:'ps-coder', msg:'&#x1F4BB; Coder: Implementation complete. Passing to Tester.', color:'var(--green)', statusTxt:'Done'},
-    {node:'pn-tester', status:'ps-tester', msg:'&#x1F9EA; Tester: Running edge case tests...', color:'var(--red)', statusTxt:'Testing...'},
-    {node:'pn-tester', status:'ps-tester', msg:'&#x1F9EA; Tester: Found 3 failures! Null input, empty string, unicode. Reporting.', color:'var(--red)', statusTxt:'3 failures'},
-    {node:'pn-reviewer', status:'ps-reviewer', msg:'&#x1F440; Reviewer: Reviewing code and test results...', color:'var(--accent)', statusTxt:'Reviewing...'},
-    {node:'pn-reviewer', status:'ps-reviewer', msg:'&#x1F440; Reviewer: Issues found: missing error handling, ambiguous naming. Not approved.', color:'var(--accent)', statusTxt:'Not approved'},
-    {node:'pn-coder', status:'ps-coder', msg:'&#x1F4BB; Coder: Fixing 3 test failures + reviewer feedback...', color:'var(--green)', statusTxt:'Fixing...'},
-    {node:'pn-coder', status:'ps-coder', msg:'&#x1F4BB; Coder: All fixes applied. Re-submitting.', color:'var(--green)', statusTxt:'Fixed'},
-    {node:'pn-tester', status:'ps-tester', msg:'&#x1F9EA; Tester: Re-running tests... 10/10 passing!', color:'var(--green)', statusTxt:'All pass!'},
-    {node:'pn-reviewer', status:'ps-reviewer', msg:'&#x1F440; Reviewer: Code quality acceptable. Tests comprehensive. APPROVED.', color:'var(--green)', statusTxt:'Approved!'},
-    {node:'pn-output', status:'ps-output', msg:'&#x2705; Final output delivered to Human.', color:'var(--green)', statusTxt:'Delivered!'}
+    {node:'pn-coder', status:'ps-coder', msg:'&#x1F4BB; Coder: Implementing calculateEPF() with KWSP 2025 rates...', color:'var(--green)', statusTxt:'Writing...'},
+    {node:'pn-coder', status:'ps-coder', msg:'&#x1F4BB; Coder: EPF function complete. Employee 11%, employer 13%. Passing to Tester.', color:'var(--green)', statusTxt:'Done'},
+    {node:'pn-tester', status:'ps-tester', msg:'&#x1F9EA; Tester: Running edge case tests on calculateEPF()...', color:'var(--red)', statusTxt:'Testing...'},
+    {node:'pn-tester', status:'ps-tester', msg:'&#x1F9EA; Tester: Found 3 failures! Age 60+ rate wrong, RM5001 salary boundary missed, null salary not handled. Reporting.', color:'var(--red)', statusTxt:'3 failures'},
+    {node:'pn-reviewer', status:'ps-reviewer', msg:'&#x1F440; Reviewer: Reviewing payroll code and LHDN compliance...', color:'var(--accent)', statusTxt:'Reviewing...'},
+    {node:'pn-reviewer', status:'ps-reviewer', msg:'&#x1F440; Reviewer: Issues: no audit log, employer rate wrong above RM5k, ambiguous variable names. Not approved.', color:'var(--accent)', statusTxt:'Not approved'},
+    {node:'pn-coder', status:'ps-coder', msg:'&#x1F4BB; Coder: Fixing age 60+ rate, RM5000 ceiling logic, null guard, audit logging...', color:'var(--green)', statusTxt:'Fixing...'},
+    {node:'pn-coder', status:'ps-coder', msg:'&#x1F4BB; Coder: All LHDN compliance fixes applied. Re-submitting for review.', color:'var(--green)', statusTxt:'Fixed'},
+    {node:'pn-tester', status:'ps-tester', msg:'&#x1F9EA; Tester: Re-running all payroll edge cases... 10/10 passing! Salary boundaries correct.', color:'var(--green)', statusTxt:'All pass!'},
+    {node:'pn-reviewer', status:'ps-reviewer', msg:'&#x1F440; Reviewer: EPF calculation LHDN-compliant. Tests cover all statutory edge cases. APPROVED for production.', color:'var(--green)', statusTxt:'Approved!'},
+    {node:'pn-output', status:'ps-output', msg:'&#x2705; Payroll function approved and delivered. Ready for Prisma client payslip generation.', color:'var(--green)', statusTxt:'Delivered!'}
   ];
   var pipeIdx = 0, pipeTimer = null;
   function startPipeline() {

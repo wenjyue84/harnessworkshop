@@ -44,11 +44,11 @@
         </div>
         <h1 class="gradient-text">Agent / Subagent</h1>
         <p class="lead">Context Management Hierarchy</p>
-        <p class="lead">When a task is too large for one context window, you split it. The main agent handles the plan and coordination; subagents handle specific subtasks in their own isolated contexts. The key insight: an agent is not a role &mdash; it is a system that engineers exactly what tokens sit in the context window.</p>
+        <p class="lead">When a task is too large for one context window, you split it. Building Prisma's full IoT project stack &mdash; MQTT backend, React dashboard, and Telegram alerts &mdash; is too much for one agent. The orchestrator handles the plan; subagents tackle each layer in isolated contexts.</p>
       </div>
       <div class="content-section">
         <div class="section-title"><div class="icon">&#x1F4BC;</div><h2>The Project Manager Metaphor</h2></div>
-        <p>A project manager does not personally write every line of code, conduct every interview, and draft every email. They spawn specialists: the coder, the researcher, the writer. Each specialist has their own workspace (context window) and reports back. The PM synthesizes the results. That is the agent/subagent pattern.</p>
+        <p>Kae Shyong does not personally write every MQTT handler, every React dashboard component, and every Telegram notification. He spawns specialists: the IoT backend dev, the frontend dev, the DevOps engineer. Each specialist has their own workspace (context window) and reports back. The PM synthesizes the results. That is the agent/subagent pattern &mdash; replicated in AI for Prisma's full project stack.</p>
       </div>
       <div class="content-section">
         <div class="section-title"><div class="icon">&#x1F5C2;&#xFE0F;</div><h2>Context Window Hierarchy</h2></div>
@@ -58,8 +58,8 @@
         </div>
         <div class="ctx-diagram">
           <div class="ctx-box main-agent">
-            <h4>&#x1F4E6; Main Agent &mdash; Orchestrator</h4>
-            <p style="font-size:.82rem;color:var(--muted);margin:0 0 8px;">Holds the master plan. Stays lean. Spawns specialists.</p>
+            <h4>&#x1F4E6; Main Agent &mdash; Prisma IoT Orchestrator</h4>
+            <p style="font-size:.82rem;color:var(--muted);margin:0 0 8px;">Builds prisma-iot-counter full stack. Spawns 3 specialists.</p>
             <div class="ctx-bar-wrap">
               <div class="ctx-bar"><div class="ctx-bar-fill main-fill" id="main-ctx" style="width:25%"></div></div>
               <div class="ctx-pct" id="main-pct">25%</div>
@@ -68,22 +68,22 @@
           <div style="margin-left:40px;color:var(--muted);font-size:.78rem;">&#x21B3; spawns subagents via Task tool</div>
           <div class="subagent-row" id="subagent-row">
             <div class="ctx-box sub-agent" id="sub1" style="flex:1;">
-              <h4>&#x1F50D; Subagent A &mdash; Analyst</h4>
-              <p style="font-size:.78rem;color:var(--muted);margin:0 0 8px;">Analyze auth module</p>
+              <h4>&#x1F4E1; Subagent A &mdash; MQTT Dev</h4>
+              <p style="font-size:.78rem;color:var(--muted);margin:0 0 8px;">Build Node.js MQTT broker + sensor handlers</p>
               <div class="ctx-bar-wrap"><div class="ctx-bar"><div class="ctx-bar-fill sub-fill" id="sub1-ctx" style="width:0%"></div></div><div class="ctx-pct" id="sub1-pct">0%</div></div>
             </div>
             <div class="ctx-box sub-agent" id="sub2" style="flex:1;">
-              <h4>&#x1F4DD; Subagent B &mdash; Writer</h4>
-              <p style="font-size:.78rem;color:var(--muted);margin:0 0 8px;">Write README</p>
+              <h4>&#x1F5A5;&#xFE0F; Subagent B &mdash; React Dev</h4>
+              <p style="font-size:.78rem;color:var(--muted);margin:0 0 8px;">Build IoT monitoring React dashboard</p>
               <div class="ctx-bar-wrap"><div class="ctx-bar"><div class="ctx-bar-fill sub-fill" id="sub2-ctx" style="width:0%"></div></div><div class="ctx-pct" id="sub2-pct">0%</div></div>
             </div>
             <div class="ctx-box sub-agent" id="sub3" style="flex:1;">
-              <h4>&#x1F9EA; Subagent C &mdash; Tester</h4>
-              <p style="font-size:.78rem;color:var(--muted);margin:0 0 8px;">Write test suite</p>
+              <h4>&#x1F4F2; Subagent C &mdash; Alerts Dev</h4>
+              <p style="font-size:.78rem;color:var(--muted);margin:0 0 8px;">Build Telegram alert notifications</p>
               <div class="ctx-bar-wrap"><div class="ctx-bar"><div class="ctx-bar-fill sub-fill" id="sub3-ctx" style="width:0%"></div></div><div class="ctx-pct" id="sub3-pct">0%</div></div>
             </div>
           </div>
-          <div class="msg-flow" id="msg-flow"><span class="msg-arrow">&#x21A9;</span> Subagents report results back &rarr; Main agent synthesizes &rarr; Final output</div>
+          <div class="msg-flow" id="msg-flow"><span class="msg-arrow">&#x21A9;</span> MQTT backend + React dashboard + Telegram alerts report back &rarr; Orchestrator integrates &rarr; Prisma IoT system deployed</div>
         </div>
         <div class="diagram-ctrl">
           <button class="btn btn-primary" onclick="runDiagram()">&#x25B6; Simulate Spawning</button>
@@ -93,16 +93,16 @@
       <div class="content-section">
         <div class="section-title"><div class="icon">&#x1F527;</div><h2>Claude Code Task Tool</h2></div>
         <div class="terminal">
-          <div class="term-bar"><span class="term-dot"></span><span class="term-dot"></span><span class="term-dot"></span><span class="term-title">claude code &mdash; orchestrator</span></div>
+          <div class="term-bar"><span class="term-dot"></span><span class="term-dot"></span><span class="term-dot"></span><span class="term-title">claude code &mdash; prisma iot orchestrator</span></div>
           <div class="term-body">
-            <span class="comment">// In Claude Code, the orchestrator uses the Task tool:</span><br>
+            <span class="comment">// Orchestrator spawns Prisma IoT subagents via Task tool:</span><br>
             <span class="k">Task</span>({<br>
-            &nbsp;&nbsp;<span class="s">description</span>: <span class="s">"Analyze auth module"</span>,<br>
-            &nbsp;&nbsp;<span class="s">prompt</span>: <span class="s">"Read /src/auth/* and find security vulnerabilities. Return structured findings."</span>,<br>
+            &nbsp;&nbsp;<span class="s">description</span>: <span class="s">"Build MQTT backend"</span>,<br>
+            &nbsp;&nbsp;<span class="s">prompt</span>: <span class="s">"Read /src/mqtt/* and build broker with sensor handlers for machine counting. Return module summary."</span>,<br>
             &nbsp;&nbsp;<span class="s">subagent_type</span>: <span class="s">"general-purpose"</span><br>
             })<br><br>
             <span class="comment">// Each Task call creates a fresh context window</span><br>
-            <span class="comment">// with only the relevant files and instructions</span>
+            <span class="comment">// Subagent A: MQTT | Subagent B: React | Subagent C: Telegram</span>
           </div>
         </div>
       </div>
@@ -111,20 +111,20 @@
         <div class="exercise-block">
           <div class="exercise-header"><h3>Build an Orchestration Pattern</h3></div>
           <div class="exercise-body">
-            <div class="exercise-step"><span class="step-badge">1</span><div class="step-content"><h4>Pick a large task</h4><p>Something too big for one session, e.g. analyze an entire codebase.</p></div></div>
-            <div class="exercise-step"><span class="step-badge">2</span><div class="step-content"><h4>Break it into subtasks</h4><p>Decompose into 3 to 5 independent subtasks.</p></div></div>
-            <div class="exercise-step"><span class="step-badge">3</span><div class="step-content"><h4>Ask Claude to orchestrate</h4><p>You are the orchestrator. Spawn subagents for each of these tasks: [list]</p></div></div>
-            <div class="exercise-step"><span class="step-badge">4</span><div class="step-content"><h4>Observe delegation</h4><p>Watch Claude use the Task tool to delegate to subagents.</p></div></div>
-            <div class="exercise-step"><span class="step-badge">5</span><div class="step-content"><h4>Review synthesis</h4><p>Compare the final result vs what a single agent would have produced.</p></div></div>
+            <div class="exercise-step"><span class="step-badge">1</span><div class="step-content"><h4>Pick a Prisma IoT build task</h4><p>Prisma's <code>prisma-iot-counter</code> full stack: MQTT Node.js backend + React monitoring dashboard + Telegram alert notifications. Too large for one context window.</p></div></div>
+            <div class="exercise-step"><span class="step-badge">2</span><div class="step-content"><h4>Break into 3 independent subtasks</h4><p>Subagent A: MQTT broker with sensor data handlers. Subagent B: React dashboard with live counter display. Subagent C: Telegram bot that alerts when machine count is abnormal.</p></div></div>
+            <div class="exercise-step"><span class="step-badge">3</span><div class="step-content"><h4>Ask Claude to orchestrate</h4><p><em>"You are the orchestrator building Prisma's IoT system. Spawn 3 subagents: one for MQTT backend, one for React dashboard, one for Telegram alerts. Each has its own context."</em></p></div></div>
+            <div class="exercise-step"><span class="step-badge">4</span><div class="step-content"><h4>Observe delegation</h4><p>Watch Claude use the Task tool to delegate to each subagent in sequence. Each subagent works in isolation with only its relevant files loaded.</p></div></div>
+            <div class="exercise-step"><span class="step-badge">5</span><div class="step-content"><h4>Review synthesis</h4><p>The orchestrator integrates all three outputs into a unified IoT system. Compare the depth vs what a single agent with divided attention would have produced.</p></div></div>
           </div>
         </div>
       </div>
       <div class="content-section">
         <div class="takeaways"><h3>Key Takeaways</h3>
-          <div class="takeaway-item"><span class="ti-icon">&#x1F4A1;</span>Agents = context engineering, not roleplay. Engineering is what tokens sit in RAM.</div>
-          <div class="takeaway-item"><span class="ti-icon">&#x2702;&#xFE0F;</span>Split large tasks into subagents when context is the bottleneck.</div>
-          <div class="takeaway-item"><span class="ti-icon">&#x1F3AF;</span>Each subagent gets only what it needs &mdash; focused context.</div>
-          <div class="takeaway-item"><span class="ti-icon">&#x1F9E9;</span>Main agent synthesizes. This scales beyond a single context window.</div>
+          <div class="takeaway-item"><span class="ti-icon">&#x1F4A1;</span>Agents = context engineering, not roleplay. What tokens are in RAM determines quality of each IoT subagent's work.</div>
+          <div class="takeaway-item"><span class="ti-icon">&#x2702;&#xFE0F;</span>Split Prisma's full-stack builds into subagents: MQTT, React, Telegram are naturally isolated modules.</div>
+          <div class="takeaway-item"><span class="ti-icon">&#x1F3AF;</span>Each subagent gets only its relevant files &mdash; MQTT agent sees only broker code, not the React components.</div>
+          <div class="takeaway-item"><span class="ti-icon">&#x1F9E9;</span>Orchestrator synthesizes all three outputs. This is how a 3-person Prisma team builds at 10-person capacity.</div>
         </div>
       </div>
       <div class="section-divider" style="margin-top:40px;"></div>

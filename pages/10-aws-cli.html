@@ -34,11 +34,11 @@
         <p class="lead">Cloud Ops from Your AI &mdash; natural language infrastructure management.</p>
       </div>
       <div class="content-section">
-        <p style="font-size:16px;line-height:1.8;color:var(--text-dim);">With AWS CLI configured, Claude can describe your EC2 instances, list S3 buckets, check CloudWatch logs, deploy Lambda functions, and manage your entire cloud infrastructure &mdash; all through natural language in the terminal.</p>
+        <p style="font-size:16px;line-height:1.8;color:var(--text-dim);">With AWS CLI configured in the <code>ap-southeast-1</code> (Singapore) region, Claude can describe Prisma's EC2 IoT backend instances, list S3 chatbot log buckets, check CloudWatch logs for the Federation Oil monitor, invoke Lambda webhook handlers, and manage all client cloud infrastructure &mdash; all through natural language in the terminal.</p>
       </div>
       <div class="callout callout-info" style="margin:24px 0;">
         <div class="callout-icon">&#128161;</div>
-        <div class="callout-body"><strong>The Mental Model</strong><br>Before CLI access, asking Claude about your AWS infrastructure was like describing your kitchen to a chef over the phone &mdash; they could advise but could not act. With AWS CLI, Claude can open the fridge itself, check what is there, and start cooking.</div>
+        <div class="callout-body"><strong>The Mental Model</strong><br>Before CLI access, asking Claude about Prisma's AWS infrastructure was like describing the IoT server room to a developer over the phone &mdash; they could advise but could not act. With AWS CLI, Claude can check the actual running instances, read real CloudWatch logs from <code>prisma-iot-server</code>, and take targeted action directly.</div>
       </div>
       <div class="content-section">
         <h2 class="section-title"><span class="icon">&#9889;</span> The Pipeline: Natural Language to Cloud</h2>
@@ -70,13 +70,13 @@
       <div class="content-section">
         <h2 class="section-title"><span class="icon">&#128295;</span> What You Can Do</h2>
         <div class="service-grid">
-          <div class="service-card"><div style="font-size:22px;">&#128424;&#65039;</div><div class="sc-name">EC2</div><div class="sc-cmd">aws ec2 describe-instances</div></div>
-          <div class="service-card"><div style="font-size:22px;">&#128164;</div><div class="sc-name">S3</div><div class="sc-cmd">aws s3 ls / cp / sync</div></div>
-          <div class="service-card"><div style="font-size:22px;">&#128203;</div><div class="sc-name">CloudWatch</div><div class="sc-cmd">aws logs get-log-events</div></div>
-          <div class="service-card"><div style="font-size:22px;">&#955;</div><div class="sc-name">Lambda</div><div class="sc-cmd">aws lambda invoke</div></div>
+          <div class="service-card"><div style="font-size:22px;">&#128424;&#65039;</div><div class="sc-name">EC2</div><div class="sc-cmd">prisma-iot-server</div></div>
+          <div class="service-card"><div style="font-size:22px;">&#128164;</div><div class="sc-name">S3</div><div class="sc-cmd">prisma-chatbot-logs</div></div>
+          <div class="service-card"><div style="font-size:22px;">&#128203;</div><div class="sc-name">CloudWatch</div><div class="sc-cmd">federation-oil-monitor</div></div>
+          <div class="service-card"><div style="font-size:22px;">&#955;</div><div class="sc-name">Lambda</div><div class="sc-cmd">prisma-chatbot-webhook</div></div>
           <div class="service-card"><div style="font-size:22px;">&#128272;</div><div class="sc-name">IAM</div><div class="sc-cmd">aws iam list-users</div></div>
-          <div class="service-card"><div style="font-size:22px;">&#128260;</div><div class="sc-name">RDS</div><div class="sc-cmd">aws rds describe-db-instances</div></div>
-          <div class="service-card"><div style="font-size:22px;">&#128241;</div><div class="sc-name">SNS / SQS</div><div class="sc-cmd">aws sns publish</div></div>
+          <div class="service-card"><div style="font-size:22px;">&#128260;</div><div class="sc-name">RDS</div><div class="sc-cmd">prisma-payroll-db</div></div>
+          <div class="service-card"><div style="font-size:22px;">&#128241;</div><div class="sc-name">SNS / SQS</div><div class="sc-cmd">sensor-alert-queue</div></div>
           <div class="service-card"><div style="font-size:22px;">&#9989;</div><div class="sc-name">Any Service</div><div class="sc-cmd">aws &lt;service&gt; &lt;action&gt;</div></div>
         </div>
       </div>
@@ -99,9 +99,9 @@
             <div><span class="output">&nbsp;&nbsp;&quot;Arn&quot;: &quot;arn:aws:iam::123456789012:user/jay&quot;</span></div>
             <div><span class="output">}</span></div>
             <br>
-            <div><span class="comment"># Now in Claude Code:</span></div>
+            <div><span class="comment"># Now in Claude Code &#8212; ask about Prisma infrastructure:</span></div>
             <div><span class="prompt">$</span> <span class="cmd">claude</span></div>
-            <div><span class="prompt">&gt;</span> <span class="cmd">Show me all running EC2 instances</span></div>
+            <div><span class="prompt">&gt;</span> <span class="cmd">Show me all running EC2 instances in ap-southeast-1 with their names</span></div>
             <br>
             <div><span class="ok">Running: aws ec2 describe-instances --filters Name=instance-state-name,Values=running \</span></div>
             <div><span class="ok">&nbsp;&nbsp;--query Reservations[].Instances[].[InstanceId,InstanceType,State.Name,PublicIpAddress] \</span></div>
@@ -128,9 +128,9 @@
             <div class="exercise-step"><div class="step-badge">1</div><div class="step-content"><strong>Install AWS CLI</strong><br>Windows: <code>winget install Amazon.AWSCLI</code> or download from aws.amazon.com/cli. Mac: <code>brew install awscli</code>.</div></div>
             <div class="exercise-step"><div class="step-badge">2</div><div class="step-content"><strong>Configure credentials</strong><br>Run <code>aws configure</code>. Enter your Access Key ID, Secret, default region (<code>ap-southeast-1</code> for Singapore), and output format (<code>json</code>).</div></div>
             <div class="exercise-step"><div class="step-badge">3</div><div class="step-content"><strong>Verify identity</strong><br>Run <code>aws sts get-caller-identity</code>. Should return your Account ID and User ARN. If it fails, check your credentials.</div></div>
-            <div class="exercise-step"><div class="step-badge">4</div><div class="step-content"><strong>First Claude query</strong><br>In Claude Code, ask: <em>List all my S3 buckets.</em> Claude will run <code>aws s3 ls</code> and present the results in readable form.</div></div>
-            <div class="exercise-step"><div class="step-badge">5</div><div class="step-content"><strong>Log query</strong><br>Ask: <em>Show me CloudWatch logs for [your service name] from the last hour.</em> Claude will find the log group and fetch recent entries.</div></div>
-            <div class="exercise-step"><div class="step-badge">6</div><div class="step-content"><strong>Advanced</strong><br>Ask Claude to help set up a new EC2 instance with your preferred AMI, instance type, and security group. Review the generated commands before running them.</div></div>
+            <div class="exercise-step"><div class="step-badge">4</div><div class="step-content"><strong>First Claude query &#8212; list Prisma S3 buckets</strong><br>In Claude Code, ask: <em>List all S3 buckets in ap-southeast-1 and tell me which ones match the prisma-chatbot prefix.</em> Claude will run <code>aws s3 ls</code> and filter results.</div></div>
+            <div class="exercise-step"><div class="step-badge">5</div><div class="step-content"><strong>CloudWatch log query for IoT backend</strong><br>Ask: <em>Show me CloudWatch logs for the prisma-iot-server from the last hour and highlight any ERROR entries.</em> Claude will find the log group and parse recent entries for anomalies.</div></div>
+            <div class="exercise-step"><div class="step-badge">6</div><div class="step-content"><strong>Advanced: Lambda webhook status</strong><br>Ask Claude to check the <code>prisma-chatbot-webhook</code> Lambda's last 10 invocations and report any failures. Claude will run <code>aws lambda get-function</code> and <code>aws logs filter-log-events</code> to generate the report. Review all generated commands before executing on production.</div></div>
           </div>
         </div>
       </div>
@@ -160,11 +160,11 @@
   let awsTimer=null;
   const flowNodes=[1,2,3,4,5];
   const cmds=[
-    "Parsing your request...",
-    "aws ec2 describe-instances --filters Name=instance-state-name,Values=running",
-    "Running AWS API call in region ap-southeast-1...",
-    "Parsing JSON response (14 fields per instance)...",
-    "Formatted table: 2 instances found"
+    "Parsing your request: Show running EC2 instances in ap-southeast-1...",
+    "aws ec2 describe-instances --filters Name=instance-state-name,Values=running --region ap-southeast-1 --query 'Reservations[].Instances[].[InstanceId,InstanceType,Tags[?Key==`Name`].Value|[0]]' --output table",
+    "Running AWS API call in region ap-southeast-1 (Singapore)...",
+    "Parsing JSON response — found prisma-iot-server, federation-oil-monitor...",
+    "Formatted table: 2 Prisma instances running in ap-southeast-1"
   ];
   function resetAwsAnim(){
     if(awsTimer){clearTimeout(awsTimer);awsTimer=null;}
