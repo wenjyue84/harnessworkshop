@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harness Engineering</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+  .title-wrap { text-align: center; position: relative; z-index: 2; }
+  .tag-row { display: flex; gap: 8px; justify-content: center; margin-bottom: 28px; }
+  .big-title { font-size: clamp(52px, 8vw, 100px); margin-bottom: 20px; }
+  .desc { max-width: 560px; margin: 0 auto 32px; }
+  .location { margin-top: 20px; font-size: 14px; color: var(--text-dim); letter-spacing: 2px; }
+
+  .floating-particles {
+    position: absolute; inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 1;
+  }
+
+  .particle {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0;
+    animation: float-up linear infinite;
+  }
+
+  @keyframes float-up {
+    0%   { opacity: 0; transform: translateY(0) scale(0); }
+    10%  { opacity: 0.4; transform: translateY(-5vh) scale(1); }
+    90%  { opacity: 0.1; }
+    100% { opacity: 0; transform: translateY(-80vh) scale(0.5); }
+  }
+
+  .logo-mark {
+    width: 80px; height: 80px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    margin-bottom: 28px;
+    box-shadow: 0 0 40px rgba(99,102,241,.4);
+    animation: pulse 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%,100% { box-shadow: 0 0 40px rgba(99,102,241,.4); }
+    50%      { box-shadow: 0 0 60px rgba(99,102,241,.7); }
+  }
+
+  .meta-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 16px;
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+
+  .meta-row span { display: flex; align-items: center; gap: 6px; }
+
+  .divider-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--border); }
+</style>
+</head>
+<body>
+<div class="slide-page" style="justify-content:center;">
+  <div class="bg-glow"></div>
+  <div class="bg-grid-lines"></div>
+
+  <div class="floating-particles" id="particles"></div>
+
+  <div class="title-wrap">
+    <div class="logo-mark anim-fade-in">&#9881;</div>
+
+    <div class="tag-row anim-fade-up d1">
+      <span class="pill pill-live">&#9679; LIVE</span>
+      <span class="pill pill-accent">Internal Masterclass</span>
+      <span class="pill pill-cyan">Prisma Technology Solution</span>
+    </div>
+
+    <h1 class="big-title gradient-text anim-fade-up d2">Harness<br>Engineering</h1>
+
+    <p class="subtitle desc anim-fade-up d3">
+      Architecting the Prisma AI Workforce — moving beyond prompt tricks
+      to systematic, probabilistic control of your AI agents.
+    </p>
+
+    <div class="meta-row anim-fade-up d4">
+      <span>&#128205; Senai, Malaysia</span>
+      <div class="divider-dot"></div>
+      <span>&#128197; 2025</span>
+      <div class="divider-dot"></div>
+      <span>&#128100; 14 Slides</span>
+    </div>
+  </div>
+</div>
+
+<script>
+// Generate floating particles
+const container = document.getElementById('particles');
+const colors = ['#6366f1','#8b5cf6','#ec4899','#06b6d4','#22c55e'];
+for (let i = 0; i < 30; i++) {
+  const p = document.createElement('div');
+  p.className = 'particle';
+  const size = Math.random() * 6 + 2;
+  p.style.cssText = `
+    width: ${size}px; height: ${size}px;
+    background: ${colors[Math.floor(Math.random()*colors.length)]};
+    left: ${Math.random()*100}%;
+    bottom: ${Math.random()*20}%;
+    animation-duration: ${Math.random()*15+10}s;
+    animation-delay: ${Math.random()*8}s;
+  `;
+  container.appendChild(p);
+}
+</script>
+</body>
+</html>

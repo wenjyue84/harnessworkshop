@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Context7 — Live Docs for Your LLM</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+  .problem-box {
+    background: rgba(239,68,68,.06);
+    border: 1px solid rgba(239,68,68,.25);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-bottom: 20px;
+  }
+
+  .problem-box h4 { color: var(--red); margin-bottom: 6px; font-size: 14px; }
+  .problem-box p  { font-size: 13px; color: var(--text-dim); line-height: 1.6; }
+
+  .c7-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 4px;
+  }
+
+  .c7-badge {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 900;
+    color: white;
+    flex-shrink: 0;
+    box-shadow: 0 4px 16px rgba(99,102,241,.4);
+  }
+
+  .main-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .tool-list { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
+
+  .tool-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .tool-item:hover { border-color: var(--accent); transform: translateX(4px); }
+
+  .tool-item .ti-icon {
+    width: 34px; height: 34px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .tool-item h4 { font-size: 13px; font-family: var(--font-mono); margin-bottom: 3px; color: var(--accent3); }
+  .tool-item p  { font-size: 12px; color: var(--text-dim); line-height: 1.45; }
+
+  /* How-it-works flow */
+  .how-flow {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 14px;
+  }
+
+  .how-step {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 13px;
+    transition: border-color 0.2s;
+  }
+
+  .how-step:hover { border-color: var(--green); }
+
+  .how-step .hs-num {
+    width: 26px; height: 26px;
+    border-radius: 6px;
+    background: rgba(99,102,241,.15);
+    color: var(--accent3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; font-family: var(--font-mono);
+    flex-shrink: 0;
+  }
+
+  /* Before/after demo */
+  .ba-demo {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .ba-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .ba-tab {
+    flex: 1;
+    padding: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-family: var(--font-mono);
+  }
+
+  .ba-tab.active { background: var(--surface2); }
+  .ba-tab.before { color: var(--red); }
+  .ba-tab.after  { color: var(--green); }
+
+  .ba-body { padding: 14px; font-family: var(--font-mono); font-size: 11px; line-height: 1.8; }
+
+  .ba-panel { display: none; }
+  .ba-panel.active { display: block; }
+
+  /* Exercise */
+  .exercise-compact {
+    background: var(--surface);
+    border: 1px solid rgba(34,197,94,.3);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-top: 14px;
+  }
+
+  .exercise-compact h4 {
+    font-size: 13px;
+    color: var(--green);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  @media (max-width: 860px) {
+    .main-layout { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="slide-page">
+  <div class="slide-inner">
+    <div class="slide-num anim-fade-up">06 / 14</div>
+
+    <div class="c7-logo anim-fade-up d1">
+      <div class="c7-badge">C7</div>
+      <div>
+        <h2 style="margin-bottom:2px;">Context7</h2>
+        <span class="pill pill-accent">MCP Server by Upstash</span>
+      </div>
+    </div>
+    <div class="section-line anim-fade-up d1"></div>
+
+    <div class="problem-box anim-fade-up d1">
+      <h4>&#128683; The Problem Context7 Solves</h4>
+      <p>LLMs generate code using training data that is 1–2 years old. They fabricate APIs that no longer exist, use deprecated patterns, and give generic answers that don't match your actual package version. Context7 fixes this at query time.</p>
+    </div>
+
+    <div class="main-layout">
+      <!-- Left: What it is + How to use -->
+      <div class="anim-fade-up d2">
+        <div class="feynman-label">&#128161; Feynman Explanation</div>
+        <p style="font-size:13px;color:var(--text-dim);line-height:1.65;margin-bottom:14px;">
+          Imagine asking a chef to cook a dish, but their recipe book is 2 years old. Some ingredients have changed, some techniques are discontinued. Context7 is like handing the chef today's menu from the restaurant, right before they cook.
+        </p>
+
+        <div class="tool-list">
+          <div class="tool-item">
+            <div class="ti-icon" style="background:rgba(99,102,241,.1);color:var(--accent);">&#128270;</div>
+            <div>
+              <h4>resolve-library-id</h4>
+              <p>Converts a library name (e.g. "Next.js") into a Context7-compatible ID for precise doc lookup.</p>
+            </div>
+          </div>
+          <div class="tool-item">
+            <div class="ti-icon" style="background:rgba(34,197,94,.1);color:var(--green);">&#128196;</div>
+            <div>
+              <h4>query-docs</h4>
+              <p>Fetches current, version-specific docs for that library and injects them directly into your prompt's context.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="how-flow" style="margin-top:14px;">
+          <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px;">How to Use</div>
+          <div class="how-step">
+            <div class="hs-num">1</div>
+            <span>Add <code>use context7</code> anywhere in your prompt</span>
+          </div>
+          <div class="how-step">
+            <div class="hs-num">2</div>
+            <span>Context7 resolves the library you're coding against</span>
+          </div>
+          <div class="how-step">
+            <div class="hs-num">3</div>
+            <span>Fetches live docs, injects into context before generation</span>
+          </div>
+          <div class="how-step" style="border-color:rgba(34,197,94,.3);">
+            <div class="hs-num" style="background:rgba(34,197,94,.1);color:var(--green);">✓</div>
+            <span style="color:var(--green);">AI writes accurate, current-version code</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Demo + Setup -->
+      <div class="anim-fade-up d3">
+        <div class="ba-demo">
+          <div class="ba-tabs">
+            <div class="ba-tab before active" onclick="showBA('before', this)">&#10060; Without Context7</div>
+            <div class="ba-tab after" onclick="showBA('after', this)">&#9989; With Context7</div>
+          </div>
+          <div class="ba-body">
+            <div id="ba-before" class="ba-panel active">
+              <span style="color:var(--text-muted);">User: "Create a Next.js middleware for JWT auth"</span><br><br>
+              <span style="color:var(--red);">// Using Next.js 12 API (outdated!)</span><br>
+              <span style="color:var(--red);">import { NextApiRequest } from 'next'</span><br>
+              <span style="color:var(--red);">// withAuth middleware — doesn't exist in v14!</span><br>
+              <span style="color:var(--red);">export const config = {</span><br>
+              <span style="color:var(--red);">&nbsp;&nbsp;api: { bodyParser: false }</span><br>
+              <span style="color:var(--red);">}</span>
+            </div>
+            <div id="ba-after" class="ba-panel">
+              <span style="color:var(--text-muted);">User: "Create a Next.js 14 middleware... use context7"</span><br><br>
+              <span style="color:var(--green);">// ✓ Using Next.js 14 App Router middleware</span><br>
+              <span style="color:var(--accent3);">import { NextRequest, NextResponse } from 'next/server'</span><br>
+              <span style="color:var(--accent3);">import { jwtVerify } from 'jose'</span><br>
+              <span style="color:var(--accent3);">export async function middleware(req: NextRequest) {</span><br>
+              <span style="color:var(--accent3);">&nbsp;&nbsp;// correct v14 pattern...</span><br>
+              <span style="color:var(--accent3);">}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Install exercise -->
+        <div class="exercise-compact">
+          <h4>&#128295; Install in Claude Code</h4>
+          <div class="code-block" style="font-size:11px;">
+            <span class="c"># Option 1: Auto setup (recommended)</span><br>
+            <span class="cmd">npx</span> ctx7 setup<br><br>
+            <span class="c"># Option 2: Manual (local)</span><br>
+            <span class="cmd">claude</span> mcp add <span class="f">--scope</span> user context7 <span class="k">--</span><br>
+            &nbsp;&nbsp;<span class="cmd">npx</span> <span class="f">-y</span> @upstash/context7-mcp <span class="f">--api-key</span> <span class="s">YOUR_KEY</span><br><br>
+            <span class="c"># Option 3: Remote (HTTP transport)</span><br>
+            <span class="cmd">claude</span> mcp add <span class="f">--scope</span> user<br>
+            &nbsp;&nbsp;<span class="f">--header</span> <span class="s">"CONTEXT7_API_KEY: YOUR_KEY"</span><br>
+            &nbsp;&nbsp;<span class="f">--transport</span> http context7<br>
+            &nbsp;&nbsp;https://mcp.context7.com/mcp
+          </div>
+          <p style="font-size:11px;color:var(--text-dim);margin-top:8px;">&#128274; Free API key at <code>context7.com/dashboard</code></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function showBA(panel, tab) {
+  document.querySelectorAll('.ba-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.ba-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('ba-' + panel).classList.add('active');
+  tab.classList.add('active');
+}
+</script>
+</body>
+</html>

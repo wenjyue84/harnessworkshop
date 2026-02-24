@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Browser Skills Breakdown</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+  .browser-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 16px;
+  }
+
+  .browser-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .browser-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+
+  .browser-card-header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .browser-card-header .type-badge {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .browser-card-header h3 { font-size: 22px; margin-bottom: 6px; }
+  .browser-card-header p  { font-size: 13px; color: var(--text-dim); line-height: 1.5; }
+
+  .browser-card-body { padding: 20px 24px; }
+
+  .spec-row {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+
+  .spec-row:last-child { border-bottom: none; }
+
+  .spec-label {
+    min-width: 130px;
+    font-weight: 600;
+    color: var(--text-dim);
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    padding-top: 2px;
+  }
+
+  .spec-value { flex: 1; line-height: 1.5; }
+
+  /* Mockup browser */
+  .browser-mockup {
+    background: #0a0a12;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    margin-top: 12px;
+  }
+
+  .bm-bar {
+    background: var(--surface2);
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .bm-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .bm-url {
+    flex: 1;
+    background: var(--surface3);
+    border-radius: 4px;
+    padding: 3px 8px;
+    color: var(--text-dim);
+    margin: 0 8px;
+    font-size: 11px;
+  }
+
+  .bm-content {
+    padding: 12px;
+    min-height: 80px;
+    line-height: 1.7;
+  }
+
+  .bm-log { color: var(--text-dim); }
+  .bm-ok { color: var(--green); }
+  .bm-warn { color: var(--orange); }
+  .bm-err { color: var(--red); }
+  .bm-info { color: var(--cyan); }
+
+  .diff-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 22px;
+    margin-top: 16px;
+  }
+
+  .diff-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-top: 12px;
+  }
+
+  .diff-table th {
+    text-align: left;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .diff-table td {
+    padding: 10px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-dim);
+    line-height: 1.45;
+  }
+
+  .diff-table tr:last-child td { border-bottom: none; }
+  .diff-table td:first-child { color: var(--text); font-weight: 500; }
+
+  @media (max-width: 860px) {
+    .browser-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="slide-page">
+  <div class="slide-inner">
+    <div class="slide-num anim-fade-up">08 / 14</div>
+    <h2 class="anim-fade-up d1">Browser Skills <span class="gradient-text">Breakdown</span></h2>
+    <div class="section-line anim-fade-up d1"></div>
+    <p class="subtitle anim-fade-up d1" style="margin-bottom:16px;font-size:14px;">
+      Two different browser automation skills for two completely different jobs. Know when to use which.
+    </p>
+
+    <div class="browser-grid">
+      <!-- Agent Browser -->
+      <div class="browser-card anim-fade-up d2">
+        <div class="browser-card-header">
+          <span class="type-badge" style="color:var(--accent);">High-Level Research Tool</span>
+          <h3>&#127760; Agent Browser</h3>
+          <p>Semantic web navigation. Understands pages like a human — click, scroll, extract meaning.</p>
+        </div>
+        <div class="browser-card-body">
+          <div class="spec-row">
+            <div class="spec-label">Under the Hood</div>
+            <div class="spec-value">Headless Playwright / Puppeteer automation</div>
+          </div>
+          <div class="spec-row">
+            <div class="spec-label">Best For</div>
+            <div class="spec-value">Research, scraping docs, data extraction, form automation</div>
+          </div>
+          <div class="spec-row">
+            <div class="spec-label">Prisma Example</div>
+            <div class="spec-value" style="color:var(--accent3);">Scraping the latest Stripe API documentation to learn a new webhook endpoint</div>
+          </div>
+          <div class="browser-mockup">
+            <div class="bm-bar">
+              <div class="bm-dot" style="background:#ef4444;"></div>
+              <div class="bm-dot" style="background:#f59e0b;"></div>
+              <div class="bm-dot" style="background:#22c55e;"></div>
+              <div class="bm-url">https://stripe.com/docs/webhooks</div>
+            </div>
+            <div class="bm-content">
+              <div class="bm-info">→ navigating to stripe.com/docs...</div>
+              <div class="bm-ok">✓ found: POST /v1/webhooks endpoint</div>
+              <div class="bm-ok">✓ extracting: payload schema, headers</div>
+              <div class="bm-ok">✓ saved to context: 2,341 tokens</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dev Browser -->
+      <div class="browser-card anim-fade-up d3" style="border-color:rgba(236,72,153,.25);">
+        <div class="browser-card-header">
+          <span class="type-badge" style="color:var(--pink);">Low-Level Debugging Tool</span>
+          <h3>&#128269; Dev Browser</h3>
+          <p>DOM-level debugging. Inspects console, network, memory — like having DevTools open programmatically.</p>
+        </div>
+        <div class="browser-card-body">
+          <div class="spec-row">
+            <div class="spec-label">Under the Hood</div>
+            <div class="spec-value">Chrome DevTools Protocol (CDP)</div>
+          </div>
+          <div class="spec-row">
+            <div class="spec-label">Best For</div>
+            <div class="spec-value">Debugging local apps, reading console errors, testing UI interactions</div>
+          </div>
+          <div class="spec-row">
+            <div class="spec-label">Prisma Example</div>
+            <div class="spec-value" style="color:var(--pink);">Opening localhost:3000 to find &amp; fix a React hydration console error</div>
+          </div>
+          <div class="browser-mockup">
+            <div class="bm-bar">
+              <div class="bm-dot" style="background:#ef4444;"></div>
+              <div class="bm-dot" style="background:#f59e0b;"></div>
+              <div class="bm-dot" style="background:#22c55e;"></div>
+              <div class="bm-url">localhost:3000</div>
+            </div>
+            <div class="bm-content">
+              <div class="bm-err">✗ Error: Hydration failed because initial UI does not match</div>
+              <div class="bm-warn">⚠ Warning: Text content mismatch in &lt;div&gt;</div>
+              <div class="bm-log">→ reading stack trace...</div>
+              <div class="bm-info">→ root cause: Date() call on server vs client</div>
+              <div class="bm-ok">✓ fix: wrap in useEffect or suppressHydrationWarning</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="diff-section anim-fade-up d4">
+      <h4 style="margin-bottom:0;">&#128270; Quick Decision Guide</h4>
+      <table class="diff-table">
+        <tr>
+          <th>Task</th><th>Use Agent Browser?</th><th>Use Dev Browser?</th>
+        </tr>
+        <tr><td>Read external API docs</td><td style="color:var(--green);">&#9989; Yes</td><td style="color:var(--red);">&#10060; No</td></tr>
+        <tr><td>Debug console errors</td><td style="color:var(--red);">&#10060; No</td><td style="color:var(--green);">&#9989; Yes</td></tr>
+        <tr><td>Scrape competitor pricing</td><td style="color:var(--green);">&#9989; Yes</td><td style="color:var(--red);">&#10060; No</td></tr>
+        <tr><td>Check your app on localhost</td><td style="color:var(--red);">&#10060; No</td><td style="color:var(--green);">&#9989; Yes</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+</body>
+</html>

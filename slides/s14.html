@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PRD Skill + Q&A</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+  .prd-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 16px;
+  }
+
+  .prd-flow {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .prd-step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 16px 18px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    transition: border-color 0.25s, transform 0.2s;
+  }
+
+  .prd-step:hover { border-color: var(--accent); transform: translateX(4px); }
+
+  .prd-step-num {
+    width: 28px; height: 28px;
+    min-width: 28px;
+    border-radius: 7px;
+    background: rgba(99,102,241,.15);
+    color: var(--accent3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; font-family: var(--font-mono);
+    flex-shrink: 0;
+  }
+
+  .prd-step h4 { font-size: 14px; margin-bottom: 3px; }
+  .prd-step p  { font-size: 12px; color: var(--text-dim); line-height: 1.5; }
+
+  .prd-step .prd-cmd {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    background: rgba(99,102,241,.1);
+    color: var(--accent3);
+    padding: 4px 10px;
+    border-radius: 6px;
+    display: inline-block;
+    margin-top: 5px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .prd-step .prd-cmd:hover { background: rgba(99,102,241,.2); }
+
+  /* Output preview */
+  .output-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .output-card {
+    background: #0a0a12;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    flex: 1;
+  }
+
+  .output-card-header {
+    background: var(--surface2);
+    padding: 8px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .output-card-body {
+    padding: 12px 14px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 1.8;
+    overflow-y: auto;
+    max-height: 150px;
+  }
+
+  .md-h  { color: var(--accent3); font-weight: 700; }
+  .md-bold { color: var(--text); font-weight: 700; }
+  .md-item { color: var(--text-dim); }
+  .md-code { color: var(--green); }
+
+  .json-key { color: var(--accent); }
+  .json-str { color: var(--green); }
+  .json-num { color: var(--orange); }
+  .json-bool { color: var(--pink); }
+
+  /* CTA */
+  .cta-section {
+    text-align: center;
+    padding: 32px;
+    background: linear-gradient(135deg, rgba(99,102,241,.08), rgba(139,92,246,.08));
+    border: 1px solid rgba(99,102,241,.25);
+    border-radius: var(--radius);
+    margin-top: 16px;
+  }
+
+  .cta-section h2 {
+    font-size: clamp(28px, 4vw, 44px);
+    letter-spacing: -1.5px;
+    margin-bottom: 10px;
+  }
+
+  .cta-section p { color: var(--text-dim); font-size: 15px; margin-bottom: 16px; }
+  .cta-footer { margin-top: 16px; font-size: 12px; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; }
+
+  @media (max-width: 860px) {
+    .prd-layout { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="slide-page">
+  <div class="slide-inner">
+    <div class="slide-num anim-fade-up">14 / 14</div>
+    <h2 class="anim-fade-up d1">PRD Skill &amp; <span class="gradient-text">Q&A</span></h2>
+    <div class="section-line anim-fade-up d1"></div>
+    <p class="subtitle anim-fade-up d1" style="margin-bottom:16px;font-size:14px;">
+      Turn a plain-English product idea into a machine-readable JSON specification — in one command.
+    </p>
+
+    <div class="prd-layout">
+      <div class="prd-flow anim-fade-up d2">
+        <div class="prd-step">
+          <div class="prd-step-num">1</div>
+          <div>
+            <h4>Launch the PRD Skill</h4>
+            <p>Type the slash command in Claude Code. The skill loads a specialized PRD-writing system prompt.</p>
+            <span class="prd-cmd">/prd</span>
+          </div>
+        </div>
+        <div class="prd-step">
+          <div class="prd-step-num">2</div>
+          <div>
+            <h4>Describe your feature</h4>
+            <p>Claude interviews you with structured questions about users, goals, constraints, and success metrics.</p>
+            <span class="prd-cmd">e.g. "Build a booking system for Pelangi Hostel"</span>
+          </div>
+        </div>
+        <div class="prd-step">
+          <div class="prd-step-num">3</div>
+          <div>
+            <h4>PRD generated as Markdown</h4>
+            <p>Claude outputs a structured <code>prd.md</code> with goals, user stories, acceptance criteria, and tech constraints.</p>
+            <span class="prd-cmd">→ prd.md saved</span>
+          </div>
+        </div>
+        <div class="prd-step">
+          <div class="prd-step-num">4</div>
+          <div>
+            <h4>Convert to JSON</h4>
+            <p>Ask Claude: <em>"Convert prd.md to prd.json with structured fields."</em> The JSON version is machine-readable — agents can load it directly as context.</p>
+            <span class="prd-cmd">→ prd.json ready for agents</span>
+          </div>
+        </div>
+        <div class="prd-step" style="border-color:rgba(34,197,94,.3);">
+          <div class="prd-step-num" style="background:rgba(34,197,94,.1);color:var(--green);">5</div>
+          <div>
+            <h4>Feed JSON to the Manager Agent</h4>
+            <p>The Manager Agent reads <code>prd.json</code> and auto-generates task tickets for Coder, Tester, and Reviewer agents.</p>
+            <span class="prd-cmd" style="color:var(--green);">→ autonomous execution begins</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="output-panel anim-fade-up d3">
+        <div class="output-card">
+          <div class="output-card-header">
+            <span style="color:var(--accent);">📄</span> prd.md (excerpt)
+          </div>
+          <div class="output-card-body">
+            <span class="md-h">## Booking System — Pelangi Hostel</span><br>
+            <span class="md-h">### Goal</span><br>
+            <span class="md-item">Enable guests to book rooms online</span><br>
+            <span class="md-item">without phone calls or manual forms.</span><br>
+            <span class="md-h">### User Stories</span><br>
+            <span class="md-item">- As a guest, I can select dates &amp; room</span><br>
+            <span class="md-item">- As staff, I can view today's arrivals</span><br>
+            <span class="md-h">### Acceptance Criteria</span><br>
+            <span class="md-item">- Booking confirmed within 3 seconds</span><br>
+            <span class="md-item">- Payment via Stripe or FPX</span><br>
+            <span class="md-code">Tech: Next.js, Prisma ORM, Stripe</span>
+          </div>
+        </div>
+
+        <div class="output-card">
+          <div class="output-card-header">
+            <span style="color:var(--green);">{ }</span> prd.json (machine-readable)
+          </div>
+          <div class="output-card-body">
+            <span class="json-key">"project"</span>: <span class="json-str">"Pelangi Booking"</span>,<br>
+            <span class="json-key">"goal"</span>: <span class="json-str">"Online room booking without calls"</span>,<br>
+            <span class="json-key">"users"</span>: [<span class="json-str">"guest"</span>, <span class="json-str">"staff"</span>],<br>
+            <span class="json-key">"stories"</span>: [{<br>
+            &nbsp;&nbsp;<span class="json-key">"as"</span>: <span class="json-str">"guest"</span>,<br>
+            &nbsp;&nbsp;<span class="json-key">"i_can"</span>: <span class="json-str">"select dates and book"</span><br>
+            }],<br>
+            <span class="json-key">"criteria"</span>: [<span class="json-str">"&lt;3s confirm"</span>],<br>
+            <span class="json-key">"tech"</span>: [<span class="json-str">"Next.js"</span>, <span class="json-str">"Stripe"</span>],<br>
+            <span class="json-key">"priority"</span>: <span class="json-str">"high"</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Final CTA -->
+    <div class="cta-section anim-fade-up d5">
+      <h2><span class="gradient-text">Start the Engine.</span></h2>
+      <p>It's time to build the harness.</p>
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+        <span class="pill pill-accent">&#9881; Harness Engineering</span>
+        <span class="pill pill-green">&#9989; Probabilistic Control</span>
+        <span class="pill pill-cyan">&#128268; Context Management</span>
+        <span class="pill pill-orange">&#9889; Long-Running Agents</span>
+      </div>
+      <div class="cta-footer">Prisma Technology Solution &bull; Internal Masterclass</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

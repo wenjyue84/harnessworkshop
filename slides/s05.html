@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Workshop: Shifting Probabilities</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+  .workshop-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 16px;
+  }
+
+  .rule-col {
+    border-radius: var(--radius);
+    padding: 22px;
+    overflow: hidden;
+  }
+
+  .rule-col.bad {
+    background: rgba(239,68,68,.05);
+    border: 1px solid rgba(239,68,68,.2);
+  }
+
+  .rule-col.good {
+    background: rgba(34,197,94,.05);
+    border: 1px solid rgba(34,197,94,.2);
+  }
+
+  .col-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .col-header h3 { font-size: 16px; margin: 0; }
+
+  .rule-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    font-size: 13px;
+    line-height: 1.55;
+    position: relative;
+    transition: border-color 0.2s, transform 0.2s;
+    cursor: default;
+  }
+
+  .rule-item:hover { transform: translateX(3px); }
+
+  .rule-item.bad:hover  { border-color: rgba(239,68,68,.4); }
+  .rule-item.good:hover { border-color: rgba(34,197,94,.4); }
+
+  .rule-item .icon { font-size: 16px; margin-right: 8px; }
+
+  .rule-code {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--accent3);
+    background: rgba(99,102,241,.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+    display: block;
+    margin-top: 6px;
+  }
+
+  /* Live editor */
+  .editor-wrap {
+    margin-top: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .editor-bar {
+    background: var(--surface2);
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .editor-bar h4 {
+    font-size: 13px;
+    color: var(--green);
+    font-family: var(--font-mono);
+    margin: 0;
+  }
+
+  .editor-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .editor-pane {
+    padding: 16px;
+  }
+
+  .editor-pane:first-child {
+    border-right: 1px solid var(--border);
+  }
+
+  .editor-pane h5 {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+
+  textarea {
+    width: 100%;
+    background: #0a0a12;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--accent3);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 10px;
+    resize: vertical;
+    line-height: 1.7;
+    min-height: 100px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  textarea:focus { border-color: var(--accent); }
+
+  .prediction-output {
+    background: #0a0a12;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 12px;
+    font-family: var(--font-mono);
+    min-height: 100px;
+    line-height: 1.7;
+  }
+
+  .pred-line { margin-bottom: 4px; }
+  .pred-line .good-token { color: var(--green); }
+  .pred-line .bad-token { color: var(--red); text-decoration: line-through; opacity: 0.5; }
+
+  @media (max-width: 860px) {
+    .workshop-grid { grid-template-columns: 1fr; }
+    .editor-body { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="slide-page">
+  <div class="slide-inner">
+    <div class="slide-num anim-fade-up">05 / 14</div>
+    <h2 class="anim-fade-up d1">Workshop: <span class="gradient-text">Shifting Probabilities</span></h2>
+    <div class="section-line anim-fade-up d1"></div>
+
+    <div class="workshop-grid anim-fade-up d2">
+      <div class="rule-col bad">
+        <div class="col-header">
+          <span style="font-size:20px;">&#10060;</span>
+          <h3 style="color:var(--red);">Default Tendencies</h3>
+        </div>
+
+        <div class="rule-item bad">
+          <span class="icon">&#128542;</span><strong>Over-apologises</strong>
+          <span class="rule-code">"I'm sorry, but I cannot..." / "I apologize for..."</span>
+        </div>
+        <div class="rule-item bad">
+          <span class="icon">&#128230;</span><strong>Uses npm by default</strong>
+          <span class="rule-code">npm install react  ← 73% probability default</span>
+        </div>
+        <div class="rule-item bad">
+          <span class="icon">&#128156;</span><strong>Lazy placeholders</strong>
+          <span class="rule-code">// TODO: implement this  /  // Add logic here</span>
+        </div>
+        <div class="rule-item bad">
+          <span class="icon">&#127912;</span><strong>Raw generic CSS</strong>
+          <span class="rule-code">.btn { background: blue; padding: 10px; }</span>
+        </div>
+      </div>
+
+      <div class="rule-col good">
+        <div class="col-header">
+          <span style="font-size:20px;">&#9989;</span>
+          <h3 style="color:var(--green);">The claude.md Harness</h3>
+        </div>
+
+        <div class="rule-item good">
+          <span class="icon">&#128296;</span><strong>"Never apologize."</strong>
+          <span class="rule-code">"Output only raw code. Skip preamble."</span>
+        </div>
+        <div class="rule-item good">
+          <span class="icon">&#9889;</span><strong>"Mandatory: bun only."</strong>
+          <span class="rule-code">bun add react  ← 94% probability with harness</span>
+        </div>
+        <div class="rule-item good">
+          <span class="icon">&#9997;</span><strong>"Ban: no placeholders."</strong>
+          <span class="rule-code">"Write complete functions. Never use TODO."</span>
+        </div>
+        <div class="rule-item good">
+          <span class="icon">&#127752;</span><strong>"Mandatory: Tailwind only."</strong>
+          <span class="rule-code">className="bg-blue-500 px-4 py-2 rounded"</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Exercise -->
+    <div class="editor-wrap anim-fade-up d4">
+      <div class="editor-bar">
+        <h4>&#128295; Try it: Write your own claude.md rule</h4>
+        <span class="pill pill-green">&#9654; Live Exercise</span>
+      </div>
+      <div class="editor-body">
+        <div class="editor-pane">
+          <h5>Your claude.md rule:</h5>
+          <textarea id="rule-input" placeholder="e.g. Mandatory: Always use TypeScript strict mode. Never use any type." oninput="updatePrediction()"></textarea>
+        </div>
+        <div class="editor-pane">
+          <h5>Effect on LLM behavior:</h5>
+          <div class="prediction-output" id="pred-output">
+            <span style="color:var(--text-muted);">Type a rule to see its effect...</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const ruleEffects = [
+  { trigger: /typescript|ts strict|strict mode/i,
+    good: ['const data: User[] = [];', 'function greet(name: string): string {'],
+    bad: ['const data: any = [];', 'function greet(name) {'] },
+  { trigger: /tailwind|className/i,
+    good: ['className="flex gap-4 p-4 rounded-lg"', 'className="text-sm font-bold text-white"'],
+    bad: ['style={{ display: "flex", gap: "16px" }}', '.container { padding: 16px; }'] },
+  { trigger: /bun|package manager/i,
+    good: ['bun add zod', 'bun run dev'],
+    bad: ['npm install zod', 'npm run dev'] },
+  { trigger: /apologize|apolog|sorry/i,
+    good: ['[Direct output only]', 'Here is the fixed code:'],
+    bad: ['I apologize for the error...', 'I\'m sorry, but...'] },
+  { trigger: /placeholder|todo|implement/i,
+    good: ['function validate(email: string) {', '  return /^[^@]+@[^@]+$/.test(email)', '}'],
+    bad: ['// TODO: implement validation', '// Add logic here'] },
+];
+
+function updatePrediction() {
+  const val = document.getElementById('rule-input').value;
+  const out = document.getElementById('pred-output');
+
+  if (!val.trim()) {
+    out.innerHTML = '<span style="color:var(--text-muted);">Type a rule to see its effect...</span>';
+    return;
+  }
+
+  const match = ruleEffects.find(r => r.trigger.test(val));
+  if (match) {
+    out.innerHTML = `
+      <div style="color:var(--text-muted);font-size:11px;margin-bottom:8px;">BEFORE (default):</div>
+      ${match.bad.map(l => `<div class="pred-line"><span class="bad-token">${l}</span></div>`).join('')}
+      <div style="color:var(--text-muted);font-size:11px;margin-top:10px;margin-bottom:8px;">AFTER (harnessed):</div>
+      ${match.good.map(l => `<div class="pred-line"><span class="good-token">✓ ${l}</span></div>`).join('')}
+    `;
+  } else {
+    out.innerHTML = `
+      <div style="color:var(--text-muted);font-size:11px;margin-bottom:8px;">Rule detected. Effect:</div>
+      <div class="pred-line"><span class="good-token">✓ AI will prioritize: "${val.split('\n')[0].slice(0,40)}..."</span></div>
+      <div class="pred-line" style="color:var(--text-dim);margin-top:8px;">Probability of compliant output: <span style="color:var(--green);">↑ High</span></div>
+    `;
+  }
+}
+</script>
+</body>
+</html>

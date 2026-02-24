@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>The Probability Machine</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+  .prob-demo {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .prob-demo-header {
+    background: var(--surface2);
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  .token-bar-wrap { padding: 20px; }
+
+  .token-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+
+  .token-word {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    min-width: 110px;
+    color: var(--text);
+  }
+
+  .token-bar-bg {
+    flex: 1;
+    height: 28px;
+    background: var(--surface3);
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .token-bar-fill {
+    height: 100%;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: var(--font-mono);
+    color: white;
+    transition: width 1.2s cubic-bezier(.25,.46,.45,.94);
+    width: 0;
+  }
+
+  .token-pct {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    min-width: 40px;
+    text-align: right;
+    color: var(--text-dim);
+  }
+
+  /* Toggle */
+  .toggle-wrap {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+    align-items: center;
+  }
+
+  .toggle-btn {
+    padding: 6px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text-dim);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .toggle-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+  }
+
+  .toggle-btn:hover:not(.active) { border-color: var(--accent); color: var(--text); }
+
+  .insight-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+
+  .insight-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    text-align: center;
+    transition: border-color 0.2s;
+  }
+
+  .insight-card:hover { border-color: var(--accent); }
+
+  .insight-icon { font-size: 28px; margin-bottom: 8px; }
+  .insight-card h4 { font-size: 14px; margin-bottom: 4px; }
+  .insight-card p { font-size: 12px; color: var(--text-dim); line-height: 1.5; }
+
+  .prompt-display {
+    background: #0a0a12;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+    margin-bottom: 14px;
+    line-height: 1.7;
+    min-height: 60px;
+    transition: all 0.4s ease;
+  }
+
+  @media (max-width: 860px) {
+    .insight-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="slide-page">
+  <div class="slide-inner">
+    <div class="slide-num anim-fade-up">04 / 14</div>
+    <h2 class="anim-fade-up d1">The <span class="gradient-text">Probability Machine</span></h2>
+    <div class="section-line anim-fade-up d1"></div>
+
+    <div class="feynman-label anim-fade-up d1">&#128161; Feynman Explanation</div>
+    <p class="subtitle anim-fade-up d1" style="margin-bottom:18px;font-size:14px;">
+      An LLM doesn't "think." It looks at the words you gave it and asks: "statistically, what word comes next?" It's a very, very sophisticated autocomplete. Our job is to rig the autocomplete.
+    </p>
+
+    <div class="anim-fade-up d2">
+      <div class="toggle-wrap">
+        <span style="font-size:13px;color:var(--text-dim);">Show next-token prediction for:</span>
+        <button class="toggle-btn active" id="btn-default" onclick="setMode('default')">No Harness</button>
+        <button class="toggle-btn" id="btn-harnessed" onclick="setMode('harnessed')">With Harness</button>
+      </div>
+
+      <div class="prob-demo">
+        <div class="prob-demo-header">
+          &#9679; Token Prediction &nbsp;|&nbsp;
+          <span id="prompt-label">Prompt: "Install the package with..."</span>
+        </div>
+        <div class="token-bar-wrap">
+          <div id="token-bars"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="insight-row mt-sm anim-fade-up d3">
+      <div class="insight-card">
+        <div class="insight-icon">&#127922;</div>
+        <h4>Next Token, Always</h4>
+        <p>Every output is just the statistically most likely next word, given all previous words.</p>
+      </div>
+      <div class="insight-card">
+        <div class="insight-icon">&#128200;</div>
+        <h4>Default = Average Internet</h4>
+        <p>Without constraints, the LLM produces the "average" of all training data. Generic. Mediocre.</p>
+      </div>
+      <div class="insight-card">
+        <div class="insight-icon">&#127919;</div>
+        <h4>Our Job: Shift the Curve</h4>
+        <p>Use <code>claude.md</code> rules to make the <em>right</em> answer the statistically dominant one.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const modes = {
+  default: {
+    label: 'Prompt: "Install the package with..."',
+    tokens: [
+      { word: 'npm install', pct: 73, color: '#ef4444' },
+      { word: 'yarn add',    pct: 15, color: '#f59e0b' },
+      { word: 'bun add',     pct: 4,  color: '#6366f1' },
+      { word: 'pnpm add',    pct: 5,  color: '#8b5cf6' },
+      { word: 'pip install', pct: 3,  color: '#7878a0' },
+    ]
+  },
+  harnessed: {
+    label: 'Prompt: "Install... [claude.md: MANDATORY use bun]"',
+    tokens: [
+      { word: 'npm install', pct: 2,  color: '#7878a0' },
+      { word: 'yarn add',    pct: 1,  color: '#7878a0' },
+      { word: 'bun add',     pct: 94, color: '#22c55e' },
+      { word: 'pnpm add',    pct: 2,  color: '#7878a0' },
+      { word: 'pip install', pct: 1,  color: '#7878a0' },
+    ]
+  }
+};
+
+let currentMode = 'default';
+
+function renderBars(mode) {
+  const data = modes[mode];
+  document.getElementById('prompt-label').textContent = data.label;
+  const container = document.getElementById('token-bars');
+  container.innerHTML = '';
+  data.tokens.forEach(t => {
+    const row = document.createElement('div');
+    row.className = 'token-row';
+    row.innerHTML = `
+      <span class="token-word">${t.word}</span>
+      <div class="token-bar-bg">
+        <div class="token-bar-fill" style="background:${t.color};" data-pct="${t.pct}">
+          ${t.pct >= 20 ? t.pct + '%' : ''}
+        </div>
+      </div>
+      <span class="token-pct" style="color:${t.color};">${t.pct}%</span>
+    `;
+    container.appendChild(row);
+  });
+  // Animate bars
+  requestAnimationFrame(() => {
+    container.querySelectorAll('.token-bar-fill').forEach(bar => {
+      bar.style.width = bar.getAttribute('data-pct') + '%';
+    });
+  });
+}
+
+function setMode(mode) {
+  currentMode = mode;
+  document.getElementById('btn-default').classList.toggle('active', mode === 'default');
+  document.getElementById('btn-harnessed').classList.toggle('active', mode === 'harnessed');
+  renderBars(mode);
+}
+
+// Initial render after a short delay
+setTimeout(() => renderBars('default'), 400);
+</script>
+</body>
+</html>

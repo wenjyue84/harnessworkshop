@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CLI vs MCP vs API</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+  .tooling-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-top: 16px;
+  }
+
+  .tool-card {
+    border-radius: var(--radius);
+    padding: 24px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .tool-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+
+  .tool-card.preferred { border-color: rgba(34,197,94,.35); }
+  .tool-card.preferred::before {
+    content: '★ PREFERRED';
+    position: absolute;
+    top: 12px; right: 12px;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    color: var(--green);
+    background: rgba(34,197,94,.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  .tool-icon {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    margin-bottom: 14px;
+  }
+
+  .tool-card h3 { font-size: 20px; margin-bottom: 6px; }
+  .tool-card .subtitle-sm { font-size: 12px; color: var(--text-dim); margin-bottom: 12px; }
+
+  .tool-props { list-style: none; margin-bottom: 14px; }
+  .tool-props li {
+    font-size: 13px;
+    padding: 5px 0;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-dim);
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    line-height: 1.4;
+  }
+
+  .tool-props li:last-child { border-bottom: none; }
+  .tool-props li::before { content: '›'; color: var(--accent); font-weight: 700; flex-shrink: 0; }
+
+  .verdict {
+    font-size: 12px;
+    line-height: 1.5;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-weight: 500;
+  }
+
+  /* OpenClaw deep-dive */
+  .openclaw-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px;
+    margin-top: 18px;
+  }
+
+  .openclaw-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .openclaw-logo {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--accent), var(--pink));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+
+  .reason-list {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 10px;
+  }
+
+  .reason-item {
+    background: var(--surface2);
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .reason-item .ri-title {
+    font-weight: 700;
+    font-size: 13px;
+    margin-bottom: 4px;
+    color: var(--green);
+  }
+
+  @media (max-width: 860px) {
+    .tooling-grid { grid-template-columns: 1fr; }
+    .reason-list { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="slide-page">
+  <div class="slide-inner">
+    <div class="slide-num anim-fade-up">07 / 14</div>
+    <h2 class="anim-fade-up d1">Tooling: <span class="gradient-text">CLI vs MCP vs API</span></h2>
+    <div class="section-line anim-fade-up d1"></div>
+    <p class="subtitle anim-fade-up d1" style="margin-bottom:4px;font-size:14px;">Three ways to extend an AI agent's capabilities. The choice matters enormously.</p>
+
+    <div class="tooling-grid">
+      <div class="tool-card preferred anim-fade-up d2">
+        <div class="tool-icon" style="background:rgba(34,197,94,.1);color:var(--green);">&#9000;</div>
+        <div class="card-label">Command Line</div>
+        <h3>CLI</h3>
+        <p class="subtitle-sm">Standard UNIX-style binaries. The AI calls them as shell commands.</p>
+        <ul class="tool-props">
+          <li>Zero server overhead — just a binary</li>
+          <li>LLMs trained heavily on shell commands</li>
+          <li>Composable via pipes: <code>cmd | grep | awk</code></li>
+          <li>Easy to test &amp; debug manually</li>
+          <li>Works everywhere — no setup</li>
+        </ul>
+        <div class="verdict" style="background:rgba(34,197,94,.08);color:var(--green);">
+          &#9989; Best for: local machine tasks, file ops, git, builds, dev workflows
+        </div>
+      </div>
+
+      <div class="tool-card anim-fade-up d3">
+        <div class="tool-icon" style="background:rgba(139,92,246,.1);color:var(--accent2);">&#128268;</div>
+        <div class="card-label">Model Context Protocol</div>
+        <h3>MCP</h3>
+        <p class="subtitle-sm">JSON-RPC servers that standardize how AI accesses external tools.</p>
+        <ul class="tool-props">
+          <li>Standardized across all AI systems</li>
+          <li>Rich structured data exchange</li>
+          <li>Requires running server process</li>
+          <li>Harder to debug (JSON-RPC overhead)</li>
+          <li>Less portable — needs specific setup</li>
+        </ul>
+        <div class="verdict" style="background:rgba(139,92,246,.08);color:var(--accent3);">
+          &#128296; Best for: cross-system integrations, Notion, Slack, databases
+        </div>
+      </div>
+
+      <div class="tool-card anim-fade-up d4">
+        <div class="tool-icon" style="background:rgba(6,182,212,.1);color:var(--cyan);">&#127760;</div>
+        <div class="card-label">REST / GraphQL</div>
+        <h3>API</h3>
+        <p class="subtitle-sm">Network endpoints. The AI makes HTTP calls to external services.</p>
+        <ul class="tool-props">
+          <li>Access to external data &amp; services</li>
+          <li>Requires auth tokens &amp; network</li>
+          <li>Adds latency to every call</li>
+          <li>Rate limits &amp; reliability risks</li>
+          <li>Ideal for external data only</li>
+        </ul>
+        <div class="verdict" style="background:rgba(6,182,212,.08);color:var(--cyan);">
+          &#127760; Best for: Stripe, weather, external SaaS, not for local tasks
+        </div>
+      </div>
+    </div>
+
+    <!-- OpenClaw Philosophy Section -->
+    <div class="openclaw-section anim-fade-up d5">
+      <div class="openclaw-header">
+        <div class="openclaw-logo">&#129482;</div>
+        <div>
+          <h4 style="font-size:15px;margin-bottom:2px;">Why OpenClaw Prefers CLI</h4>
+          <span style="font-size:12px;color:var(--text-dim);">The OpenClaw AI Gateway Philosophy</span>
+        </div>
+      </div>
+      <div class="reason-list">
+        <div class="reason-item">
+          <div class="ri-title">&#9650; Composability</div>
+          UNIX philosophy: one tool does one thing well. Chain them with pipes. No framework lock-in.
+        </div>
+        <div class="reason-item">
+          <div class="ri-title">&#128270; Debuggability</div>
+          Run any CLI command in your terminal. See exactly what the AI sees. No hidden JSON-RPC layer.
+        </div>
+        <div class="reason-item">
+          <div class="ri-title">&#9889; LLM-Native</div>
+          LLMs are trained on billions of shell commands. They reason about CLIs more reliably than custom JSON schemas.
+        </div>
+        <div class="reason-item">
+          <div class="ri-title">&#128230; Zero Overhead</div>
+          MCP requires a running server. A CLI is just a binary. Deploy anywhere, no server management.
+        </div>
+        <div class="reason-item">
+          <div class="ri-title">&#128274; Reliability</div>
+          Fewer moving parts = fewer failure points. A broken MCP server blocks your entire agent.
+        </div>
+        <div class="reason-item">
+          <div class="ri-title">&#127759; Portability</div>
+          Clone repo → run. No <code>docker-compose up</code>, no service registration, no env variables for every tool.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

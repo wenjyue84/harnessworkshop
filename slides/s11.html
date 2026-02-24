@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Agents = Context Management</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+  .expert-quotes {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 16px 0;
+  }
+
+  .eq-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    display: flex;
+    gap: 14px;
+    transition: border-color 0.25s, transform 0.2s;
+  }
+
+  .eq-card:hover { border-color: var(--accent); transform: translateX(4px); }
+
+  .eq-avatar {
+    width: 42px; height: 42px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+    font-weight: 800;
+    font-family: var(--font-mono);
+  }
+
+  .eq-content blockquote {
+    font-size: 13px;
+    line-height: 1.65;
+    font-style: italic;
+    color: var(--accent3);
+    margin-bottom: 5px;
+  }
+
+  .eq-content cite {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-style: normal;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* Context window explainer */
+  .ctx-explainer {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-top: 14px;
+  }
+
+  .ctx-window {
+    background: #0a0a12;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 1.8;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ctx-window::before {
+    content: 'CONTEXT WINDOW';
+    position: absolute;
+    top: 6px; right: 10px;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+    font-weight: 700;
+  }
+
+  .ctx-section {
+    padding: 6px 8px;
+    border-radius: 5px;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .ctx-section.dimmed { opacity: 0.3; }
+
+  .ctx-section .cs-label {
+    font-size: 9px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 700;
+    min-width: 100px;
+    color: inherit;
+  }
+
+  .ctx-section .cs-value { font-size: 11px; color: var(--text-dim); }
+
+  /* Two column layout */
+  .two-col-layout {
+    display: grid;
+    grid-template-columns: 5fr 4fr;
+    gap: 22px;
+  }
+
+  .reframe-box {
+    background: linear-gradient(135deg, rgba(99,102,241,.08), rgba(139,92,246,.08));
+    border: 1px solid rgba(99,102,241,.3);
+    border-radius: var(--radius);
+    padding: 18px 22px;
+    margin-top: 14px;
+  }
+
+  .reframe-box h4 { font-size: 13px; color: var(--accent); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+
+  .reframe-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+    font-size: 13px;
+    align-items: center;
+  }
+
+  .reframe-old { color: var(--red); text-decoration: line-through; opacity: 0.6; min-width: 140px; }
+  .reframe-arrow { color: var(--accent); font-weight: 700; }
+  .reframe-new { color: var(--green); font-weight: 600; }
+
+  .anthropic-quote {
+    border-left: 3px solid var(--orange);
+    padding: 12px 18px;
+    background: rgba(245,158,11,.05);
+    border-radius: 0 8px 8px 0;
+    margin-top: 12px;
+    font-size: 13px;
+    font-style: italic;
+    color: var(--orange);
+    line-height: 1.6;
+  }
+
+  .anthropic-quote cite { display: block; margin-top: 6px; font-style: normal; font-size: 11px; color: var(--text-muted); }
+
+  @media (max-width: 860px) {
+    .two-col-layout { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="slide-page">
+  <div class="slide-inner">
+    <div class="slide-num anim-fade-up">11 / 14</div>
+    <h2 class="anim-fade-up d1">Agents = <span class="gradient-text">Context Management</span></h2>
+    <div class="section-line anim-fade-up d1"></div>
+
+    <div class="feynman-label anim-fade-up d1">&#128161; Feynman Explanation</div>
+    <p class="subtitle anim-fade-up d1" style="margin-bottom:14px;font-size:14px;">
+      Forget the idea that an "agent" is an AI <em>playing a role</em>. An agent is a system that carefully decides <strong>what information gets put in front of the LLM</strong> at each step. The "role" is just one small piece of that information.
+    </p>
+
+    <div class="two-col-layout">
+      <!-- Left: Quotes + Reframe -->
+      <div class="anim-fade-up d2">
+        <div class="expert-quotes">
+          <div class="eq-card">
+            <div class="eq-avatar" style="background:rgba(99,102,241,.15);color:var(--accent);">AK</div>
+            <div class="eq-content">
+              <blockquote>"Context engineering is the delicate art and science of filling the context window with just the right information for the next step."</blockquote>
+              <cite>&#8212; <strong style="color:var(--text);">Andrej Karpathy</strong> &nbsp;·&nbsp; June 2025</cite>
+            </div>
+          </div>
+
+          <div class="eq-card">
+            <div class="eq-avatar" style="background:rgba(34,197,94,.15);color:var(--green);">TL</div>
+            <div class="eq-content">
+              <blockquote>"The art of providing all the context for the task to be plausibly solvable by the LLM."</blockquote>
+              <cite>&#8212; <strong style="color:var(--text);">Tobi Lütke</strong> (Shopify CEO) &nbsp;·&nbsp; June 2025</cite>
+            </div>
+          </div>
+
+          <div class="eq-card">
+            <div class="eq-avatar" style="background:rgba(245,158,11,.15);color:var(--orange);">HC</div>
+            <div class="eq-content">
+              <blockquote>"Most of the time when an agent is not performing reliably the underlying cause is that the appropriate context, instructions and tools have not been communicated to the model."</blockquote>
+              <cite>&#8212; <strong style="color:var(--text);">Harrison Chase</strong> (LangChain) &nbsp;·&nbsp; June 2025</cite>
+            </div>
+          </div>
+        </div>
+
+        <div class="anthropic-quote">
+          "Agents are typically just LLMs using tools based on environmental feedback in a loop."
+          <cite>— Anthropic, "Building Effective Agents" (Dec 2024)</cite>
+        </div>
+
+        <div class="reframe-box" style="margin-top:12px;">
+          <h4>&#128260; The Reframe</h4>
+          <div class="reframe-row">
+            <span class="reframe-old">Designing a persona</span>
+            <span class="reframe-arrow">→</span>
+            <span class="reframe-new">Engineering what's in the system prompt</span>
+          </div>
+          <div class="reframe-row">
+            <span class="reframe-old">Role-playing an AI</span>
+            <span class="reframe-arrow">→</span>
+            <span class="reframe-new">Controlling what the LLM sees at each step</span>
+          </div>
+          <div class="reframe-row">
+            <span class="reframe-old">Prompt writing</span>
+            <span class="reframe-arrow">→</span>
+            <span class="reframe-new">Context architecture</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Context Window Diagram -->
+      <div class="anim-fade-up d3">
+        <div class="ctx-explainer">
+          <h4 style="font-size:13px;color:var(--text-dim);margin-bottom:12px;">What actually defines an agent:</h4>
+          <div class="ctx-window">
+            <div class="ctx-section" style="background:rgba(99,102,241,.12);">
+              <span class="cs-label" style="color:var(--accent);">System Prompt</span>
+              <span class="cs-value">"You are a Prisma Coder. Use bun only..."</span>
+            </div>
+            <div class="ctx-section" style="background:rgba(34,197,94,.1);">
+              <span class="cs-label" style="color:var(--green);">Memory (RAG)</span>
+              <span class="cs-value">relevant code snippets from codebase</span>
+            </div>
+            <div class="ctx-section" style="background:rgba(6,182,212,.1);">
+              <span class="cs-label" style="color:var(--cyan);">Tool Results</span>
+              <span class="cs-value">file reads, test output, API responses</span>
+            </div>
+            <div class="ctx-section" style="background:rgba(245,158,11,.1);">
+              <span class="cs-label" style="color:var(--orange);">Conversation</span>
+              <span class="cs-value">prior turns, observations, decisions</span>
+            </div>
+            <div class="ctx-section" style="background:rgba(236,72,153,.1);">
+              <span class="cs-label" style="color:var(--pink);">Current Task</span>
+              <span class="cs-value">"Write auth middleware for /api/login"</span>
+            </div>
+            <div style="text-align:center;margin-top:10px;font-size:10px;color:var(--accent);letter-spacing:1px;">↓ NEXT TOKEN PREDICTION ↓</div>
+          </div>
+
+          <div class="highlight-box green" style="margin-top:12px;">
+            <p style="font-size:13px;line-height:1.6;color:var(--text);">
+              <strong style="color:var(--green);">The entire job of "agent design"</strong> is deciding: <em>What goes in each of these sections? When? In what order?</em>
+            </p>
+          </div>
+
+          <div style="margin-top:12px;">
+            <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;">Agent = Loop of context updates</div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:12px;flex-wrap:wrap;">
+              <span class="pill pill-accent">Observe env</span>
+              <span style="color:var(--accent);">→</span>
+              <span class="pill pill-green">Update context</span>
+              <span style="color:var(--accent);">→</span>
+              <span class="pill pill-cyan">Call tools</span>
+              <span style="color:var(--accent);">→</span>
+              <span class="pill pill-orange">Add result to ctx</span>
+              <span style="color:var(--accent);">↺</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

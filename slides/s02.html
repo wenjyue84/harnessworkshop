@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Evolution of AI Engineering</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+  .evo-item {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    padding: 24px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .evo-item::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+
+  .evo-item.red::after  { background: radial-gradient(circle at 0% 50%, rgba(239,68,68,.06), transparent 70%); }
+  .evo-item.orange::after { background: radial-gradient(circle at 0% 50%, rgba(245,158,11,.06), transparent 70%); }
+  .evo-item.green::after  { background: radial-gradient(circle at 0% 50%, rgba(34,197,94,.06), transparent 70%); }
+
+  .evo-item:hover { transform: translateX(6px); }
+  .evo-item:hover::after { opacity: 1; }
+
+  .evo-num {
+    width: 52px; height: 52px;
+    min-width: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 22px;
+    font-family: var(--font-mono);
+  }
+
+  .evo-body h3 { font-size: 20px; margin-bottom: 6px; }
+  .evo-body p  { font-size: 14px; color: var(--text-dim); line-height: 1.65; margin-bottom: 8px; }
+
+  .evo-verdict {
+    font-size: 12px;
+    font-weight: 600;
+    font-family: var(--font-mono);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .connector {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 0 8px 36px;
+    color: var(--text-muted);
+    font-size: 12px;
+  }
+
+  .connector::before {
+    content: '';
+    width: 2px;
+    height: 100%;
+    background: var(--border);
+  }
+
+  .arrow-line {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 20px;
+    color: var(--accent);
+  }
+
+  /* Feynman analogy box */
+  .feynman-box {
+    background: rgba(245,158,11,.06);
+    border: 1px solid rgba(245,158,11,.2);
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-top: 16px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text-dim);
+  }
+
+  .feynman-box strong { color: var(--orange); }
+</style>
+</head>
+<body>
+<div class="slide-page">
+  <div class="slide-inner">
+    <div class="slide-num anim-fade-up">02 / 14</div>
+    <h2 class="anim-fade-up d1">The Evolution of <span class="gradient-text">AI Engineering</span></h2>
+    <div class="section-line anim-fade-up d1"></div>
+
+    <div class="feynman-label anim-fade-up d1">&#128161; Feynman Explanation</div>
+    <p class="subtitle anim-fade-up d1" style="margin-bottom:20px;font-size:14px;">
+      Think of teaching a brilliant-but-literal student. First you ask nicely. Then you give them the whole textbook. Finally, you design a strict exam system that forces correct answers.
+    </p>
+
+    <div style="display:flex;flex-direction:column;gap:0;">
+
+      <div class="evo-item red anim-fade-up d2">
+        <div class="evo-num" style="background:rgba(239,68,68,.1);color:var(--red);">1</div>
+        <div class="evo-body">
+          <span class="pill pill-red" style="margin-bottom:8px;">Fragile &bull; High Variance</span>
+          <h3>Prompt Engineering</h3>
+          <p>Asking nicely. Relying on zero-shot tricks or clever phrasing to coax an LLM into doing what you want.</p>
+          <div class="evo-verdict" style="color:var(--red);">&#10007; Result: High variance. Different answer every run. Falls apart at scale.</div>
+        </div>
+      </div>
+
+      <div class="connector"><div class="arrow-line">↓ <span style="font-size:12px;color:var(--text-muted);">engineers tried harder...</span></div></div>
+
+      <div class="evo-item orange anim-fade-up d3">
+        <div class="evo-num" style="background:rgba(245,158,11,.1);color:var(--orange);">2</div>
+        <div class="evo-body">
+          <span class="pill pill-orange" style="margin-bottom:8px;">Expensive &bull; Token-Heavy</span>
+          <h3>Context Engineering</h3>
+          <p>Stuffing the prompt. Using RAG pipelines or massive code dumps to give the LLM "everything it might need."</p>
+          <div class="evo-verdict" style="color:var(--orange);">&#9888; Result: "Lost in the middle" hallucinations. $$$$ token costs. Slow.</div>
+        </div>
+      </div>
+
+      <div class="connector"><div class="arrow-line">↓ <span style="font-size:12px;color:var(--text-muted);">then came the shift...</span></div></div>
+
+      <div class="evo-item green anim-fade-up d4" style="border-color:rgba(34,197,94,.3);">
+        <div class="evo-num" style="background:rgba(34,197,94,.1);color:var(--green);">3</div>
+        <div class="evo-body">
+          <span class="pill pill-green" style="margin-bottom:8px;">Systematic &bull; Deterministic</span>
+          <h3>Harness Engineering</h3>
+          <p>Systemic constraint. Building persistent memory boundaries, strict CLI tools, and probabilistic guardrails to physically steer the AI's outputs.</p>
+          <div class="evo-verdict" style="color:var(--green);">&#10003; Result: Consistent, auditable, scalable AI workforce. This is what we build.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="feynman-box anim-fade-up d5">
+      <strong>&#128161; The simple version:</strong> Prompt Engineering = begging. Context Engineering = overwhelming with information. Harness Engineering = <strong>building a system that makes the wrong answer physically harder to produce.</strong>
+    </div>
+  </div>
+</div>
+</body>
+</html>

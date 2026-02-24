@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Test-Driven AI Philosophy</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+  .philosophy-quote {
+    border-left: 4px solid var(--accent);
+    padding: 24px 32px;
+    background: var(--surface);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    margin: 18px 0;
+  }
+
+  .philosophy-quote p {
+    font-size: clamp(17px, 2.2vw, 24px);
+    font-weight: 600;
+    line-height: 1.5;
+    font-style: italic;
+    color: var(--accent3);
+  }
+
+  .philosophy-quote cite {
+    display: block;
+    margin-top: 10px;
+    font-size: 12px;
+    font-style: normal;
+    color: var(--text-dim);
+  }
+
+  /* Self-improvement loop */
+  .loop-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 16px;
+  }
+
+  .loop-visual {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+  }
+
+  .loop-step {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    font-size: 13px;
+    font-weight: 600;
+    transition: border-color 0.25s;
+    cursor: default;
+  }
+
+  .loop-step:hover { border-color: var(--accent); }
+
+  .loop-step .step-icon {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .loop-step .step-sub { font-size: 11px; font-weight: 400; color: var(--text-dim); }
+
+  .loop-arrow-down {
+    text-align: center;
+    font-size: 16px;
+    color: var(--accent);
+    line-height: 1;
+    animation: bounce 2s ease-in-out infinite;
+  }
+
+  @keyframes bounce {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(3px); }
+  }
+
+  .loop-feedback {
+    position: absolute;
+    right: -28px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 24px;
+    color: var(--accent);
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    animation: bounce2 2s ease-in-out infinite;
+  }
+
+  @keyframes bounce2 {
+    0%,100%{ transform: translateY(-50%) translateX(0);}
+    50%{ transform: translateY(-50%) translateX(3px);}
+  }
+
+  /* Why testing matters */
+  .why-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .why-item {
+    display: flex;
+    gap: 12px;
+    font-size: 13px;
+    line-height: 1.55;
+    align-items: flex-start;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .why-item:last-child { border-bottom: none; padding-bottom: 0; }
+
+  .why-icon {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .highlight-box-special {
+    background: linear-gradient(135deg, rgba(34,197,94,.06), rgba(6,182,212,.06));
+    border: 1px solid rgba(34,197,94,.25);
+    border-radius: var(--radius);
+    padding: 18px 24px;
+    margin-top: 14px;
+  }
+
+  .highlight-box-special p {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.6;
+    color: var(--green);
+  }
+
+  @media (max-width: 860px) {
+    .loop-container { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="slide-page">
+  <div class="slide-inner">
+    <div class="slide-num anim-fade-up">10 / 14</div>
+    <h2 class="anim-fade-up d1">The Prisma <span class="gradient-text">Engineering Philosophy</span></h2>
+    <div class="section-line anim-fade-up d1"></div>
+
+    <div class="philosophy-quote anim-fade-up d2">
+      <p>"In the AI era, the programmer's job shifts from writing the core feature to writing the <em>definitive test suite</em> that proves the AI's feature works."</p>
+      <cite>— Prisma Engineering Masterclass</cite>
+    </div>
+
+    <div class="feynman-label anim-fade-up d2">&#128161; Feynman Explanation</div>
+    <p class="subtitle anim-fade-up d2" style="margin-bottom:16px;font-size:14px;">
+      Imagine a chef who doesn't taste their own food — but they have a team of food critics with a 200-point checklist. If every critic passes it, the dish is right. The <strong>critics are your tests</strong>. The chef is your AI.
+    </p>
+
+    <div class="loop-container">
+      <!-- Self-improvement loop -->
+      <div class="loop-visual anim-fade-up d3">
+        <h4 style="margin-bottom:6px;font-size:14px;color:var(--text-dim);">The Self-Improvement Loop</h4>
+        <div class="loop-step">
+          <div class="step-icon" style="background:rgba(99,102,241,.1);color:var(--accent);">&#9997;</div>
+          <div><div>You write the test suite</div><div class="step-sub">Define what "correct" means. Every edge case.</div></div>
+        </div>
+        <div class="loop-arrow-down">&#8595;</div>
+        <div class="loop-step">
+          <div class="step-icon" style="background:rgba(34,197,94,.1);color:var(--green);">&#9889;</div>
+          <div><div>AI writes the feature</div><div class="step-sub">Generates code to satisfy the tests.</div></div>
+        </div>
+        <div class="loop-arrow-down">&#8595;</div>
+        <div class="loop-step">
+          <div class="step-icon" style="background:rgba(245,158,11,.1);color:var(--orange);">&#128165;</div>
+          <div><div>Tests run automatically</div><div class="step-sub">CI/CD or hooks trigger the test suite.</div></div>
+        </div>
+        <div class="loop-arrow-down">&#8595;</div>
+        <div class="loop-step">
+          <div class="step-icon" style="background:rgba(239,68,68,.1);color:var(--red);">&#128270;</div>
+          <div><div>AI reads its own errors</div><div class="step-sub">Test output becomes the AI's feedback.</div></div>
+        </div>
+        <div class="loop-arrow-down">&#8595;</div>
+        <div class="loop-step" style="border-color:rgba(34,197,94,.4);">
+          <div class="step-icon" style="background:rgba(34,197,94,.1);color:var(--green);">&#128260;</div>
+          <div><div>AI iterates until all pass</div><div class="step-sub">Loop repeats. No human intervention.</div></div>
+        </div>
+      </div>
+
+      <!-- Why this matters -->
+      <div class="why-card anim-fade-up d4">
+        <h4 style="font-size:14px;color:var(--text-dim);margin-bottom:4px;">Why This Is The Future of Programming</h4>
+        <div class="why-item">
+          <div class="why-icon" style="background:rgba(99,102,241,.1);color:var(--accent);">&#127919;</div>
+          <div><strong>Tests = Specification</strong><br>
+          A passing test suite proves the feature works. No ambiguity. No "it works on my machine."</div>
+        </div>
+        <div class="why-item">
+          <div class="why-icon" style="background:rgba(34,197,94,.1);color:var(--green);">&#8734;</div>
+          <div><strong>Infinite Iterations, Zero Fatigue</strong><br>
+          The AI can run this loop 1,000 times overnight. A human would burn out after 10.</div>
+        </div>
+        <div class="why-item">
+          <div class="why-icon" style="background:rgba(245,158,11,.1);color:var(--orange);">&#128203;</div>
+          <div><strong>Errors Become Training Signal</strong><br>
+          The AI reads its own test failures like a compiler — <em>structured feedback it can directly act on.</em></div>
+        </div>
+        <div class="why-item">
+          <div class="why-icon" style="background:rgba(6,182,212,.1);color:var(--cyan);">&#128170;</div>
+          <div><strong>Your Leverage Multiplies</strong><br>
+          1 engineer writing a great test suite = an entire team's output. Your tests become the AI's manager.</div>
+        </div>
+
+        <div class="highlight-box-special">
+          <p>&#128161; The highest-leverage skill in the AI era is not writing code — it's writing <strong>tests that force the AI to write correct code.</strong></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
