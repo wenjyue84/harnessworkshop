@@ -3,20 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Codex in Cursor — Harness Engineering</title>
+<title>Codex in Cursor &#x2014; Harness Engineering</title>
 <link rel="stylesheet" href="../site.css">
 <style>
   #reading-progress{position:fixed;top:0;left:0;right:0;height:3px;background:var(--border);z-index:200;}
   #reading-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));width:0%;}
-  .tool-compare { display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0; }
-  .tool-card { border-radius:var(--radius);padding:20px;border:1px solid var(--border);background:var(--surface); }
-  .tool-header { display:flex;align-items:center;gap:10px;margin-bottom:14px; }
-  .tool-logo  { width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px; }
-  .tool-name  { font-size:16px;font-weight:800;letter-spacing:-.3px; }
-  .tool-tag   { font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted); }
-  .tool-feature { display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--text-dim);padding:4px 0; }
-  .tf-dot { width:6px;height:6px;border-radius:50%;margin-top:6px;flex-shrink:0; }
-  @media(max-width:640px){ .tool-compare{grid-template-columns:1fr;} }
+  .tool-compare{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:24px 0;}
+  .tool-card{background:var(--surface);border:2px solid var(--border);border-radius:12px;padding:20px;cursor:pointer;transition:border-color .3s,box-shadow .3s;}
+  .tool-card.selected-left{border-color:var(--accent);}
+  .tool-card.selected-right{border-color:var(--cyan);}
+  .tool-card h4{margin:0 0 10px;font-size:1rem;}
+  .tool-card h4.left-title{color:var(--accent);}
+  .tool-card h4.right-title{color:var(--cyan);}
+  .feature-list{list-style:none;padding:0;margin:0;}
+  .feature-list li{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:.82rem;color:var(--muted);border-bottom:1px solid var(--border);}
+  .feature-list li:last-child{border-bottom:none;}
+  .feature-list li span.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+  .best-for{margin-top:12px;background:var(--bg);border-radius:8px;padding:10px 12px;font-size:.8rem;}
+  .best-for strong{color:var(--green);display:block;margin-bottom:4px;}
+  .compare-toggle{display:flex;gap:12px;justify-content:center;margin:16px 0;}
+  .tgl-btn{padding:8px 20px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;font-size:.82rem;transition:all .2s;}
+  .tgl-btn.active-left{border-color:var(--accent);color:var(--accent);background:rgba(99,102,241,.1);}
+  .tgl-btn.active-right{border-color:var(--cyan);color:var(--cyan);background:rgba(6,182,212,.1);}
+  @media(max-width:640px){.tool-compare{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -26,167 +35,128 @@
   <div class="main-content">
     <div id="nav-topbar"></div>
     <div class="page-content">
-
       <div class="page-header">
-        <div class="module-eyebrow">Module 20 · Other Tools · ⏱ 10 min</div>
-        <h1>Codex in <span class="gradient-text">Cursor</span></h1>
-        <p class="lead">Codex CLI is OpenAI's coding agent. Cursor is the AI-first code editor. Together they give you a different AI engineering workflow — complementary to Claude Code, valuable for IDE-integrated pair programming.</p>
+        <div class="module-eyebrow">
+          <span class="pill pill-orange">Module 20</span>
+          <span class="pill pill-cyan">Other Tools</span>
+          <span class="pill">10 min</span>
+        </div>
+        <h1 class="gradient-text">Codex in Cursor</h1>
+        <p class="lead">GPT-4 Coding Agent Setup</p>
+        <p class="lead">Codex CLI is OpenAI&rsquo;s coding agent, powered by GPT-4. Cursor is the AI-first code editor. Together, they give you another powerful coding workflow &mdash; useful as a complement to Claude Code, especially for projects where you prefer GPT-4&rsquo;s style or for teams already using the OpenAI ecosystem.</p>
       </div>
-
       <div class="content-section">
-        <div class="section-title"><div class="icon" style="background:rgba(245,158,11,.15);">🔧</div>The Right Tool for the Job</div>
-        <p>A master craftsman owns multiple tools. Not because one is better than the others — but because different tools excel at different tasks. The same is true for AI engineering tools.</p>
-        <p>Claude Code excels at <strong>terminal-native autonomous work</strong>: long-running tasks, hooks, MCP servers, agent teams, system-level access. Cursor excels at <strong>IDE-integrated pair programming</strong>: inline completions, file-aware context, quick edits while you're in the editor. Multi-tool AI engineering is more powerful than single-tool loyalty.</p>
+        <div class="section-title"><div class="icon">&#x1F528;</div><h2>The Multi-Tool Craftsman</h2></div>
+        <p>A master craftsman owns more than one tool. A carpenter has chisels AND a router, a lathe AND a hand plane &mdash; each for different jobs. Codex in Cursor is another tool in your AI engineering kit: useful in different contexts, complementary to Claude Code, not a replacement.</p>
       </div>
-
-      <!-- Tool comparison -->
-      <div class="anim-box">
-        <div class="anim-box-header">
-          <div class="anim-box-title">⚖️ Claude Code vs Codex/Cursor</div>
-        </div>
-        <div class="anim-box-body">
-          <div class="tool-compare">
-            <div class="tool-card" style="border-color:rgba(99,102,241,.3);">
-              <div class="tool-header">
-                <div class="tool-logo" style="background:rgba(99,102,241,.15);">⚙</div>
-                <div>
-                  <div class="tool-name" style="color:var(--accent3);">Claude Code</div>
-                  <div class="tool-tag">Terminal-native agent</div>
-                </div>
-              </div>
-              <div class="tool-feature"><div class="tf-dot" style="background:var(--green)"></div>Long autonomous tasks (hours)</div>
-              <div class="tool-feature"><div class="tf-dot" style="background:var(--green)"></div>Hooks &amp; lifecycle automation</div>
-              <div class="tool-feature"><div class="tf-dot" style="background:var(--green)"></div>MCP server ecosystem</div>
-              <div class="tool-feature"><div class="tf-dot" style="background:var(--green)"></div>Agent teams &amp; orchestration</div>
-              <div class="tool-feature"><div class="tf-dot" style="background:var(--green)"></div>Full filesystem + bash access</div>
-              <div class="tool-feature"><div class="tf-dot" style="background:var(--text-muted)"></div>Not IDE-integrated</div>
-            </div>
-            <div class="tool-card" style="border-color:rgba(245,158,11,.3);">
-              <div class="tool-header">
-                <div class="tool-logo" style="background:rgba(245,158,11,.15);">🖊</div>
-                <div>
-                  <div class="tool-name" style="color:var(--orange);">Codex + Cursor</div>
-                  <div class="tool-tag">IDE-native agent</div>
-                </div>
-              </div>
-              <div class="tool-feature"><div class="tf-dot" style="background:var(--green)"></div>Inline code completion (Cmd+K)</div>
-              <div class="tool-feature"><div class="tf-dot" style="background:var(--green)"></div>File-aware context (entire repo)</div>
-              <div class="tool-feature"><div class="tf-dot" style="background:var(--green)"></div>Cursor Composer (multi-file)</div>
-              <div class="tool-feature"><div class="tf-dot" style="background:var(--green)"></div>GPT-4 style responses</div>
-              <div class="tool-feature"><div class="tf-dot" style="background:var(--green)"></div>IDE stays open while working</div>
-              <div class="tool-feature"><div class="tf-dot" style="background:var(--text-muted)"></div>No hooks or MCP ecosystem</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Codex CLI install -->
       <div class="content-section">
-        <div class="section-title"><div class="icon" style="background:rgba(34,197,94,.15);">⚡</div>Codex CLI setup</div>
-        <div class="code-snippet">
-<span class="c"># Install Codex CLI globally</span>
-<span class="g">npm install -g @openai/codex</span>
-
-<span class="c"># Set your OpenAI API key</span>
-<span class="g">export OPENAI_API_KEY=sk-proj-...</span>
-<span class="c"># (Add to ~/.bashrc or ~/.zshrc to persist)</span>
-
-<span class="c"># Basic usage</span>
-<span class="g">codex "Refactor this function to use async/await"</span>
-<span class="g">codex "Add JSDoc comments to all exported functions in src/"</span>
-
-<span class="c"># Full-auto mode (like --dangerously-skip-permissions)</span>
-<span class="g">codex --full-auto "Add error handling to all API calls in src/"</span>
+        <div class="section-title"><div class="icon">&#x2194;&#xFE0F;</div><h2>Claude Code vs Codex/Cursor &mdash; Compare</h2></div>
+        <p>Click each tool to see where it shines.</p>
+        <div class="compare-toggle">
+          <button class="tgl-btn active-left" id="tgl-claude" onclick="selectTool('claude')">Claude Code</button>
+          <button class="tgl-btn" id="tgl-codex" onclick="selectTool('codex')">Codex / Cursor</button>
+        </div>
+        <div class="tool-compare">
+          <div class="tool-card selected-left" id="card-claude" onclick="selectTool('claude')">
+            <h4 class="left-title">&#x1F9F5; Claude Code</h4>
+            <ul class="feature-list">
+              <li><span class="dot" style="background:var(--accent)"></span>Terminal-native agent</li>
+              <li><span class="dot" style="background:var(--accent)"></span>Hooks: pre/post tool use</li>
+              <li><span class="dot" style="background:var(--accent)"></span>MCP server integration</li>
+              <li><span class="dot" style="background:var(--accent)"></span>CLAUDE.md project memory</li>
+              <li><span class="dot" style="background:var(--accent)"></span>Long autonomous sessions</li>
+              <li><span class="dot" style="background:var(--accent)"></span>Multi-agent orchestration</li>
+            </ul>
+            <div class="best-for" id="bf-claude"><strong>Best for:</strong>Long autonomous tasks, system-level access, hook-driven workflows, MCP integration.</div>
+          </div>
+          <div class="tool-card" id="card-codex" onclick="selectTool('codex')">
+            <h4 class="right-title">&#x1F4DD; Codex / Cursor</h4>
+            <ul class="feature-list">
+              <li><span class="dot" style="background:var(--cyan)"></span>IDE-native integration</li>
+              <li><span class="dot" style="background:var(--cyan)"></span>Inline code completion</li>
+              <li><span class="dot" style="background:var(--cyan)"></span>Cmd+K / Cmd+I shortcuts</li>
+              <li><span class="dot" style="background:var(--cyan)"></span>GPT-4 powered responses</li>
+              <li><span class="dot" style="background:var(--cyan)"></span>Cursor Composer multi-file</li>
+              <li><span class="dot" style="background:var(--cyan)"></span>OpenAI ecosystem native</li>
+            </ul>
+            <div class="best-for" id="bf-codex"><strong>Best for:</strong>Inline edits, IDE pair programming, quick GPT-4 responses, OpenAI teams.</div>
+          </div>
         </div>
       </div>
-
-      <!-- Cursor setup -->
       <div class="content-section">
-        <div class="section-title"><div class="icon" style="background:rgba(245,158,11,.15);">🖊</div>Cursor setup</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0;">
-          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;">
-            <div style="font-size:11px;font-weight:700;color:var(--orange);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Install</div>
-            <div style="font-size:13px;color:var(--text-dim);">Download from <strong>cursor.sh</strong>. Sign in with GitHub. Install the "Cursor" VS Code extension if you prefer VS Code UI.</div>
-          </div>
-          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;">
-            <div style="font-size:11px;font-weight:700;color:var(--orange);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Key Shortcuts</div>
-            <div style="font-size:13px;color:var(--text-dim);line-height:1.8;"><code>Cmd+K</code> — inline edit<br><code>Cmd+I</code> — Cursor Composer (multi-file)<br><code>Cmd+L</code> — Chat sidebar<br><code>@file</code> — reference a file in chat</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="terminal">
-        <div class="term-bar">
-          <div class="term-dot" style="background:#ff5f57"></div>
-          <div class="term-dot" style="background:#febc2e"></div>
-          <div class="term-dot" style="background:#28c840"></div>
-          <div class="term-title">bash — Codex CLI in action</div>
-        </div>
-        <div class="term-body">
-          <div><span class="prompt">$ </span><span class="cmd">cd my-project</span></div>
-          <div><span class="prompt">$ </span><span class="cmd">codex "Add TypeScript type annotations to all functions in src/utils.ts"</span></div>
-          <br>
-          <div class="info">Reading src/utils.ts...</div>
-          <div class="info">Analyzing functions: formatDate, parseCSV, debounce, throttle...</div>
-          <div class="output">Writing changes... (interactive confirmation for each)</div>
-          <div class="ok">✓ Added types to 8 functions</div>
-          <br>
-          <div><span class="prompt">$ </span><span class="cmd">codex --full-auto "Write a README.md for this project"</span></div>
-          <div class="info">Scanning project structure, package.json, existing docs...</div>
-          <div class="ok">✓ README.md created (no confirmations needed in --full-auto)</div>
-        </div>
-      </div>
-
-      <div class="exercise-block">
-        <div class="exercise-header"><span>🔧</span><h3>Hands-On Exercise</h3></div>
-        <div class="exercise-body">
-          <div class="exercise-step">
-            <div class="step-badge">01</div>
-            <div class="step-content">
-              <h4>Install Cursor</h4>
-              <p>Download from <strong>cursor.sh</strong>. It's a fork of VS Code — your settings and extensions migrate automatically.</p>
-            </div>
-          </div>
-          <div class="exercise-step">
-            <div class="step-badge">02</div>
-            <div class="step-content">
-              <h4>Install Codex CLI</h4>
-              <p><code>npm install -g @openai/codex</code> then set your OpenAI API key in your shell environment.</p>
-            </div>
-          </div>
-          <div class="exercise-step">
-            <div class="step-badge">03</div>
-            <div class="step-content">
-              <h4>Try Cursor's inline edit</h4>
-              <p>Open any code file in Cursor. Select a function, press <code>Cmd+K</code>, and ask "Add error handling to this function." Compare to Claude Code for the same task.</p>
-            </div>
-          </div>
-          <div class="exercise-step">
-            <div class="step-badge">04</div>
-            <div class="step-content">
-              <h4>Use Codex CLI for a bulk task</h4>
-              <p>In a test project, run: <code>codex "Add a console.log at the start of every function for debugging"</code>. Notice the style difference from Claude Code.</p>
-            </div>
+        <div class="section-title"><div class="icon">&#x1F4E6;</div><h2>Codex CLI Installation</h2></div>
+        <div class="terminal">
+          <div class="term-bar"><span class="term-dot"></span><span class="term-dot"></span><span class="term-dot"></span><span class="term-title">terminal</span></div>
+          <div class="term-body">
+            <span class="comment"># Install Codex CLI:</span><br>
+            <span class="prompt">$</span> <span class="cmd">npm install -g @openai/codex</span><br><br>
+            <span class="comment"># Configure with API key:</span><br>
+            <span class="prompt">$</span> <span class="cmd">export OPENAI_API_KEY=sk-...</span><br><br>
+            <span class="comment"># Run in any project:</span><br>
+            <span class="prompt">$</span> <span class="cmd">codex "Refactor this function to use async/await"</span><br><br>
+            <span class="comment"># Yolo mode (like dangerously-skip-permissions):</span><br>
+            <span class="prompt">$</span> <span class="cmd">codex --full-auto "Add error handling to all API calls in src/"</span><br>
+            <span class="ok">Running autonomously...</span>
           </div>
         </div>
       </div>
-
-      <div class="takeaways">
-        <h3>⚡ Key Takeaways</h3>
-        <div class="takeaway-item"><span class="ti-icon">✓</span><div>Codex CLI = OpenAI's terminal coding agent. <code>--full-auto</code> = autonomous mode.</div></div>
-        <div class="takeaway-item"><span class="ti-icon">✓</span><div>Cursor = best AI-native IDE. Cmd+K for inline, Cmd+I for multi-file Composer.</div></div>
-        <div class="takeaway-item"><span class="ti-icon">✓</span><div>Claude Code for autonomous/hook-driven work; Cursor for IDE pair programming. Use both.</div></div>
-        <div class="takeaway-item"><span class="ti-icon">✓</span><div>Multi-tool AI engineering is more effective than single-tool loyalty.</div></div>
+      <div class="content-section">
+        <div class="section-title"><div class="icon">&#x1F5A5;&#xFE0F;</div><h2>Cursor IDE Setup</h2></div>
+        <div class="callout callout tip">
+          <div class="callout-icon">&#x1F4A1;</div>
+          <div class="callout-body">
+            <strong>Cursor shortcuts:</strong><br>
+            <code>Cmd+K</code> &mdash; Inline code generation at cursor<br>
+            <code>Cmd+I</code> &mdash; Cursor Composer (multi-file agent)<br>
+            Install from <strong>cursor.sh</strong> &rarr; Settings &rarr; Models &rarr; Add OpenAI API key
+          </div>
+        </div>
       </div>
-
+      <div class="content-section">
+        <div class="section-title"><div class="icon">&#x1F6E0;&#xFE0F;</div><h2>Exercise: Set Up Codex + Cursor</h2></div>
+        <div class="exercise-block">
+          <div class="exercise-header"><h3>Multi-Tool AI Setup</h3></div>
+          <div class="exercise-body">
+            <div class="exercise-step"><span class="step-badge">1</span><div class="step-content"><h4>Install Cursor</h4><p>Download from cursor.sh and install.</p></div></div>
+            <div class="exercise-step"><span class="step-badge">2</span><div class="step-content"><h4>Install Codex CLI</h4><p><code>npm install -g @openai/codex</code></p></div></div>
+            <div class="exercise-step"><span class="step-badge">3</span><div class="step-content"><h4>Add API key</h4><p>Add your OpenAI API key to your environment variables.</p></div></div>
+            <div class="exercise-step"><span class="step-badge">4</span><div class="step-content"><h4>Open a project in Cursor</h4><p>Open any existing project folder in the Cursor IDE.</p></div></div>
+            <div class="exercise-step"><span class="step-badge">5</span><div class="step-content"><h4>Try Cmd+K</h4><p>Use Cmd+K to ask Cursor to add type annotations to a function.</p></div></div>
+            <div class="exercise-step"><span class="step-badge">6</span><div class="step-content"><h4>Try Codex CLI</h4><p><code>codex "Write a README for this project"</code> in terminal inside Cursor.</p></div></div>
+            <div class="exercise-step"><span class="step-badge">7</span><div class="step-content"><h4>Compare to Claude Code</h4><p>Note the differences in style, speed, and context awareness.</p></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="content-section">
+        <div class="takeaways"><h3>Key Takeaways</h3>
+          <div class="takeaway-item"><span class="ti-icon">&#x1F4DD;</span>Codex = OpenAI coding agent. Cursor = best AI-native IDE.</div>
+          <div class="takeaway-item"><span class="ti-icon">&#x2795;</span>Both complement Claude Code, not replace it.</div>
+          <div class="takeaway-item"><span class="ti-icon">&#x1F9F5;</span>Use Claude Code for autonomous, hook-driven workflows.</div>
+          <div class="takeaway-item"><span class="ti-icon">&#x1F5A5;&#xFE0F;</span>Use Cursor/Codex for IDE-integrated pair programming.</div>
+          <div class="takeaway-item"><span class="ti-icon">&#x1F528;</span>Multi-tool AI engineering is more effective than single-tool.</div>
+        </div>
+      </div>
       <div class="section-divider" style="margin-top:40px;"></div>
       <div style="display:flex;justify-content:center;margin:24px 0;">
-        <button class="btn btn-ghost" id="mark-complete-btn">Mark as Complete ✓</button>
+        <button class="btn btn-ghost" id="mark-complete-btn">Mark as Complete &#x2713;</button>
       </div>
       <div id="module-nav"></div>
     </div>
   </div>
 </div>
 <script src="../nav.js"></script>
+<script>
+  window.addEventListener('scroll', function() {
+    var pct = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+    document.getElementById('reading-progress-fill').style.width = Math.min(pct, 100) + '%';
+  });
+  function selectTool(tool) {
+    var isLeft = (tool === 'claude');
+    document.getElementById('card-claude').className = 'tool-card' + (isLeft ? ' selected-left' : '');
+    document.getElementById('card-codex').className = 'tool-card' + (!isLeft ? ' selected-right' : '');
+    document.getElementById('tgl-claude').className = 'tgl-btn' + (isLeft ? ' active-left' : '');
+    document.getElementById('tgl-codex').className = 'tgl-btn' + (!isLeft ? ' active-right' : '');
+  }
+</script>
 </body>
 </html>

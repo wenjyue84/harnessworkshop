@@ -3,18 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Context7 — Harness Engineering</title>
+<title>Context7 - Harness Engineering</title>
 <link rel="stylesheet" href="../site.css">
 <style>
   #reading-progress{position:fixed;top:0;left:0;right:0;height:3px;background:var(--border);z-index:200;}
   #reading-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));width:0%;}
-  .before-after { display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0; }
-  .ba-panel { border-radius:var(--radius-sm);overflow:hidden; }
-  .ba-header { padding:8px 14px;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase; }
-  .ba-body   { padding:14px;font-family:var(--font-mono);font-size:12px;background:#080810;min-height:120px; }
-  .stale { color:var(--text-muted);text-decoration:line-through; }
-  .fresh { color:var(--green); }
-  @media(max-width:640px){ .before-after{grid-template-columns:1fr;} }
+  .before-after{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0;}
+  @media(max-width:600px){.before-after{grid-template-columns:1fr;}}
+  .ba-panel{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px;}
+  .ba-label{font-size:11px;font-family:var(--font-mono);color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:12px;display:flex;align-items:center;gap:6px;}
+  .ba-code{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:12px;font-family:var(--font-mono);font-size:12px;line-height:1.7;margin-bottom:8px;}
+  .ba-result{font-size:12px;padding:8px 10px;border-radius:6px;font-family:var(--font-mono);}
+  .ba-result.bad{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);color:var(--red);}
+  .ba-result.good{background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);color:var(--green);}
+  .doc-badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:4px;font-family:var(--font-mono);margin-bottom:8px;}
+  .doc-badge.stale{background:rgba(239,68,68,0.15);color:var(--red);border:1px solid rgba(239,68,68,0.3);}
+  .doc-badge.live{background:rgba(34,197,94,0.15);color:var(--green);border:1px solid rgba(34,197,94,0.3);}
+  .code-snippet{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:16px;font-family:var(--font-mono);font-size:12px;line-height:1.7;margin:16px 0;overflow-x:auto;}
+  .prompt-pill{display:inline-block;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.3);border-radius:6px;padding:8px 14px;font-family:var(--font-mono);font-size:13px;color:var(--text);margin:8px 0;}
+  .prompt-pill .ctx7{color:var(--accent);font-weight:600;}
 </style>
 </head>
 <body>
@@ -24,166 +31,135 @@
   <div class="main-content">
     <div id="nav-topbar"></div>
     <div class="page-content">
-
       <div class="page-header">
-        <div class="module-eyebrow">Module 12 · MCP Servers · ⏱ 8 min</div>
-        <h1>Context7 — <span class="gradient-text">Live Docs for Your LLM</span></h1>
-        <p class="lead">Context7 is an MCP server by Upstash. Add <code>use context7</code> to any prompt and it fetches the latest, version-specific documentation for your library — injecting it directly into Claude's context. No more hallucinated APIs.</p>
+        <div class="module-eyebrow">Module 12 &middot; MCP Servers &middot; 8 min</div>
+        <h1 class="gradient-text">Context7</h1>
+        <p class="lead">Live Docs for Your LLM &mdash; no more hallucinated APIs.</p>
       </div>
-
       <div class="content-section">
-        <div class="section-title"><div class="icon" style="background:rgba(99,102,241,.15);">📚</div>The Open Cookbook</div>
-        <p>Without Context7, asking Claude about a library is like asking someone to cook from memory — they'll get most of it right, but might use a deprecated method name or reference an API that changed in the latest version. Claude's training data has a cutoff; libraries keep changing.</p>
-        <p>Context7 hands Claude <strong>the actual cookbook, open to the right page, for the exact version you're using.</strong> Not 6-month-old training data — the live docs, right now.</p>
-
-        <div class="callout info" style="margin-top:12px;">
-          <div class="callout-icon">ℹ</div>
-          <div class="callout-body"><strong>Context7 is an MCP server by Upstash</strong> — not a CLI tool, not a VS Code extension. It intercepts your prompt when it sees <code>use context7</code>, fetches docs for detected libraries, and injects them.</div>
-        </div>
+        <p style="font-size:16px;line-height:1.8;color:var(--text-dim);">Context7 is an MCP server by Upstash. Add <strong>use context7</strong> to any prompt and it fetches the latest, version-specific documentation for whatever library you are using &mdash; injecting it directly into Claude context window. For Prisma Technology Solution, this is critical when working with fast-moving libraries like Baileys (WhatsApp), MQTT.js (IoT), and the Supabase JS client.</p>
       </div>
-
-      <!-- Before/After -->
-      <div class="anim-box">
-        <div class="anim-box-header">
-          <div class="anim-box-title">⚡ Before vs After context7</div>
-        </div>
-        <div class="anim-box-body">
-          <div class="before-after">
-            <div class="ba-panel">
-              <div class="ba-header" style="background:rgba(239,68,68,.1);color:var(--red);">❌ Without context7</div>
-              <div class="ba-body">
-                <div style="color:var(--text-muted);">Prompt: "Use React Query to fetch users"</div>
-                <br>
-                <div style="color:var(--text-dim);">Claude (from training data):</div>
-                <div class="stale">import { useQuery } from 'react-query'</div>
-                <div class="stale">// ↑ Deprecated in v5!</div>
-                <br>
-                <div style="color:var(--red);">→ TypeScript error on import</div>
-                <div style="color:var(--red);">→ Wasted debugging time</div>
+      <div class="callout callout-info" style="margin:24px 0;">
+        <div class="callout-icon">&#128161;</div>
+        <div class="callout-body"><strong>The Mental Model</strong><br>Without Context7, asking Claude about the Baileys WhatsApp library is like asking someone to write a recipe from memory &mdash; they will get most of it right but might misremember one method name or use a deprecated event handler. Context7 hands Claude the actual cookbook, open to the right page, for whatever version you have installed in <code>ai-livechat</code>.</div>
+      </div>
+      <div class="content-section">
+        <h2 class="section-title"><span class="icon">&#9889;</span> Before vs After Context7</h2>
+        <p style="color:var(--text-dim);margin-bottom:16px;">The same question to Claude. Left: without context7. Right: with context7 appended to the prompt. Prisma's <code>ai-livechat</code> uses Baileys for WhatsApp &mdash; the API changes between versions.</p>
+        <div class="anim-box">
+          <div class="anim-box-header"><span class="anim-box-title">Prompt: &ldquo;Show me how to send a WhatsApp message using Baileys&rdquo;</span></div>
+          <div class="anim-box-body">
+            <div class="before-after">
+              <div class="ba-panel">
+                <div class="ba-label"><span>&#10007;</span> Without context7</div>
+                <div class="doc-badge stale">stale training data (may be v5 API)</div>
+                <div class="ba-code"><span style="color:var(--text-muted);">// Claude generates from memory:</span>
+const sock = makeWASocket();
+sock.<span style="color:var(--orange);">sendMessage</span>(
+  jid,
+  { text: <span style="color:var(--orange);">'Hello'</span> },
+  { quoted: msg }
+);</div>
+                <div class="ba-result bad">&#10007; TypeError: sock.sendMessage is not a function.<br>Baileys v6 changed the method signature.</div>
+              </div>
+              <div class="ba-panel">
+                <div class="ba-label"><span>&#10003;</span> With &ldquo;use context7&rdquo;</div>
+                <div class="doc-badge live">live docs fetched: @whiskeysockets/baileys v6.x</div>
+                <div class="ba-code"><span style="color:var(--text-muted);">// Context7 fetched v6 docs:</span>
+const sock = makeWASocket(<span style="color:var(--green);">{
+  auth: state,
+  printQRInTerminal: true
+}</span>);
+await sock.<span style="color:var(--green);">sendMessage</span>(jid, {
+  text: <span style="color:var(--green);">'Hello from Prisma AI'</span>
+});</div>
+                <div class="ba-result good">&#10003; Sends correctly with v6 Baileys socket.</div>
               </div>
             </div>
-            <div class="ba-panel">
-              <div class="ba-header" style="background:rgba(34,197,94,.1);color:var(--green);">✓ With context7</div>
-              <div class="ba-body">
-                <div style="color:var(--text-muted);">Prompt: "Use React Query to fetch users. use context7"</div>
-                <br>
-                <div style="color:var(--text-dim);">Context7 injects TanStack Query v5 docs →</div>
-                <div class="fresh">import { useQuery } from '@tanstack/react-query'</div>
-                <br>
-                <div style="color:var(--green);">→ Correct v5 API</div>
-                <div style="color:var(--green);">→ Works on first try</div>
-              </div>
+            <div style="margin-top:16px;">
+              <div style="font-size:13px;color:var(--text-dim);margin-bottom:8px;">How to trigger it &mdash; just append to your prompt:</div>
+              <div class="prompt-pill">Connect MQTT broker and subscribe to machine/counter topic. <span class="ctx7">use context7</span></div>
             </div>
           </div>
         </div>
       </div>
-
-      <!-- Install config -->
       <div class="content-section">
-        <div class="section-title"><div class="icon" style="background:rgba(245,158,11,.15);">⚙️</div>Setup (2 minutes)</div>
-        <div class="code-snippet">
-<span class="c">// ~/.claude/.mcp.json — add this server</span>
-{
-  <span class="k">"mcpServers"</span>: {
-    <span class="k">"context7"</span>: {
-      <span class="k">"command"</span>: <span class="s">"npx"</span>,
-      <span class="k">"args"</span>: [<span class="s">"-y"</span>, <span class="s">"@upstash/context7-mcp"</span>]
-    }
-  }
-}
-        </div>
-        <p style="margin-top:12px;font-size:14px;color:var(--text-dim);">No API key needed. No account. Just add the MCP and append <code>use context7</code> to prompts involving external libraries.</p>
+        <h2 class="section-title"><span class="icon">&#128196;</span> MCP Configuration</h2>
+        <div class="code-snippet"><span class="c">// ~/.claude/.mcp.json</span>
+<span class="k">{</span>
+  <span class="s">"mcpServers"</span>: <span class="k">{</span>
+    <span class="s">"context7"</span>: <span class="k">{</span>
+      <span class="s">"command"</span>: <span class="s">"npx"</span>,
+      <span class="s">"args"</span>: [<span class="s">"-y"</span>, <span class="s">"@upstash/context7-mcp"</span>]
+      <span class="c">// No API key needed!</span>
+    <span class="k">}</span>
+  <span class="k">}</span>
+<span class="k">}</span></div>
       </div>
-
-      <!-- How to use -->
+      <div class="callout callout-tip" style="margin:24px 0;"><div class="callout-icon">&#127919;</div><div class="callout-body"><strong>Best Used With Prisma's Fast-Changing Libraries</strong><br>Context7 is especially valuable for the libraries Prisma Technology Solution uses daily: <strong>Baileys (WhatsApp AI)</strong>, <strong>MQTT.js (IoT machine monitoring)</strong>, <strong>Supabase JS client (chatbot data)</strong>, <strong>n8n SDK</strong>, and <strong>Telegraf (Telegram bots)</strong>. These have breaking changes between major versions that Claude may not know about.</div></div>
       <div class="content-section">
-        <div class="section-title"><div class="icon" style="background:rgba(34,197,94,.15);">💬</div>How to trigger it</div>
-        <p>Just append <strong>"use context7"</strong> anywhere in your prompt. Context7 detects libraries mentioned in your prompt, fetches the version-specific docs, and injects them before Claude responds.</p>
-        <div class="code-snippet">
-<span class="c"># These all work:</span>
-<span class="s">"Set up a Prisma schema with relations. use context7"</span>
-<span class="s">"Write a Next.js Server Action for form submission. use context7"</span>
-<span class="s">"How do I configure Drizzle ORM with PostgreSQL? use context7"</span>
-<span class="s">"Create a Zod schema for user registration. use context7"</span>
-        </div>
-        <p style="margin-top:10px;">Especially valuable for: <span class="pill pill-accent">Next.js App Router</span> <span class="pill pill-green">TanStack Query v5</span> <span class="pill pill-orange">Prisma</span> <span class="pill pill-cyan">Drizzle ORM</span> <span class="pill pill-pink">shadcn/ui</span></p>
-      </div>
-
-      <div class="terminal">
-        <div class="term-bar">
-          <div class="term-dot" style="background:#ff5f57"></div>
-          <div class="term-dot" style="background:#febc2e"></div>
-          <div class="term-dot" style="background:#28c840"></div>
-          <div class="term-title">Claude Code — context7 in use</div>
-        </div>
-        <div class="term-body">
-          <div><span class="comment"># Verify context7 is connected:</span></div>
-          <div><span class="prompt">$ </span><span class="cmd">claude mcp list</span></div>
-          <div class="ok">✓ context7 — @upstash/context7-mcp</div>
-          <br>
-          <div><span class="acc">&gt; </span><span class="cmd">Write a Prisma query that finds users with at least 3 posts. use context7</span></div>
-          <br>
-          <div class="info">context7: Fetching Prisma docs (v5.x)...</div>
-          <div class="info">context7: Injecting 2,400 tokens of documentation</div>
-          <br>
-          <div class="output">Using Prisma 5.x findMany with _count filter:</div>
-          <div class="ok">const users = await prisma.user.findMany({</div>
-          <div class="ok">  where: { posts: { _count: { gte: 3 } } },</div>
-          <div class="ok">  include: { _count: { select: { posts: true } } }</div>
-          <div class="ok">})</div>
-        </div>
-      </div>
-
-      <div class="exercise-block">
-        <div class="exercise-header"><span>🔧</span><h3>Hands-On Exercise</h3></div>
-        <div class="exercise-body">
-          <div class="exercise-step">
-            <div class="step-badge">01</div>
-            <div class="step-content">
-              <h4>Add context7 to .mcp.json</h4>
-              <p>Open <code>~/.claude/.mcp.json</code> and add the context7 server config. No API key required.</p>
-            </div>
-          </div>
-          <div class="exercise-step">
-            <div class="step-badge">02</div>
-            <div class="step-content">
-              <h4>Restart and verify</h4>
-              <p>Run <code>claude mcp list</code> — confirm <code>context7</code> appears in the list.</p>
-            </div>
-          </div>
-          <div class="exercise-step">
-            <div class="step-badge">03</div>
-            <div class="step-content">
-              <h4>Test without context7 first</h4>
-              <p>Ask: <em>"Show me how to use useQuery in React Query"</em> — note the import path Claude uses.</p>
-            </div>
-          </div>
-          <div class="exercise-step">
-            <div class="step-badge">04</div>
-            <div class="step-content">
-              <h4>Test WITH context7</h4>
-              <p>Ask the same question: <em>"Show me how to use useQuery in React Query. use context7"</em> — compare the import path. It should now use <code>@tanstack/react-query</code>.</p>
-            </div>
+        <h2 class="section-title"><span class="icon">&#128187;</span> Terminal Demo</h2>
+        <div class="terminal">
+          <div class="term-bar"><span class="term-dot" style="background:var(--red)"></span><span class="term-dot" style="background:var(--orange)"></span><span class="term-dot" style="background:var(--green)"></span><span class="term-title">claude code &mdash; prisma context7 session</span></div>
+          <div class="term-body">
+            <div><span class="comment"># After adding Context7 to .mcp.json</span></div>
+            <div><span class="prompt">$</span> <span class="cmd">claude mcp list</span></div>
+            <div><span class="ok">&#10003; context7 (connected) &mdash; no API key required</span></div>
+            <br>
+            <div><span class="comment"># Without context7 - might use outdated MQTT.js API</span></div>
+            <div><span class="prompt">&gt;</span> <span class="cmd">Connect to MQTT broker and subscribe to machine sensor topic</span></div>
+            <div><span class="warn">&#9888; Using training data (may be outdated for MQTT.js v5)</span></div>
+            <br>
+            <div><span class="comment"># With context7 - fetches current MQTT.js docs</span></div>
+            <div><span class="prompt">&gt;</span> <span class="cmd">Connect to MQTT broker and subscribe to machine/counter topic. use context7</span></div>
+            <div><span class="ok">&#10003; context7: Fetching MQTT.js v5.x docs...</span></div>
+            <div><span class="ok">&#10003; Injecting 2,800 chars of version-pinned documentation</span></div>
+            <br>
+            <div><span class="output">Here is the current MQTT.js v5 connection pattern:</span></div>
+            <div><span class="output">import * as mqtt from 'mqtt';</span></div>
+            <div><span class="output">const client = mqtt.connect('mqtt://broker.prisma.local');</span></div>
+            <div><span class="output">client.subscribe('machine/counter/#', { qos: 1 });</span></div>
+            <br>
+            <div><span class="prompt">&gt;</span> <span class="cmd">Query the Supabase chatbot_sessions table for today. use context7<span class="cursor"></span></span></div>
           </div>
         </div>
       </div>
-
-      <div class="takeaways">
-        <h3>⚡ Key Takeaways</h3>
-        <div class="takeaway-item"><span class="ti-icon">✓</span><div>Context7 is an MCP server by Upstash — fetches live, version-specific documentation.</div></div>
-        <div class="takeaway-item"><span class="ti-icon">✓</span><div>Trigger it by appending <code>use context7</code> to any prompt. No other configuration needed.</div></div>
-        <div class="takeaway-item"><span class="ti-icon">✓</span><div>No API key required — just add the npx-based MCP server to your .mcp.json.</div></div>
-        <div class="takeaway-item"><span class="ti-icon">✓</span><div>Best for fast-moving libraries: Next.js App Router, TanStack Query, Prisma, Drizzle.</div></div>
+      <div class="content-section">
+        <h2 class="section-title"><span class="icon">&#127947;</span> Exercise</h2>
+        <div class="exercise-block">
+          <div class="exercise-header">Hands-On: See Context7 in Action with Prisma Libraries</div>
+          <div class="exercise-body">
+            <div class="exercise-step"><div class="step-badge">1</div><div class="step-content"><strong>Add to .mcp.json</strong><br>Open <code>~/.claude/.mcp.json</code> and add the context7 server config shown above. No API key needed.</div></div>
+            <div class="exercise-step"><div class="step-badge">2</div><div class="step-content"><strong>Restart and verify</strong><br>Restart Claude Code. Run <code>claude mcp list</code> &mdash; confirm context7 shows as connected.</div></div>
+            <div class="exercise-step"><div class="step-badge">3</div><div class="step-content"><strong>Test without context7 (Baileys)</strong><br>Ask: <em>Show me how to send a WhatsApp message using the Baileys library.</em> Note the import path and method Claude suggests.</div></div>
+            <div class="exercise-step"><div class="step-badge">4</div><div class="step-content"><strong>Test with context7 (Baileys)</strong><br>Ask: <em>Show me how to send a WhatsApp message using the Baileys library. use context7.</em> Compare the import path and socket API with step 3.</div></div>
+            <div class="exercise-step"><div class="step-badge">5</div><div class="step-content"><strong>Real-world: MQTT.js for IoT</strong><br>Ask: <em>Write a Node.js MQTT client that subscribes to machine/counter and logs readings to Supabase. use context7.</em> Verify both library APIs match your installed versions.</div></div>
+          </div>
+        </div>
       </div>
-
+      <div class="content-section">
+        <h2 class="section-title"><span class="icon">&#127919;</span> Key Takeaways</h2>
+        <div class="takeaways"><h3>What to Remember</h3>
+          <div class="takeaway-item"><div class="ti-icon">&#128218;</div><div><strong>Context7 fetches live, version-specific docs.</strong> What Prisma actually has installed in each project, not what Claude was trained on.</div></div>
+          <div class="takeaway-item"><div class="ti-icon">&#9997;&#65039;</div><div><strong>Just append &ldquo;use context7&rdquo; to any prompt.</strong> That is the entire activation mechanism.</div></div>
+          <div class="takeaway-item"><div class="ti-icon">&#128273;</div><div><strong>No API key needed.</strong> Add to .mcp.json and it works immediately.</div></div>
+          <div class="takeaway-item"><div class="ti-icon">&#128683;</div><div><strong>Prevents hallucinated methods and deprecated patterns.</strong> Especially valuable for Baileys, MQTT.js, and Supabase which change frequently.</div></div>
+        </div>
+      </div>
       <div class="section-divider" style="margin-top:40px;"></div>
       <div style="display:flex;justify-content:center;margin:24px 0;">
-        <button class="btn btn-ghost" id="mark-complete-btn">Mark as Complete ✓</button>
+        <button class="btn btn-ghost" id="mark-complete-btn">Mark as Complete &#10003;</button>
       </div>
       <div id="module-nav"></div>
     </div>
   </div>
 </div>
 <script src="../nav.js"></script>
+<script>
+  window.addEventListener("scroll",()=>{
+    const el=document.documentElement;
+    document.getElementById("reading-progress-fill").style.width=(el.scrollTop/(el.scrollHeight-el.clientHeight))*100+"%";
+  });
+</script>
 </body>
 </html>

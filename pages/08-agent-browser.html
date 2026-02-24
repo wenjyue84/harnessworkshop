@@ -44,6 +44,49 @@
         <h1 class="gradient-text">Agent Browser Skill</h1>
         <p class="lead">Semantic Web Navigation &mdash; giving Claude live eyes on the internet.</p>
       </div>
+      <!-- ═══ META SECTION: How we used this skill to build this site ═══ -->
+      <div class="content-section" style="background:linear-gradient(135deg,rgba(99,102,241,.06),rgba(6,182,212,.03));border:1px solid rgba(99,102,241,.2);border-radius:var(--radius);padding:24px;margin-bottom:32px;">
+        <div class="section-title"><div class="icon" style="background:rgba(99,102,241,.15);">🔍</div>How We Used This Skill — Live on This Site</div>
+        <p>Before you even reached this page, <code>agent-browser</code> was used to inspect <em>this very website</em>. Claude navigated to the deployed Vercel URL, took screenshots of every module page, checked the JavaScript console, and identified <strong>4 real bugs</strong>. Here's the exact terminal session:</p>
+        <div class="terminal" style="margin:16px 0;">
+          <div class="term-bar">
+            <div class="term-dot" style="background:#ff5f57"></div>
+            <div class="term-dot" style="background:#febc2e"></div>
+            <div class="term-dot" style="background:#28c840"></div>
+            <div class="term-title">bash — Agent-browser site inspection</div>
+          </div>
+          <div class="term-body">
+            <div><span class="comment"># Inspect the Harness Engineering site for bugs</span></div>
+            <div><span class="prompt">$</span> <span class="cmd">agent-browser open https://harness-engineering.vercel.app</span></div>
+            <div><span class="ok">✓ Page loaded</span></div>
+            <div><span class="prompt">$</span> <span class="cmd">agent-browser screenshot /tmp/home.png --full</span></div>
+            <div><span class="ok">✓ Screenshot saved (253 KB)</span></div>
+            <br>
+            <div><span class="comment"># Navigate to a module page and check for JS errors</span></div>
+            <div><span class="prompt">$</span> <span class="cmd">agent-browser open https://harness-engineering.vercel.app/pages/01-install</span></div>
+            <div><span class="prompt">$</span> <span class="cmd">agent-browser errors</span></div>
+            <div class="warn">⚠ Sidebar active item not highlighted</div>
+            <div class="warn">⚠ Mark as Complete button not responding</div>
+            <div class="warn">⚠ Module navigation (prev/next) missing</div>
+            <br>
+            <div><span class="comment"># Root cause: cleanUrls strips .html, nav.js path matching fails</span></div>
+            <div><span class="prompt">$</span> <span class="cmd">agent-browser eval "window.location.pathname"</span></div>
+            <div class="output">"/pages/01-install"  <span class="comment"># Missing .html — nav.js matched /pages/01-install.html</span></div>
+            <br>
+            <div><span class="comment"># 4 bugs identified → fixes applied → site redeployed</span></div>
+            <div class="ok">✓ Bug 1: nav.js cleanUrls path normalization — fixed</div>
+            <div class="ok">✓ Bug 2: Duplicate #reading-progress IDs — fixed</div>
+            <div class="ok">✓ Bug 3: Module 14 section appearing twice in sidebar — fixed</div>
+            <div class="ok">✓ Bug 4: Module 14 rendering out of order in home grid — fixed</div>
+          </div>
+        </div>
+        <div class="callout warn" style="margin-top:0;">
+          <div class="callout-icon">💡</div>
+          <div class="callout-body"><strong>The meta-lesson:</strong> You just read a module that was improved using the skill it's teaching. After building a client portal for Pelangi Hostel or a dashboard for Federation Oil, run agent-browser over it immediately — it catches what code review misses.</div>
+        </div>
+      </div>
+      <!-- ═══ END META SECTION ═══ -->
+
       <div class="content-section">
         <p style="font-size:16px;line-height:1.8;color:var(--text-dim);">The <code>agent-browser</code> skill gives Claude the ability to open URLs, navigate pages, fill forms, click elements, and extract content &mdash; using a headless Chrome browser. You trigger it by installing the skill and saying <em>browse to X and get Y.</em></p>
       </div>
@@ -55,7 +98,7 @@
         <h2 class="section-title"><span class="icon">&#9889;</span> How It Works</h2>
         <p style="color:var(--text-dim);margin-bottom:16px;">Toggle between scenarios to see what changes when the browser skill is active. Run the animation to watch each step light up in sequence.</p>
         <div class="anim-box">
-          <div class="anim-box-header"><span class="anim-box-title">Task: Check competitor pricing on shopify.com</span></div>
+          <div class="anim-box-header"><span class="anim-box-title">Task: Inspect Pelangi Hostel chatbot competitor page for feature gaps</span></div>
           <div class="anim-box-body">
             <div class="pipeline-toggle">
               <button class="pipeline-btn active" data-mode="without" onclick="setPipelineMode(this.dataset.mode)">&#10007; Without Browser Skill</button>
@@ -109,19 +152,19 @@
             <div><span class="prompt">$</span> <span class="cmd">claude</span></div>
             <div><span class="info">Claude Code v1.x &mdash; type /help for commands</span></div>
             <br>
-            <div><span class="prompt">&gt;</span> <span class="cmd">Use the agent-browser skill to go to github.com/upstash/context7 and extract the installation instructions.</span></div>
+            <div><span class="prompt">&gt;</span> <span class="cmd">Use the agent-browser skill to go to the Pelangi Hostel booking page and extract all available room types and prices.</span></div>
             <br>
             <div><span class="ok">&#10003; Loading agent-browser skill...</span></div>
             <div><span class="ok">&#10003; Launching headless Chrome...</span></div>
-            <div><span class="ok">&#10003; Navigating to https://github.com/upstash/context7</span></div>
-            <div><span class="ok">&#10003; Page loaded (1.4s) &mdash; extracting content...</span></div>
+            <div><span class="ok">&#10003; Navigating to https://pelangi-hostel.com/rooms</span></div>
+            <div><span class="ok">&#10003; Page loaded (1.2s) &mdash; extracting content...</span></div>
             <br>
-            <div><span class="output">Installation instructions found in README:</span></div>
-            <div><span class="output">&nbsp;&nbsp;1. Add to .mcp.json: { &quot;context7&quot;: { &quot;command&quot;: &quot;npx&quot; }}</span></div>
-            <div><span class="output">&nbsp;&nbsp;2. Append &quot;use context7&quot; to any Claude prompt</span></div>
-            <div><span class="output">&nbsp;&nbsp;3. Context7 auto-detects libraries and injects live docs</span></div>
+            <div><span class="output">Room types extracted from booking page:</span></div>
+            <div><span class="output">&nbsp;&nbsp;- Dorm Bed: RM 35/night (8-bed mixed dorm)</span></div>
+            <div><span class="output">&nbsp;&nbsp;- Private Room: RM 110/night (en-suite, air-con)</span></div>
+            <div><span class="output">&nbsp;&nbsp;- Family Room: RM 180/night (sleeps 4)</span></div>
             <br>
-            <div><span class="prompt">&gt;</span> <span class="cmd">Now navigate to the Quickstart section<span class="cursor"></span></span></div>
+            <div><span class="prompt">&gt;</span> <span class="cmd">Now check the LHDN e-filing portal for the latest CP21 form fields<span class="cursor"></span></span></div>
           </div>
         </div>
       </div>

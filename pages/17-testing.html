@@ -99,12 +99,12 @@
         <div class="exercise-block">
           <div class="exercise-header"><h3>TDD with Claude</h3></div>
           <div class="exercise-body">
-            <div class="exercise-step"><span class="step-badge">1</span><div class="step-content"><h4>Pick a function</h4><p>Choose something concrete: format a date to YYYY-MM-DD.</p></div></div>
-            <div class="exercise-step"><span class="step-badge">2</span><div class="step-content"><h4>Write 5 test cases first</h4><p>Use Jest/Vitest syntax. Write tests BEFORE asking Claude to implement.</p></div></div>
-            <div class="exercise-step"><span class="step-badge">3</span><div class="step-content"><h4>Ask Claude to implement</h4><p>Implement formatDate(date) so these tests pass: [paste tests]</p></div></div>
-            <div class="exercise-step"><span class="step-badge">4</span><div class="step-content"><h4>Watch Claude iterate</h4><p>Claude runs tests, reads failures, updates code, repeats.</p></div></div>
-            <div class="exercise-step"><span class="step-badge">5</span><div class="step-content"><h4>Add 3 edge case tests</h4><p>Ask Claude to fix those too. Watch quality improve.</p></div></div>
-            <div class="exercise-step"><span class="step-badge">6</span><div class="step-content"><h4>Reflect</h4><p>The tests became your specification &mdash; not Claude&rsquo;s guesses.</p></div></div>
+            <div class="exercise-step"><span class="step-badge">1</span><div class="step-content"><h4>Pick a Prisma payroll function</h4><p>Use <code>calculateEPF(grossSalary, age)</code>: employee pays 11% (max RM5k), employer 13% if salary ≤ RM5k else 12%. Age 60+ = different rate.</p></div></div>
+            <div class="exercise-step"><span class="step-badge">2</span><div class="step-content"><h4>Write 5 test cases first</h4><p>Test: salary RM3,000 / exactly RM5,000 / RM8,000 / negative salary throws / employee age 60+. Write these BEFORE asking Claude to implement.</p></div></div>
+            <div class="exercise-step"><span class="step-badge">3</span><div class="step-content"><h4>Ask Claude to implement</h4><p><em>"Implement calculateEPF(grossSalary, age) so all 5 tests pass. Use KWSP 2025 contribution tables."</em></p></div></div>
+            <div class="exercise-step"><span class="step-badge">4</span><div class="step-content"><h4>Watch Claude iterate</h4><p>Claude runs tests, reads LHDN table failures, updates the contribution logic, repeats. Payroll bugs cost real money — the test harness is Prisma's safety net.</p></div></div>
+            <div class="exercise-step"><span class="step-badge">5</span><div class="step-content"><h4>Add SOCSO + EIS edge cases</h4><p>Add 3 edge cases for <code>calculateSOCSO()</code> and <code>calculateEIS()</code>. Ask Claude to fix all failures. Every statutory deduction must be LHDN-compliant.</p></div></div>
+            <div class="exercise-step"><span class="step-badge">6</span><div class="step-content"><h4>Reflect</h4><p>When LHDN publishes new rates each year, you update the tests — Claude refactors the implementation to match. This is how Prisma Payroll stays compliant without manual audits.</p></div></div>
           </div>
         </div>
       </div>

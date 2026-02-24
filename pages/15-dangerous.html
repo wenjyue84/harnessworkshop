@@ -42,15 +42,15 @@
         </div>
         <h1 class="gradient-text">dangerously-skip-permissions</h1>
         <p class="lead">Autonomous Execution Mode</p>
-        <p class="lead">By default, Claude Code asks for permission before every tool use. <code>dangerously-skip-permissions</code> disables these prompts. Claude acts fully autonomously. Use for trusted, well-defined tasks.</p>
+        <p class="lead">By default, Claude Code asks for permission before every tool use. <code>dangerously-skip-permissions</code> disables these prompts. Claude acts fully autonomously. Use for trusted, well-defined tasks &mdash; like refactoring Prisma's IoT sensor codebase or bulk-updating chatbot response templates.</p>
       </div>
       <div class="content-section">
         <div class="section-title"><div class="icon">&#x1F4A1;</div><h2>The Contractor Metaphor</h2></div>
-        <p>Running Claude normally is like hiring a contractor who asks &ldquo;Is it OK if I drill here?&rdquo; &mdash; safe but slow. Bypass mode is like giving a trusted contractor your house keys: you trust them, the scope is defined, now let them work uninterrupted.</p>
+        <p>Running Claude normally is like hiring a contractor who asks &ldquo;Is it OK if I drill here?&rdquo; &mdash; safe but slow. Bypass mode is like giving a trusted contractor your house keys: you trust them, the scope is defined, now let them work uninterrupted. For Prisma, this is ideal when refactoring all sensor handler files in <code>prisma-iot-counter</code> at once.</p>
       </div>
       <div class="content-section">
         <div class="section-title"><div class="icon">&#x1F3C1;</div><h2>Normal vs Bypass Mode &mdash; The Race</h2></div>
-        <p>Same time window. Normal mode: <strong>6 tasks</strong> done (interrupted each time for permission). Bypass: <strong>10 tasks</strong> uninterrupted. Click Start Race to watch both run simultaneously.</p>
+        <p>Same time window. Normal mode: <strong>6 tasks</strong> done (interrupted each time for permission). Bypass: <strong>10 tasks</strong> uninterrupted. Click Start Race to watch both run simultaneously. Scenario: refactoring all sensor files in Prisma's <code>prisma-iot-counter</code> repo.</p>
         <div class="race-container">
           <div class="race-lane normal">
             <h4>Normal Mode (6 tasks)</h4>
@@ -71,7 +71,7 @@
       </div>
       <div class="callout callout danger">
         <div class="callout-icon">&#x26D4;</div>
-        <div class="callout-body"><strong>CRITICAL WARNING</strong><br>NEVER use <code>dangerously-skip-permissions</code> on untrusted code, unreviewed open-source repos, or tasks with destructive potential. Claude WILL modify and delete files without asking. Use only in controlled, well-scoped tasks in environments you fully own.</div>
+        <div class="callout-body"><strong>CRITICAL WARNING</strong><br>NEVER use <code>dangerously-skip-permissions</code> on untrusted code, unreviewed open-source repos, or tasks with destructive potential. Claude WILL modify and delete files without asking. Use only in controlled, well-scoped tasks in environments you fully own &mdash; like Prisma's internal repos, never on client production databases.</div>
       </div>
       <div class="content-section">
         <div class="section-title"><div class="icon">&#x2699;&#xFE0F;</div><h2>How to Enable</h2></div>
@@ -94,13 +94,12 @@
         <div class="exercise-block">
           <div class="exercise-header"><h3>Controlled Sandbox Exercise</h3></div>
           <div class="exercise-body">
-            <div class="exercise-step"><span class="step-badge">1</span><div class="step-content"><h4>Create a sandbox</h4><p><code>mkdir /tmp/claude-test</code> then cd into it</p></div></div>
-            <div class="exercise-step"><span class="step-badge">2</span><div class="step-content"><h4>Add sample files</h4><p>Create 3 <code>.txt</code> files with dummy content.</p></div></div>
-            <div class="exercise-step"><span class="step-badge">3</span><div class="step-content"><h4>Launch bypass mode</h4><p><code>claude --dangerously-skip-permissions</code></p></div></div>
-            <div class="exercise-step"><span class="step-badge">4</span><div class="step-content"><h4>Give a bounded task</h4><p>Rename all .txt files to include the date prefix YYYY-MM-DD</p></div></div>
-            <div class="exercise-step"><span class="step-badge">5</span><div class="step-content"><h4>Observe &mdash; no prompts</h4><p>Claude works without asking for confirmation on each step.</p></div></div>
-            <div class="exercise-step"><span class="step-badge">6</span><div class="step-content"><h4>Review results</h4><p><code>ls -la</code> &mdash; confirm renames are correct.</p></div></div>
-            <div class="exercise-step"><span class="step-badge">7</span><div class="step-content"><h4>Golden rule</h4><p>Never use this outside test environments without reviewing task scope first.</p></div></div>
+            <div class="exercise-step"><span class="step-badge">1</span><div class="step-content"><h4>Create a Prisma sandbox</h4><p><code>mkdir /tmp/prisma-test && cp src/utils/*.js /tmp/prisma-test/</code> — copy non-critical utility files to a safe sandbox.</p></div></div>
+            <div class="exercise-step"><span class="step-badge">2</span><div class="step-content"><h4>Launch bypass mode</h4><p><code>claude --dangerously-skip-permissions</code> inside the sandbox directory.</p></div></div>
+            <div class="exercise-step"><span class="step-badge">3</span><div class="step-content"><h4>Give a Prisma bulk task</h4><p><em>"Add a Prisma Technology copyright header to all .js files here, using format: // © 2025 Prisma Technology Solution Sdn Bhd"</em></p></div></div>
+            <div class="exercise-step"><span class="step-badge">4</span><div class="step-content"><h4>Observe — no prompts</h4><p>Claude modifies all files without confirmation. Compare to doing this manually across 50 files.</p></div></div>
+            <div class="exercise-step"><span class="step-badge">5</span><div class="step-content"><h4>Review results</h4><p><code>head -2</code> on each file — confirm headers are correct. This is what a Prisma sprint week looks like: scope it, run it, review.</p></div></div>
+            <div class="exercise-step"><span class="step-badge">6</span><div class="step-content"><h4>Golden rule</h4><p>Never use on production IoT servers, live payroll databases, or client WhatsApp bots without backup + scoped task definition.</p></div></div>
           </div>
         </div>
       </div>
@@ -128,13 +127,14 @@
     document.getElementById('reading-progress-fill').style.width = Math.min(pct, 100) + '%';
   });
   var normalTasks = [
-    {msg:'Write config.json',stop:true},{msg:'Run npm install',stop:true},
-    {msg:'Create src/index.js',stop:true},{msg:'Run tests',stop:true},
-    {msg:'Build project',stop:true},{msg:'Deploy to staging',stop:true}
+    {msg:'Read sensor-config.js',stop:true},{msg:'Update MQTT handlers',stop:true},
+    {msg:'Add EPF/SOCSO tables',stop:true},{msg:'Run test suite',stop:true},
+    {msg:'Build IoT dashboard',stop:true},{msg:'Deploy to staging',stop:true}
   ];
   var bypassTasks = [
-    'Write config.json','Run npm install','Create src/index.js','Run tests',
-    'Build project','Deploy to staging','Run lint','Generate docs','Update README','Tag v1.0'
+    'Read sensor-config.js','Update MQTT handlers','Add EPF/SOCSO tables','Run test suite',
+    'Build IoT dashboard','Deploy to staging','Add Prisma copyright headers',
+    'Generate API docs','Update CHANGELOG','Tag release v2.1.0'
   ];
   var raceRunning = false;
   function startRace() {

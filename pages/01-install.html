@@ -33,13 +33,13 @@
       <div class="page-header">
         <div class="module-eyebrow">Module 01 &middot; Getting Started &middot; 5 min</div>
         <h1>Install &amp; <span class="gradient-text">Subscribe</span></h1>
-        <p class="lead">Claude Pro unlocks the full model. Claude Code is your terminal-native AI engineer. Together, they are the foundation of everything in this workshop.</p>
+        <p class="lead">Claude Pro unlocks the full model. Claude Code is your terminal-native AI engineer. Together, they are the foundation of everything in this workshop &#8212; and the engine behind every Prisma Technology Solution project.</p>
       </div>
       <div class="content-section">
         <h2 class="section-title">The Speed-Limited Ferrari</h2>
-        <p style="color:var(--text-dim);line-height:1.75;margin-bottom:16px;">Think of Claude Pro as renting the smartest engineer alive for $20/month. Claude Code is the terminal they work through. Without the subscription, you are using a demo &#8212; like test-driving a Ferrari with the speed limiter on.</p>
-        <p style="color:var(--text-dim);line-height:1.75;">The limiter is not just about speed. Free tier Claude uses smaller models. You lose extended thinking &#8212; the ability to reason through hard problems step by step. You lose priority access during peak hours. Most critically, you lose Claude Opus 4.6, the model that makes everything in this workshop actually work.</p>
-        <div class="callout tip" style="margin-top:20px;"><div class="callout-icon">&#128161;</div><div class="callout-body"><strong>One subscription, two tools.</strong> Claude Pro (claude.ai) and Claude Code (CLI) share the same subscription. Pay once &#8212; both tools upgrade simultaneously.</div></div>
+        <p style="color:var(--text-dim);line-height:1.75;margin-bottom:16px;">Think of Claude Pro as renting the smartest engineer alive for $20/month. Claude Code is the terminal they work through. Without the subscription, you are using a demo &#8212; like test-driving a Ferrari with the speed limiter on. At Prisma, where a single sprint can span an IoT backend, a Telegram bot, and a payroll module, you need the full car.</p>
+        <p style="color:var(--text-dim);line-height:1.75;">The limiter is not just about speed. Free tier Claude uses smaller models. You lose extended thinking &#8212; the ability to reason through hard problems step by step. You lose priority access during peak hours. Most critically, you lose Claude Opus 4.6, the model that makes everything in this workshop actually work on real client projects like Federation Oil and Rui Sin Plastic.</p>
+        <div class="callout tip" style="margin-top:20px;"><div class="callout-icon">&#128161;</div><div class="callout-body"><strong>One subscription, two tools.</strong> Claude Pro (claude.ai) and Claude Code (CLI) share the same subscription. Pay once &#8212; both tools upgrade simultaneously. Every Prisma developer on the team benefits from the same setup.</div></div>
       </div>
       <div class="content-section">
         <h2 class="section-title">Free vs Pro &#8212; See the Difference</h2>
@@ -92,10 +92,13 @@
             <div><span class="prompt">$</span> <span class="cmd">claude --version</span></div>
             <div class="output acc">claude v1.x.x</div>
             <br>
+            <div><span class="comment"># Navigate into a Prisma project before launching</span></div>
+            <div><span class="prompt">$</span> <span class="cmd">cd C:\Prisma\iot-monitor</span></div>
+            <br>
             <div><span class="comment"># Launch and authenticate via OAuth</span></div>
             <div><span class="prompt">$</span> <span class="cmd">claude</span></div>
             <div class="output ok">Opening browser for OAuth login...</div>
-            <div class="output ok">Authenticated as you@example.com</div>
+            <div class="output ok">Authenticated as dev@prisma-tech.my</div>
             <div class="output ok">Ready. Type a message or /help to begin.</div>
             <span class="cursor">&#9610;</span>
           </div>
@@ -106,11 +109,11 @@
         <div class="exercise-block">
           <div class="exercise-header"><span>Exercise 01 &#8212; Install &amp; Authenticate</span><span class="pill pill-green">5 min</span></div>
           <div class="exercise-body">
-            <div class="exercise-step"><div class="step-badge">1</div><div class="step-content"><strong>Subscribe to Claude Pro</strong><br>Go to <code>claude.ai</code> &#8594; click <strong>Upgrade</strong> &#8594; choose Pro at $20/month &#8594; confirm payment.</div></div>
+            <div class="exercise-step"><div class="step-badge">1</div><div class="step-content"><strong>Subscribe to Claude Pro</strong><br>Go to <code>claude.ai</code> &#8594; click <strong>Upgrade</strong> &#8594; choose Pro at $20/month &#8594; confirm payment. This unlocks Claude Code for all Prisma project work: <code>iot-monitor</code>, <code>ai-chatbot</code>, <code>prisma-payroll</code>.</div></div>
             <div class="exercise-step"><div class="step-badge">2</div><div class="step-content"><strong>Install Node.js</strong><br><code>winget install OpenJS.NodeJS</code> in PowerShell (as Administrator), or download from <code>nodejs.org</code>. Verify: <code>node --version</code></div></div>
-            <div class="exercise-step"><div class="step-badge">3</div><div class="step-content"><strong>Install Claude Code globally</strong><br><code>npm install -g @anthropic-ai/claude-code</code> &#8212; installs the <code>claude</code> binary system-wide.</div></div>
+            <div class="exercise-step"><div class="step-badge">3</div><div class="step-content"><strong>Install Claude Code globally</strong><br><code>npm install -g @anthropic-ai/claude-code</code> &#8212; installs the <code>claude</code> binary system-wide. This is the same binary you will use across every Prisma client project.</div></div>
             <div class="exercise-step"><div class="step-badge">4</div><div class="step-content"><strong>Verify the install</strong><br>Run <code>claude --version</code>. Should show a version number. If command not found, restart terminal and confirm npm global bin is in your PATH.</div></div>
-            <div class="exercise-step"><div class="step-badge">5</div><div class="step-content"><strong>Authenticate via OAuth</strong><br>Run <code>claude</code> with no arguments. Browser opens for OAuth. Log in with your Claude Pro account. Return to terminal &#8212; you will see a Ready confirmation.</div></div>
+            <div class="exercise-step"><div class="step-badge">5</div><div class="step-content"><strong>Authenticate via OAuth</strong><br>Run <code>claude</code> inside a project folder such as <code>C:\Prisma\ai-chatbot</code>. Browser opens for OAuth. Log in with your Claude Pro account. Return to terminal &#8212; you will see a Ready confirmation and Claude will begin reading the project structure.</div></div>
           </div>
         </div>
         <div class="callout warn" style="margin-top:16px;"><div class="callout-icon">&#9888;</div><div class="callout-body"><strong>Windows users:</strong> Run PowerShell as Administrator for npm global installs. On permission errors: <code>npm config set prefix &quot;%APPDATA%

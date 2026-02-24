@@ -41,8 +41,8 @@
       </div>
       <div class="content-section">
         <h2 class="section-title">The Self-Writing Onboarding Doc</h2>
-        <p style="color:var(--text-dim);line-height:1.75;margin-bottom:16px;">Imagine hiring a new employee. Instead of you writing their onboarding document, you ask <em>them</em> to shadow your codebase for an hour and write their own handbook. That is /init &#8212; Claude reverse-engineers the instructions it needs to work well in your project.</p>
-        <p style="color:var(--text-dim);line-height:1.75;">Claude reads your package.json, README, existing code patterns, folder structure, and config files. Then it writes a CLAUDE.md tailored to your project &#8212; capturing the stack, conventions, and architectural decisions it can infer. Every future session loads this file automatically before the first message.</p>
+        <p style="color:var(--text-dim);line-height:1.75;margin-bottom:16px;">Imagine hiring a new employee at Prisma Technology Solution. Instead of you writing their onboarding document, you ask <em>them</em> to shadow the codebase for an hour and write their own handbook. That is /init &#8212; Claude reverse-engineers the instructions it needs to work well in your project.</p>
+        <p style="color:var(--text-dim);line-height:1.75;">Claude reads your package.json, README, existing code patterns, folder structure, and config files. For a Prisma IoT project it will discover the MQTT broker config, sensor data schemas, and Node.js service structure. For a chatbot project it finds the Baileys WhatsApp client setup and Supabase connection. Then it writes a CLAUDE.md tailored to that project. Every future session loads this file automatically before the first message.</p>
         <div class="callout tip" style="margin-top:20px;"><div class="callout-icon">&#128161;</div><div class="callout-body"><strong>Run /init once per project.</strong> After that, Claude carries your project context into every session automatically. Edit the generated CLAUDE.md to correct any wrong assumptions.</div></div>
       </div>
       <div class="content-section">
@@ -85,16 +85,16 @@
         <div class="terminal">
           <div class="term-bar"><span class="term-dot" style="background:#ef4444;"></span><span class="term-dot" style="background:#f59e0b;"></span><span class="term-dot" style="background:#22c55e;"></span><span class="term-title">Terminal</span></div>
           <div class="term-body">
-            <div><span class="prompt">$</span> <span class="cmd">cd my-project</span></div>
+            <div><span class="prompt">$</span> <span class="cmd">cd C:\Prisma\iot-monitor</span></div>
             <div><span class="prompt">$</span> <span class="cmd">claude</span></div>
             <div class="output ok">Claude Code v1.x.x ready.</div>
             <br>
             <div><span class="prompt">&gt;</span> <span class="cmd">/init</span></div>
             <br>
             <div class="output info">Scanning project structure...</div>
-            <div class="output info">Reading package.json, README.md...</div>
-            <div class="output info">Analyzing code patterns...</div>
-            <div class="output info">Detecting tech stack: TypeScript, React, Prisma</div>
+            <div class="output info">Reading package.json, README.md, .env.example...</div>
+            <div class="output info">Analyzing code patterns in src/mqtt/, src/sensors/...</div>
+            <div class="output info">Detecting tech stack: Node.js, MQTT, Supabase, Express</div>
             <div class="output info">Writing CLAUDE.md...</div>
             <br>
             <div class="output ok">CLAUDE.md created!</div>
@@ -111,7 +111,7 @@
         <div class="exercise-block">
           <div class="exercise-header"><span>Exercise 02 &#8212; Bootstrap Your Project</span><span class="pill pill-green">8 min</span></div>
           <div class="exercise-body">
-            <div class="exercise-step"><div class="step-badge">1</div><div class="step-content"><strong>Open a terminal in any project folder</strong><br>Use an existing project, or create one: <code>mkdir my-app &amp;&amp; cd my-app &amp;&amp; git init</code></div></div>
+            <div class="exercise-step"><div class="step-badge">1</div><div class="step-content"><strong>Open a terminal in a Prisma project folder</strong><br>Use an existing project, or create one: <code>mkdir iot-monitor &amp;&amp; cd iot-monitor &amp;&amp; git init</code>. Good candidates: your IoT dashboard, chatbot backend, or payroll API.</div></div>
             <div class="exercise-step"><div class="step-badge">2</div><div class="step-content"><strong>Start Claude Code</strong><br>Run <code>claude</code> to launch Claude Code in that directory. You will see a prompt with your project path.</div></div>
             <div class="exercise-step"><div class="step-badge">3</div><div class="step-content"><strong>Run /init</strong><br>Type <code>/init</code> and press Enter. Claude will start scanning your project. This takes 30-60 seconds depending on project size.</div></div>
             <div class="exercise-step"><div class="step-badge">4</div><div class="step-content"><strong>Wait for completion</strong><br>Watch the output as Claude scans files and generates your CLAUDE.md. When it says "created!" the file is ready.</div></div>
@@ -138,8 +138,8 @@
 <script src="../nav.js"></script>
 <script>
   window.addEventListener("scroll",function(){var el=document.documentElement;document.getElementById("reading-progress-fill").style.width=(el.scrollTop/(el.scrollHeight-el.clientHeight)*100)+"%";});
-  var files=["package.json","README.md","src/index.ts","tsconfig.json",".env.example","prisma/schema.prisma","src/utils/api.ts"];
-  var lines=["# My Project","","## Tech Stack","- TypeScript, Node.js, Prisma","- PostgreSQL for storage","","## Conventions","- Use async/await","- kebab-case for filenames","","## What To Avoid","- Never commit .env"];
+  var files=["package.json","README.md","src/mqtt/broker.js","src/sensors/water-level.js",".env.example","src/api/routes.js","config/mqtt.config.js"];
+  var lines=["# iot-monitor / CLAUDE.md","","## Tech Stack","- Node.js, Express, MQTT (Mosquitto)","- Supabase for sensor data storage","","## Conventions","- Use async/await for all MQTT handlers","- kebab-case for filenames","","## What To Avoid","- Never commit .env (contains MQTT credentials)","- Never hardcode sensor thresholds in code"];
   var busy=false;
   function runInitAnim(){
     if(busy)return;

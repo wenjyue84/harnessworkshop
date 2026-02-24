@@ -3,16 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Project Claude.md — Harness Engineering</title>
+<title>Project CLAUDE.md &#8212; Harness Engineering</title>
 <link rel="stylesheet" href="../site.css">
 <style>
   #reading-progress{position:fixed;top:0;left:0;right:0;height:3px;background:var(--border);z-index:200;}
   #reading-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));width:0%;}
-  .template-tabs { display:flex;gap:4px;margin-bottom:0;border-bottom:1px solid var(--border); }
-  .tab-btn { padding:8px 16px;font-size:13px;font-weight:600;background:transparent;border:none;color:var(--text-muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s; }
-  .tab-btn.active { color:var(--accent3);border-bottom-color:var(--accent); }
-  .tab-content { display:none; }
-  .tab-content.active { display:block; }
+  .file-tree{font-family:var(--font-mono);font-size:13px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin:12px 0;}
+  .ft-line{padding:2px 0;color:var(--text-dim);transition:all 0.3s;}
+  .ft-line.highlight{color:var(--accent);font-weight:700;}
+  .ft-folder{color:var(--text);}
+  .ft-file{color:var(--text-muted);}
+  .ft-claude{color:var(--green);font-weight:700;}
+  .load-bar{display:flex;flex-direction:column;gap:6px;margin:12px 0;}
+  .load-item{display:flex;align-items:center;gap:10px;font-size:13px;}
+  .load-icon{width:20px;text-align:center;}
+  .load-text{color:var(--text-dim);}
+  .load-check{margin-left:auto;font-size:11px;padding:2px 8px;border-radius:20px;background:var(--surface2);color:var(--text-muted);transition:all 0.4s;}
+  .load-check.done{background:rgba(34,197,94,0.2);color:var(--green);}
+  .anim-trigger{background:var(--surface2);border:1px solid var(--border2);color:var(--text);padding:8px 22px;border-radius:8px;cursor:pointer;font-size:13px;transition:all 0.2s;}
+  .anim-trigger:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
 </style>
 </head>
 <body>
@@ -22,189 +31,142 @@
   <div class="main-content">
     <div id="nav-topbar"></div>
     <div class="page-content">
-
       <div class="page-header">
-        <div class="module-eyebrow">Module 04 · Getting Started · ⏱ 10 min</div>
-        <h1>Project <span class="gradient-text">Claude.md</span></h1>
-        <p class="lead">Every project has a different stack, team, and set of rules. Project-level CLAUDE.md lives in the repo root and gives Claude exactly the context it needs to work in <em>this specific codebase</em>.</p>
+        <div class="module-eyebrow">Module 04 &middot; Getting Started &middot; 10 min</div>
+        <h1>Project <span class="gradient-text">CLAUDE.md</span></h1>
+        <p class="lead">Every project has a different stack, a different team, different rules. Project-level CLAUDE.md gives Claude the context it needs to work in THIS specific codebase.</p>
       </div>
-
       <div class="content-section">
-        <div class="section-title"><div class="icon" style="background:rgba(99,102,241,.15);">🏢</div>The Workplace Handbook</div>
-        <p>Your global CLAUDE.md describes how you generally work. But every workplace has its own culture, tools, and forbidden practices. A React shop has different rules than a Django shop. A startup has different deployment rules than an enterprise.</p>
-        <p>Project CLAUDE.md is the <strong>employee handbook for this specific team</strong>. New AI session? It reads the handbook first. Same Claude, different project? Different handbook. No context lost between sessions.</p>
+        <h2 class="section-title">The Workplace Employee Handbook</h2>
+        <p style="color:var(--text-dim);line-height:1.75;margin-bottom:16px;">Think of it as the employee handbook for a specific Prisma client project. The global CLAUDE.md is "how this developer generally behaves at Prisma." The project CLAUDE.md is "how this specific system works." The project overrides when there is conflict.</p>
+        <p style="color:var(--text-dim);line-height:1.75;">Without a project CLAUDE.md, Claude works with general knowledge of your stack. With one, Claude knows the exact MQTT topic structure for Rui Sin Plastic's injection machines, which WhatsApp message types Pelangi Hostel's chatbot handles, or which EPF/SOCSO contribution table applies to the prisma-payroll system. This is the difference between a good contractor and someone who knows your codebase inside out.</p>
+        <div class="callout tip" style="margin-top:20px;"><div class="callout-icon">&#128161;</div><div class="callout-body"><strong>More specific = more useful.</strong> A sparse CLAUDE.md is better than none. A detailed one &#8212; with anti-patterns and architecture decisions &#8212; makes Claude dramatically more accurate.</div></div>
       </div>
-
-      <!-- Tab-based template examples -->
-      <div class="anim-box">
-        <div class="anim-box-header">
-          <div class="anim-box-title">📋 Project CLAUDE.md Templates</div>
-        </div>
-        <div style="padding:0 16px 16px;">
-          <div class="template-tabs">
-            <button class="tab-btn active" onclick="switchTab('nextjs')">Next.js</button>
-            <button class="tab-btn" onclick="switchTab('django')">Django</button>
-            <button class="tab-btn" onclick="switchTab('mobile')">React Native</button>
-          </div>
-          <div class="tab-content active" id="tab-nextjs" style="padding-top:12px;">
-            <div class="code-snippet">
-<span class="c"># CLAUDE.md — my-nextjs-app</span>
-
-<span class="g">## Stack</span>
-<span class="s">- Next.js 14 (App Router, Server Components)</span>
-<span class="s">- TypeScript strict, Tailwind CSS, shadcn/ui</span>
-<span class="s">- Database: Prisma + Neon PostgreSQL</span>
-<span class="s">- Auth: NextAuth.js v5</span>
-
-<span class="g">## Conventions</span>
-<span class="s">- Server Components by default; add "use client" only when needed</span>
-<span class="s">- Form validation: Zod schemas in lib/validations/</span>
-<span class="s">- API routes: app/api/ with route.ts pattern</span>
-
-<span class="g">## Commands</span>
-<span class="s">- Dev: npm run dev (localhost:3000)</span>
-<span class="s">- DB migrate: npx prisma migrate dev</span>
-<span class="s">- Type check: tsc --noEmit</span>
-
-<span class="g">## Do Not Modify</span>
-<span class="s">- src/components/ui/ — shadcn auto-generated</span>
-<span class="s">- .env.production — never touch</span></div>
-          </div>
-          <div class="tab-content" id="tab-django" style="padding-top:12px;">
-            <div class="code-snippet">
-<span class="c"># CLAUDE.md — my-django-api</span>
-
-<span class="g">## Stack</span>
-<span class="s">- Django 4.2 + DRF 3.14</span>
-<span class="s">- Python 3.12 — ALWAYS use uv, never pip</span>
-<span class="s">- PostgreSQL + Redis (celery tasks)</span>
-<span class="s">- JWT auth via djangorestframework-simplejwt</span>
-
-<span class="g">## Conventions</span>
-<span class="s">- Each app has: models.py, serializers.py, views.py, urls.py</span>
-<span class="s">- Use class-based views (ViewSet pattern)</span>
-<span class="s">- All API responses: {"data": ..., "meta": ...} format</span>
-
-<span class="g">## Commands</span>
-<span class="s">- Dev: uv run python manage.py runserver</span>
-<span class="s">- Test: uv run pytest -x</span>
-<span class="s">- Migrate: uv run python manage.py migrate</span>
-
-<span class="g">## Critical</span>
-<span class="s">- Never store credentials in settings.py — use env vars</span>
-<span class="s">- Always write migrations — never edit existing ones</span></div>
-          </div>
-          <div class="tab-content" id="tab-mobile" style="padding-top:12px;">
-            <div class="code-snippet">
-<span class="c"># CLAUDE.md — my-mobile-app</span>
-
-<span class="g">## Stack</span>
-<span class="s">- React Native 0.74 + Expo SDK 51</span>
-<span class="s">- TypeScript, NativeWind (Tailwind for RN)</span>
-<span class="s">- State: Zustand + React Query</span>
-<span class="s">- Navigation: Expo Router (file-based)</span>
-
-<span class="g">## Platform Rules</span>
-<span class="s">- Target: iOS 16+ and Android 13+</span>
-<span class="s">- Test on both platforms before committing</span>
-<span class="s">- Use Platform.select() for platform-specific code</span>
-
-<span class="g">## Commands</span>
-<span class="s">- Dev: npx expo start</span>
-<span class="s">- iOS: npx expo run:ios</span>
-<span class="s">- Android: npx expo run:android</span>
-
-<span class="g">## Do Not</span>
-<span class="s">- Never use web-only APIs (window, document, localStorage)</span>
-<span class="s">- Don't use px units — use dp/rem only</span></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="terminal">
-        <div class="term-bar">
-          <div class="term-dot" style="background:#ff5f57"></div>
-          <div class="term-dot" style="background:#febc2e"></div>
-          <div class="term-dot" style="background:#28c840"></div>
-          <div class="term-title">bash — verify CLAUDE.md loaded</div>
-        </div>
-        <div class="term-body">
-          <div><span class="prompt">$ </span><span class="cmd">cd my-project</span></div>
-          <div><span class="prompt">$ </span><span class="cmd">claude</span></div>
-          <div class="info">Loading global CLAUDE.md... ✓</div>
-          <div class="info">Loading project CLAUDE.md... ✓</div>
-          <div class="output">Context loaded: 2 instruction files</div>
-          <br>
-          <div><span class="acc">&gt; </span><span class="cmd">/status</span></div>
-          <div class="output">Project: my-project</div>
-          <div class="output">CLAUDE.md: ✓ loaded (48 lines)</div>
-          <div class="output">Stack: Next.js 14, TypeScript, Prisma</div>
-          <div><span class="cursor"></span></div>
-        </div>
-      </div>
-
-      <div class="exercise-block">
-        <div class="exercise-header"><span>🔧</span><h3>Hands-On Exercise</h3></div>
-        <div class="exercise-body">
-          <div class="exercise-step">
-            <div class="step-badge">01</div>
-            <div class="step-content">
-              <h4>Create CLAUDE.md in your project root</h4>
-              <p>Navigate to any project. Create a file called <code>CLAUDE.md</code> in the root directory (same level as <code>package.json</code> or main config file).</p>
+      <div class="content-section">
+        <h2 class="section-title">Load Order &#8212; Click to Simulate</h2>
+        <div class="anim-box">
+          <div class="anim-box-header"><span class="anim-box-title">Session Load Animation</span><span class="pill pill-accent">Interactive</span></div>
+          <div class="anim-box-body">
+            <div class="file-tree">
+              <div class="ft-line ft-folder">iot-monitor/</div>
+              <div class="ft-line ft-claude" id="ft-claude">&#9492;&#9472; CLAUDE.md &nbsp;&#9650; project instructions load here</div>
+              <div class="ft-line ft-file">&nbsp;&nbsp;&#9492;&#9472; src/</div>
+              <div class="ft-line ft-file">&nbsp;&nbsp;&nbsp;&nbsp;&#9492;&#9472; mqtt/broker.js</div>
+              <div class="ft-line ft-file">&nbsp;&nbsp;&nbsp;&nbsp;&#9492;&#9472; sensors/water-level.js</div>
+              <div class="ft-line ft-file">&nbsp;&nbsp;&#9492;&#9472; package.json</div>
+              <div class="ft-line ft-file">&nbsp;&nbsp;&#9492;&#9472; config/mqtt.config.js</div>
             </div>
-          </div>
-          <div class="exercise-step">
-            <div class="step-badge">02</div>
-            <div class="step-content">
-              <h4>Write the 5 essential sections</h4>
-              <p>Add: <strong>Stack</strong> (what you're using), <strong>Conventions</strong> (patterns to follow), <strong>Commands</strong> (how to run things), <strong>Architecture</strong> (key structure notes), <strong>Do Not</strong> (things to never do).</p>
+            <div class="load-bar">
+              <div class="load-item"><div class="load-icon">&#128196;</div><div class="load-text">Claude default behavior</div><div class="load-check done">always ready</div></div>
+              <div class="load-item"><div class="load-icon">&#127759;</div><div class="load-text">~/.claude/CLAUDE.md (global rules)</div><div class="load-check" id="lc1">pending</div></div>
+              <div class="load-item"><div class="load-icon">&#128193;</div><div class="load-text">./CLAUDE.md (project rules)</div><div class="load-check" id="lc2">pending</div></div>
+              <div class="load-item"><div class="load-icon">&#9989;</div><div class="load-text">Session ready &#8212; conversation begins</div><div class="load-check" id="lc3">pending</div></div>
             </div>
-          </div>
-          <div class="exercise-step">
-            <div class="step-badge">03</div>
-            <div class="step-content">
-              <h4>Test it works</h4>
-              <p>Run <code>claude</code> in that folder, then type <code>/status</code>. Confirm your CLAUDE.md was loaded.</p>
-            </div>
-          </div>
-          <div class="exercise-step">
-            <div class="step-badge">04</div>
-            <div class="step-content">
-              <h4>Commit to git</h4>
-              <p>Run <code>git add CLAUDE.md && git commit -m "feat: add CLAUDE.md for AI context"</code>. Your team now shares consistent AI context.</p>
-              <div class="callout tip" style="margin-top:8px;">
-                <div class="callout-icon">💡</div>
-                <div class="callout-body">Add <code>.claude/</code> to <code>.gitignore</code> if you don't want personal session data committed — but CLAUDE.md itself should be committed.</div>
-              </div>
-            </div>
+            <div style="display:flex;justify-content:center;"><button class="anim-trigger" onclick="simulateLoad()" id="loadBtn">&#9654; Open Claude Code</button></div>
           </div>
         </div>
       </div>
-
-      <div class="takeaways">
-        <h3>⚡ Key Takeaways</h3>
-        <div class="takeaway-item"><span class="ti-icon">✓</span><div>CLAUDE.md in the repo root = project-specific AI context. Loads automatically.</div></div>
-        <div class="takeaway-item"><span class="ti-icon">✓</span><div>Overrides global CLAUDE.md when there's a conflict.</div></div>
-        <div class="takeaway-item"><span class="ti-icon">✓</span><div>Commit it to git — the whole team benefits from shared AI context.</div></div>
-        <div class="takeaway-item"><span class="ti-icon">✓</span><div>The 5 key sections: Stack, Conventions, Commands, Architecture, Do Not.</div></div>
+      <div class="content-section">
+        <h2 class="section-title">What a Strong Project CLAUDE.md Looks Like</h2>
+        <div class="terminal">
+          <div class="term-bar"><span class="term-dot" style="background:#ef4444;"></span><span class="term-dot" style="background:#f59e0b;"></span><span class="term-dot" style="background:#22c55e;"></span><span class="term-title">./CLAUDE.md (Prisma IoT Monitor &#8212; Rui Sin Plastic)</span></div>
+          <div class="term-body">
+            <div class="output acc"># iot-monitor/CLAUDE.md &#8212; Rui Sin Plastic Injection Machine Monitor</div>
+            <br>
+            <div class="output info">## Tech Stack</div>
+            <div class="output">- Node.js + Express REST API</div>
+            <div class="output">- MQTT (Mosquitto broker) for sensor data ingestion</div>
+            <div class="output">- Supabase (PostgreSQL) for time-series storage</div>
+            <div class="output">- n8n for alert automation workflows</div>
+            <br>
+            <div class="output info">## IoT Data Conventions</div>
+            <div class="output">- Sensor payload format: { deviceId, timestamp, value, unit, shiftId }</div>
+            <div class="output">- MQTT topics follow: prisma/ruisin/{machineId}/{sensorType}</div>
+            <div class="output">- Timestamps always in ISO 8601 UTC; display in MYT (UTC+8)</div>
+            <br>
+            <div class="output info">## What To Avoid</div>
+            <div class="output warn">- Do NOT hardcode MQTT broker credentials &#8212; use process.env.MQTT_PASSWORD</div>
+            <div class="output warn">- Do NOT use blocking I/O in MQTT message handlers &#8212; always async</div>
+            <div class="output warn">- Do NOT modify shift schedule logic without checking with Rui Sin ops team</div>
+            <br>
+            <div class="output info">## Payroll Module (prisma-payroll)</div>
+            <div class="output">- EPF: Employee 11%, Employer 13% (standard). Refer config/epf-rates.json</div>
+            <div class="output">- SOCSO + EIS contributions from config/socso-table.json (LHDN 2025 rates)</div>
+            <div class="output">- CP21/CP22 forms generated via src/lhdn/cp-forms.js &#8212; never modify schema</div>
+            <br>
+            <div class="output info">## AI Chatbot Module (ai-chatbot)</div>
+            <div class="output">- WhatsApp via Baileys library; Telegram via node-telegram-bot-api</div>
+            <div class="output">- Support Bahasa Melayu, English, and Mandarin responses</div>
+            <div class="output">- Session state stored in Supabase, not in-memory &#8212; stateless restarts</div>
+            <span class="cursor">&#9610;</span>
+          </div>
+        </div>
       </div>
-
+      <div class="content-section">
+        <h2 class="section-title">Hands-On Exercise</h2>
+        <div class="exercise-block">
+          <div class="exercise-header"><span>Exercise 04 &#8212; Write a Project CLAUDE.md</span><span class="pill pill-green">10 min</span></div>
+          <div class="exercise-body">
+            <div class="exercise-step"><div class="step-badge">1</div><div class="step-content"><strong>Open a Prisma project folder</strong><br>Use one of: <code>iot-monitor</code>, <code>ai-chatbot</code>, or <code>prisma-payroll</code>. If starting from scratch: <code>mkdir iot-monitor &amp;&amp; cd iot-monitor &amp;&amp; git init</code></div></div>
+            <div class="exercise-step"><div class="step-badge">2</div><div class="step-content"><strong>Create CLAUDE.md in the root</strong><br><code>touch CLAUDE.md</code> or open a new file in your editor at the project root.</div></div>
+            <div class="exercise-step"><div class="step-badge">3</div><div class="step-content"><strong>Add these four sections</strong><br>Tech Stack, IoT/Chatbot/Payroll Conventions, File Structure, and What To Avoid. Include the sensor payload format or LHDN rates reference as appropriate.</div></div>
+            <div class="exercise-step"><div class="step-badge">4</div><div class="step-content"><strong>Add an anti-patterns section</strong><br>Write at least 2-3 things Claude should never do. For IoT: "Never hardcode MQTT credentials." For payroll: "Never modify CP21 form schema." Anti-patterns are the most valuable lines in any CLAUDE.md.</div></div>
+            <div class="exercise-step"><div class="step-badge">5</div><div class="step-content"><strong>Run Claude and verify context</strong><br>Run <code>claude</code> in the project and type <code>/status</code>. Ask Claude "what stack are we using?" and "what is the MQTT topic format?" &#8212; it should answer correctly from your CLAUDE.md.</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="content-section">
+        <h2 class="section-title">Key Takeaways</h2>
+        <div class="takeaways">
+          <div class="takeaway-item"><div class="ti-icon">&#128193;</div><div><strong>CLAUDE.md in repo root = project instructions.</strong> It must be committed to git &#8212; this is version-controlled documentation, not a secret.</div></div>
+          <div class="takeaway-item"><div class="ti-icon">&#128200;</div><div><strong>Overrides global rules for this project.</strong> When there is a conflict between global and project rules, project wins. Use this deliberately.</div></div>
+          <div class="takeaway-item"><div class="ti-icon">&#9888;</div><div><strong>Anti-patterns are the most valuable content.</strong> Telling Claude what NOT to do prevents the most costly mistakes. Always include a "What To Avoid" section.</div></div>
+        </div>
+      </div>
       <div class="section-divider" style="margin-top:40px;"></div>
-      <div style="display:flex;justify-content:center;margin:24px 0;">
-        <button class="btn btn-ghost" id="mark-complete-btn">Mark as Complete ✓</button>
-      </div>
+      <div style="display:flex;justify-content:center;margin:24px 0;"><button class="btn btn-ghost" id="mark-complete-btn">Mark as Complete &#10003;</button></div>
       <div id="module-nav"></div>
     </div>
   </div>
 </div>
 <script src="../nav.js"></script>
 <script>
-function switchTab(name) {
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-  document.querySelector(`[onclick="switchTab('${name}')"]`).classList.add('active');
-  document.getElementById('tab-' + name).classList.add('active');
-}
+  window.addEventListener("scroll",function(){var el=document.documentElement;document.getElementById("reading-progress-fill").style.width=(el.scrollTop/(el.scrollHeight-el.clientHeight)*100)+"%";});
+  var loadDone=false;
+  function simulateLoad(){
+    if(loadDone)return;
+    loadDone=true;
+    document.getElementById("loadBtn").textContent="Loading...";
+    document.getElementById("loadBtn").disabled=true;
+    var items=[["lc1",500],["lc2",1100],["lc3",1800]];
+    items.forEach(function(pair){
+      setTimeout(function(){
+        var el=document.getElementById(pair[0]);
+        el.textContent="loaded &#10003;";
+        el.className="load-check done";
+        el.innerHTML="loaded &#10003;";
+        if(pair[0]==="lc3"){
+          document.getElementById("loadBtn").textContent="&#10003; Session Open &#8212; Click to Reset";
+          document.getElementById("loadBtn").disabled=false;
+          document.getElementById("loadBtn").onclick=resetLoad;
+          document.getElementById("ft-claude").style.color="var(--green)";
+          document.getElementById("ft-claude").style.fontWeight="900";
+        }
+      },pair[1]);
+    });
+  }
+  function resetLoad(){
+    loadDone=false;
+    ["lc1","lc2","lc3"].forEach(function(id){
+      var el=document.getElementById(id);
+      el.textContent="pending";
+      el.className="load-check";
+    });
+    document.getElementById("ft-claude").style.color="";
+    document.getElementById("ft-claude").style.fontWeight="";
+    document.getElementById("loadBtn").textContent="&#9654; Open Claude Code";
+    document.getElementById("loadBtn").onclick=simulateLoad;
+  }
 </script>
 </body>
 </html>

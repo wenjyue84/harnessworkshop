@@ -3,33 +3,37 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>/clear and /compact — Harness Engineering</title>
+<title>/clear and /compact - Harness Engineering</title>
 <link rel="stylesheet" href="../site.css">
 <style>
   #reading-progress{position:fixed;top:0;left:0;right:0;height:3px;background:var(--border);z-index:200;}
   #reading-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));width:0%;}
-
-  /* Context meter */
-  .ctx-meter-wrap { margin:20px 0; }
-  .ctx-meter-bar  { height:28px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;overflow:hidden;position:relative;margin-bottom:8px; }
-  .ctx-fill { height:100%;border-radius:8px;transition:width .6s ease,background .4s; display:flex;align-items:center;padding-left:12px;font-size:11px;font-weight:700;color:white; }
-  .ctx-fill.green  { background:linear-gradient(90deg,#22c55e,#16a34a); }
-  .ctx-fill.orange { background:linear-gradient(90deg,#f59e0b,#d97706); }
-  .ctx-fill.red    { background:linear-gradient(90deg,#ef4444,#dc2626); }
-  .ctx-actions { display:flex;gap:8px;margin-top:12px; }
-
-  /* Comparison cards */
-  .cmd-compare { display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0; }
-  .cmd-card { border-radius:var(--radius);padding:20px;border:1px solid; }
-  .cmd-card.clear   { background:rgba(239,68,68,.05);border-color:rgba(239,68,68,.25); }
-  .cmd-card.compact { background:rgba(99,102,241,.05);border-color:rgba(99,102,241,.25); }
-  .cmd-title { font-size:18px;font-weight:900;font-family:var(--font-mono);margin-bottom:10px; }
-  .cmd-card.clear   .cmd-title { color:var(--red); }
-  .cmd-card.compact .cmd-title { color:var(--accent3); }
-  .cmd-list { font-size:13px;color:var(--text-dim);padding-left:18px; }
-  .cmd-list li { margin-bottom:6px; }
-
-  @media(max-width:640px){.cmd-compare{grid-template-columns:1fr;}}
+  .ctx-meter-wrap{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:24px;margin:20px 0;}
+  .ctx-meter-label{font-size:12px;font-family:var(--font-mono);color:var(--text-muted);margin-bottom:8px;display:flex;justify-content:space-between;}
+  .ctx-meter-bar{height:20px;background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;position:relative;}
+  .ctx-meter-fill{height:100%;border-radius:5px;transition:width 0.8s ease,background 0.5s;}
+  .ctx-meter-pct{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:11px;font-family:var(--font-mono);color:var(--text);}
+  .ctx-legend{display:flex;gap:12px;margin-top:10px;flex-wrap:wrap;}
+  .ctx-legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-muted);}
+  .ctx-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0;}
+  .ctx-timeline{display:flex;flex-direction:column;gap:8px;margin-top:16px;}
+  .ctx-event{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:8px;border:1px solid var(--border);background:var(--surface);font-size:13px;cursor:pointer;transition:all 0.2s;}
+  .ctx-event:hover{border-color:var(--accent);}
+  .ctx-event.active{border-color:var(--accent);background:rgba(99,102,241,0.06);}
+  .ctx-event-icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+  .ctx-event-label{flex:1;color:var(--text-dim);}
+  .ctx-event-pct{font-family:var(--font-mono);font-size:12px;}
+  .compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0;}
+  @media(max-width:600px){.compare-grid{grid-template-columns:1fr;}}
+  .compare-card{border-radius:10px;padding:20px;}
+  .compare-card.bad{background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.2);}
+  .compare-card.good{background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.2);}
+  .compare-card h3{font-size:16px;margin:0 0 6px;}
+  .compare-card.bad h3{color:var(--red);}
+  .compare-card.good h3{color:var(--green);}
+  .compare-card .cmd-pill{display:inline-block;font-family:var(--font-mono);font-size:13px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:3px 10px;margin-bottom:12px;}
+  .compare-card ul{margin:0;padding-left:18px;font-size:13px;color:var(--text-dim);line-height:1.9;}
+  .compare-card .use-when{font-size:12px;font-family:var(--font-mono);color:var(--text-muted);margin-top:10px;}
 </style>
 </head>
 <body>
@@ -39,147 +43,135 @@
   <div class="main-content">
     <div id="nav-topbar"></div>
     <div class="page-content">
-
       <div class="page-header">
-        <div class="module-eyebrow">Module 14 · Memory &amp; Context · ⏱ 8 min</div>
-        <h1>/clear and <span class="gradient-text">/compact</span></h1>
-        <p class="lead">Claude's context window is finite. <code>/clear</code> resets it completely. <code>/compact</code> summarizes and compresses it — keeping important decisions but clearing the bulk. Knowing when to use each prevents context overflow.</p>
+        <div class="module-eyebrow">Module 14 &middot; Memory &amp; Context &middot; 8 min</div>
+        <h1 class="gradient-text">/clear and /compact</h1>
+        <p class="lead">Context Window Management &mdash; knowing when to compress vs when to start fresh.</p>
       </div>
-
       <div class="content-section">
-        <div class="section-title"><div class="icon" style="background:rgba(99,102,241,.15);">🗄️</div>The Desk Analogy</div>
-        <p>After hours of work, your desk is covered in notes, printouts, sticky notes, and half-finished documents. You have two options:</p>
-        <ul>
-          <li><strong>/compact</strong> — take a photo of the important stuff, file the rest. Your desk gets clean but you still know what mattered.</li>
-          <li><strong>/clear</strong> — sweep everything off. Completely fresh. Whatever was there is gone.</li>
-        </ul>
-        <p>Context window management is exactly that tradeoff: preserve continuity vs start fresh.</p>
+        <p style="font-size:16px;line-height:1.8;color:var(--text-dim);">Claude context window is finite. <code>/clear</code> resets it completely &mdash; fresh start, clean slate. <code>/compact</code> summarises and compresses the conversation &mdash; keeps the important parts but removes the bulk. For Prisma, this matters when switching between client projects (Federation Oil IoT vs Pelangi chatbot) or after a long payroll system build session.</p>
       </div>
-
-      <!-- Interactive context meter -->
-      <div class="anim-box">
-        <div class="anim-box-header">
-          <div class="anim-box-title">📊 Context Window Simulator</div>
-        </div>
-        <div class="anim-box-body">
-          <div style="font-size:13px;color:var(--text-dim);margin-bottom:12px;">Simulate a long coding session and see when to use /compact vs /clear:</div>
-          <div class="ctx-meter-wrap">
-            <div class="ctx-meter-bar">
-              <div class="ctx-fill green" id="ctx-fill" style="width:15%;">15%</div>
-            </div>
-            <div style="font-size:12px;color:var(--text-muted);" id="ctx-status">Context: <strong>15%</strong> — Plenty of space. Keep going.</div>
-          </div>
-          <div class="ctx-actions">
-            <button class="btn btn-ghost" onclick="addContext()" style="font-size:12px;">+ Add context (continue working)</button>
-            <button class="btn btn-ghost" onclick="doCompact()" style="font-size:12px;" id="compact-btn">⟰ /compact</button>
-            <button class="btn btn-ghost" onclick="doClear()" style="font-size:12px;" id="clear-btn">✕ /clear</button>
-          </div>
-          <div id="ctx-log" style="margin-top:12px;font-size:12px;font-family:var(--font-mono);color:var(--text-dim);min-height:40px;"></div>
-        </div>
+      <div class="callout callout-info" style="margin:24px 0;">
+        <div class="callout-icon">&#128161;</div>
+        <div class="callout-body"><strong>The Mental Model</strong><br>Think of the context window as your desk. After hours of debugging Prisma's IoT sensor code, the desk is covered in MQTT logs, sensor readings, and half-finished notes. <code>/compact</code> is like taking a photo of the important stuff and clearing the clutter. <code>/clear</code> is like pushing everything off completely when you switch from the IoT project to the Pelangi chatbot.</div>
       </div>
-
-      <!-- Command comparison -->
       <div class="content-section">
-        <div class="section-title"><div class="icon" style="background:rgba(245,158,11,.15);">⚖️</div>/clear vs /compact</div>
-        <div class="cmd-compare">
-          <div class="cmd-card clear">
-            <div class="cmd-title">/clear</div>
-            <ul class="cmd-list">
-              <li>Wipes everything completely</li>
-              <li>Claude forgets all context</li>
-              <li>Context drops to 0%</li>
-              <li>Fastest option</li>
+        <h2 class="section-title"><span class="icon">&#9889;</span> Context Window Meter</h2>
+        <p style="color:var(--text-dim);margin-bottom:16px;">Click each event below to see how the context meter changes. Scenario: a long session building Prisma's payroll system, then switching to a client chatbot project.</p>
+        <div class="anim-box">
+          <div class="anim-box-header"><span class="anim-box-title">Live Session: Building prisma-payroll, then switching to Pelangi AI-LiveChat</span></div>
+          <div class="anim-box-body">
+            <div class="ctx-meter-wrap" style="padding:16px;margin:0;">
+              <div class="ctx-meter-label">
+                <span id="ctx-label">Context Window Usage</span>
+                <span id="ctx-tokens" style="color:var(--accent);">0 / 200K tokens</span>
+              </div>
+              <div class="ctx-meter-bar">
+                <div class="ctx-meter-fill" id="ctx-fill" style="width:0%;background:var(--green);"></div>
+                <div class="ctx-meter-pct" id="ctx-pct">0%</div>
+              </div>
+              <div class="ctx-legend">
+                <div class="ctx-legend-item"><div class="ctx-dot" style="background:var(--green);"></div>0-50% (healthy)</div>
+                <div class="ctx-legend-item"><div class="ctx-dot" style="background:var(--orange);"></div>50-80% (monitor)</div>
+                <div class="ctx-legend-item"><div class="ctx-dot" style="background:var(--red);"></div>80%+ (act now)</div>
+              </div>
+            </div>
+            <div class="ctx-timeline">
+              <div class="ctx-event" onclick="setCtx(5,5,false,this)"><div class="ctx-event-icon" style="background:rgba(34,197,94,0.12);">&#128203;</div><div class="ctx-event-label">Session start &mdash; CLAUDE.md loaded, payroll schema context set</div><div class="ctx-event-pct" style="color:var(--green);">5%</div></div>
+              <div class="ctx-event" onclick="setCtx(30,30,false,this)"><div class="ctx-event-icon" style="background:rgba(245,158,11,0.12);">&#9997;&#65039;</div><div class="ctx-event-label">EPF/SOCSO/EIS calculation functions built, multiple iterations</div><div class="ctx-event-pct" style="color:var(--orange);">30%</div></div>
+              <div class="ctx-event" onclick="setCtx(62,62,false,this)"><div class="ctx-event-icon" style="background:rgba(245,158,11,0.12);">&#128196;</div><div class="ctx-event-label">PCB tax tables, CP21/CP22 form logic, 12 files created</div><div class="ctx-event-pct" style="color:var(--orange);">62%</div></div>
+              <div class="ctx-event" onclick="setCtx(18,62,true,this)"><div class="ctx-event-icon" style="background:rgba(99,102,241,0.12);">&#128230;</div><div class="ctx-event-label"><code>/compact</code> &mdash; payroll decisions preserved, verbose debug logs removed</div><div class="ctx-event-pct" style="color:var(--accent);">62% &rarr; 18%</div></div>
+              <div class="ctx-event" onclick="setCtx(88,18,false,this)"><div class="ctx-event-icon" style="background:rgba(239,68,68,0.12);">&#128680;</div><div class="ctx-event-label">Finalising payslip PDF generation &mdash; context nearly full</div><div class="ctx-event-pct" style="color:var(--red);">88%</div></div>
+              <div class="ctx-event" onclick="setCtx(0,88,true,this)"><div class="ctx-event-icon" style="background:rgba(99,102,241,0.12);">&#9196;</div><div class="ctx-event-label"><code>/clear</code> &mdash; switching to Pelangi chatbot RAG project, fresh start</div><div class="ctx-event-pct" style="color:var(--accent);">88% &rarr; 0%</div></div>
+            </div>
+            <div id="ctx-note" style="margin-top:12px;padding:10px;background:var(--surface);border:1px solid var(--border);border-radius:6px;font-size:12px;color:var(--text-muted);">Click any event above to see how context usage changes.</div>
+          </div>
+        </div>
+      </div>
+      <div class="content-section">
+        <h2 class="section-title"><span class="icon">&#128202;</span> /compact vs /clear</h2>
+        <div class="compare-grid">
+          <div class="compare-card good">
+            <h3>&#128230; /compact</h3>
+            <div class="cmd-pill">/compact</div>
+            <ul>
+              <li>Summarises the conversation into a dense summary</li>
+              <li>Keeps payroll logic decisions and file names</li>
+              <li>Removes verbose EPF calculation debug back-and-forth</li>
+              <li>Context drops to ~15-25% after compaction</li>
+              <li>Task continuity is maintained</li>
             </ul>
-            <div style="margin-top:12px;font-size:12px;"><strong style="color:var(--red);">Use when:</strong>
-              <div style="color:var(--text-muted);margin-top:4px;">Starting a completely new task, context is corrupted or off-track, switching to a different project</div>
-            </div>
+            <div class="use-when">Use when: mid-payroll-build, context filling but task continues</div>
           </div>
-          <div class="cmd-card compact">
-            <div class="cmd-title">/compact</div>
-            <ul class="cmd-list">
-              <li>Summarizes the conversation</li>
-              <li>Keeps key decisions &amp; code</li>
-              <li>Context drops to ~20-30%</li>
-              <li>Continuity preserved</li>
+          <div class="compare-card bad">
+            <h3>&#9196; /clear</h3>
+            <div class="cmd-pill">/clear</div>
+            <ul>
+              <li>Erases the entire conversation history</li>
+              <li>Claude has no memory of payroll work done</li>
+              <li>Fresh context &mdash; full 200K tokens available</li>
+              <li>You must re-explain Pelangi chatbot context if needed</li>
+              <li>Fastest way to switch between Prisma client projects</li>
             </ul>
-            <div style="margin-top:12px;font-size:12px;"><strong style="color:var(--accent3);">Use when:</strong>
-              <div style="color:var(--text-muted);margin-top:4px;">Context is getting full mid-task, you want to continue from where you are, long-running sessions (Ralph loop)</div>
-            </div>
+            <div class="use-when">Use when: switching from Federation Oil IoT to Pelangi chatbot</div>
           </div>
         </div>
       </div>
-
-      <div class="terminal">
-        <div class="term-bar">
-          <div class="term-dot" style="background:#ff5f57"></div>
-          <div class="term-dot" style="background:#febc2e"></div>
-          <div class="term-dot" style="background:#28c840"></div>
-          <div class="term-title">Claude Code — /compact in action</div>
-        </div>
-        <div class="term-body">
-          <div><span class="comment"># After a long session, context is getting full</span></div>
-          <div><span class="acc">&gt; </span><span class="cmd">How full is your context?</span></div>
-          <div class="warn">Context: ~78% full. Consider /compact soon.</div>
-          <br>
-          <div><span class="acc">&gt; </span><span class="cmd">/compact</span></div>
-          <div class="output">Summarizing conversation...</div>
-          <div class="output">Keeping: auth.ts refactor (complete), users API (in progress)</div>
-          <div class="output">Keeping: decision to use JWT with 24h expiry</div>
-          <div class="output">Discarding: 48 intermediate messages</div>
-          <div class="ok">✓ Context reduced to 22%. Ready to continue.</div>
-          <br>
-          <div><span class="acc">&gt; </span><span class="cmd">Continue the users API — where were we?</span></div>
-          <div class="output">We were implementing the GET /users/:id endpoint.</div>
-          <div class="output">Auth is done, JWT validation middleware is in middleware/auth.ts</div>
-          <div><span class="cursor"></span></div>
-        </div>
-      </div>
-
-      <div class="exercise-block">
-        <div class="exercise-header"><span>🔧</span><h3>Hands-On Exercise</h3></div>
-        <div class="exercise-body">
-          <div class="exercise-step">
-            <div class="step-badge">01</div>
-            <div class="step-content">
-              <h4>Build up context</h4>
-              <p>Start a Claude Code session and ask it to write 5+ files or analyze a codebase. Build up significant context over 10+ messages.</p>
-            </div>
-          </div>
-          <div class="exercise-step">
-            <div class="step-badge">02</div>
-            <div class="step-content">
-              <h4>Check context usage</h4>
-              <p>Ask: <em>"How full is your context window?"</em> — note the percentage. Most sessions will show it filling up after significant work.</p>
-            </div>
-          </div>
-          <div class="exercise-step">
-            <div class="step-badge">03</div>
-            <div class="step-content">
-              <h4>Run /compact</h4>
-              <p>Type <code>/compact</code>. Watch Claude summarize. Then ask <em>"What do you remember from our session?"</em> — verify the key decisions were kept.</p>
-            </div>
-          </div>
-          <div class="exercise-step">
-            <div class="step-badge">04</div>
-            <div class="step-content">
-              <h4>Try /clear on a new task</h4>
-              <p>Start a different task. Type <code>/clear</code> first to reset context. Notice the difference — Claude has no memory of the previous session.</p>
-            </div>
+      <div class="content-section">
+        <h2 class="section-title"><span class="icon">&#128187;</span> Terminal Demo</h2>
+        <div class="terminal">
+          <div class="term-bar"><span class="term-dot" style="background:var(--red)"></span><span class="term-dot" style="background:var(--orange)"></span><span class="term-dot" style="background:var(--green)"></span><span class="term-title">claude code &mdash; prisma context management</span></div>
+          <div class="term-body">
+            <div><span class="comment"># Check how full the context window is mid-payroll session</span></div>
+            <div><span class="prompt">&gt;</span> <span class="cmd">How full is your context window right now?</span></div>
+            <div><span class="output">Current context: ~62,000 tokens used of 200,000 (31%)</span></div>
+            <div><span class="output">Recommendation: still comfortable. EPF and SOCSO logic is in context.</span></div>
+            <br>
+            <div><span class="comment"># After long payroll build session - compact before continuing</span></div>
+            <div><span class="prompt">/</span><span class="cmd">compact</span></div>
+            <div><span class="ok">&#10003; Compacting conversation history...</span></div>
+            <div><span class="ok">&#10003; Summary: EPF 11%/13%, SOCSO ceiling RM 5,000, PCB tables loaded</span></div>
+            <div><span class="ok">&#10003; Context reduced: 62% &rarr; 18% (saved 44% headroom)</span></div>
+            <div><span class="output">Claude still knows: payroll schema, tax logic, CP22 form structure.</span></div>
+            <div><span class="output">Claude forgot: exact wording of your earlier debug exchanges.</span></div>
+            <br>
+            <div><span class="comment"># Switching to Pelangi Hostel chatbot project</span></div>
+            <div><span class="prompt">/</span><span class="cmd">clear</span></div>
+            <div><span class="ok">&#10003; Context cleared. Fresh session started.</span></div>
+            <div><span class="output">Payroll context: gone. Starting Pelangi RAG chatbot fresh.</span></div>
+            <br>
+            <div><span class="prompt">&gt;</span> <span class="cmd">Let us start fresh. Pelangi Capsule Hostel needs a WhatsApp chatbot...<span class="cursor"></span></span></div>
           </div>
         </div>
       </div>
-
-      <div class="takeaways">
-        <h3>⚡ Key Takeaways</h3>
-        <div class="takeaway-item"><span class="ti-icon">✓</span><div>Context window = limited RAM. It fills up during long sessions.</div></div>
-        <div class="takeaway-item"><span class="ti-icon">✓</span><div><code>/compact</code> = smart compression. Keeps key decisions, drops chatter. Drops to ~20-30%.</div></div>
-        <div class="takeaway-item"><span class="ti-icon">✓</span><div><code>/clear</code> = full reset. Drops to 0%. Use when switching tasks entirely.</div></div>
-        <div class="takeaway-item"><span class="ti-icon">✓</span><div>Autonomous agents (like Ralph) use <code>/compact</code> automatically at ~80% to keep running.</div></div>
+      <div class="content-section">
+        <h2 class="section-title"><span class="icon">&#127947;</span> Exercise</h2>
+        <div class="exercise-block">
+          <div class="exercise-header">Hands-On: Master Context Management Across Prisma Projects</div>
+          <div class="exercise-body">
+            <div class="exercise-step"><div class="step-badge">1</div><div class="step-content"><strong>Build context on one project</strong><br>Start a session working on Prisma's payroll system. Ask Claude to generate EPF, SOCSO, and EIS calculation functions. Do a few rounds of iteration with edge cases.</div></div>
+            <div class="exercise-step"><div class="step-badge">2</div><div class="step-content"><strong>Check context usage</strong><br>Ask Claude: <em>How full is your context window right now?</em> Note the percentage. Ask what Claude remembers from the payroll tax logic built so far.</div></div>
+            <div class="exercise-step"><div class="step-badge">3</div><div class="step-content"><strong>Run /compact</strong><br>Type <code>/compact</code> and observe what Claude includes in its summary. Verify it remembered the EPF/PCB/SOCSO decisions but shed the verbose debug dialogue.</div></div>
+            <div class="exercise-step"><div class="step-badge">4</div><div class="step-content"><strong>Continue the payroll task</strong><br>Keep working. Ask Claude to add CP22 form generation. Verify it still has full context of the tax calculations &mdash; the compact summary is working.</div></div>
+            <div class="exercise-step"><div class="step-badge">5</div><div class="step-content"><strong>Switch projects with /clear</strong><br>When the payroll task is done, type <code>/clear</code> and start fresh on the Pelangi Hostel chatbot project. Notice the clean slate &mdash; no leftover payroll context.</div></div>
+            <div class="exercise-step"><div class="step-badge">6</div><div class="step-content"><strong>Compare the experience</strong><br>Reflect: which command made sense when? /compact mid-payroll-build kept momentum. /clear at project switch prevented context contamination between clients.</div></div>
+          </div>
+        </div>
       </div>
-
+      <div class="callout callout-tip" style="margin:24px 0;"><div class="callout-icon">&#128218;</div><div class="callout-body"><strong>Pro Tip: Compact Early on Complex Payroll Sessions</strong><br>Do not wait until the context is 90% full. Compact at 60-70% when the payroll logic summary will still be accurate and coherent. Late compaction on a complex Malaysian tax calculation session risks losing important PCB rate nuance because the summary has too much to squeeze.</div></div>
+      <div class="content-section">
+        <h2 class="section-title"><span class="icon">&#127919;</span> Key Takeaways</h2>
+        <div class="takeaways"><h3>What to Remember</h3>
+          <div class="takeaway-item"><div class="ti-icon">&#128190;</div><div><strong>Context window = limited RAM.</strong> Every token you add displaces something. Manage it actively across Prisma's projects.</div></div>
+          <div class="takeaway-item"><div class="ti-icon">&#128230;</div><div><strong>/compact = lossless compression.</strong> Keeps EPF/SOCSO/PCB decisions and code references, removes dialogue bulk.</div></div>
+          <div class="takeaway-item"><div class="ti-icon">&#9196;</div><div><strong>/clear = full reset.</strong> Use when switching between client projects: Federation Oil IoT to Pelangi chatbot.</div></div>
+          <div class="takeaway-item"><div class="ti-icon">&#128337;</div><div><strong>Compact at 60-70%, not 90%.</strong> Earlier compaction produces better summaries of complex tax logic.</div></div>
+          <div class="takeaway-item"><div class="ti-icon">&#128202;</div><div><strong>Watch the token count.</strong> Ask Claude how full its context is whenever a payroll debug session feels sluggish.</div></div>
+        </div>
+      </div>
       <div class="section-divider" style="margin-top:40px;"></div>
       <div style="display:flex;justify-content:center;margin:24px 0;">
-        <button class="btn btn-ghost" id="mark-complete-btn">Mark as Complete ✓</button>
+        <button class="btn btn-ghost" id="mark-complete-btn">Mark as Complete &#10003;</button>
       </div>
       <div id="module-nav"></div>
     </div>
@@ -187,45 +179,61 @@
 </div>
 <script src="../nav.js"></script>
 <script>
-let ctxLevel = 15;
-const fill = document.getElementById('ctx-fill');
-const status = document.getElementById('ctx-status');
-const log = document.getElementById('ctx-log');
-
-function updateMeter() {
-  fill.style.width = ctxLevel + '%';
-  fill.textContent = ctxLevel + '%';
-  fill.className = 'ctx-fill ' + (ctxLevel < 50 ? 'green' : ctxLevel < 80 ? 'orange' : 'red');
-  const msg = ctxLevel < 50 ? 'Plenty of space. Keep going.' :
-              ctxLevel < 80 ? '⚠ Getting full. Consider /compact soon.' :
-              '🔴 Critical! Run /compact or /clear now!';
-  status.innerHTML = `Context: <strong>${ctxLevel}%</strong> — ${msg}`;
-}
-
-function addContext() {
-  if (ctxLevel >= 95) {
-    log.innerHTML = '<span style="color:var(--red)">Context overflow! Run /compact or /clear before continuing.</span>';
-    return;
+  window.addEventListener("scroll",()=>{
+    const el=document.documentElement;
+    document.getElementById("reading-progress-fill").style.width=(el.scrollTop/(el.scrollHeight-el.clientHeight))*100+"%";
+  });
+  const notes=[
+    "Session start: CLAUDE.md loaded, payroll project context set. Context healthy.",
+    "30%: EPF/SOCSO/EIS functions built. Working comfortably. No action needed yet.",
+    "62%: PCB tables and CP22 form logic added. Getting full. Consider /compact soon.",
+    "/compact executed: Context dropped from 62% to 18%. Payroll tax decisions preserved in summary.",
+    "88%: Payslip PDF generation nearly done. Approaching limit. Run /compact or /clear before next project.",
+    "/clear executed: Slate wiped. Switching to Pelangi chatbot. All payroll context gone."
+  ];
+  let prevEl=null;
+  function setCtx(target,from,isCommand,el){
+    if(prevEl){prevEl.classList.remove("active");}
+    el.classList.add("active"); prevEl=el;
+    const fill=document.getElementById("ctx-fill");
+    const pct=document.getElementById("ctx-pct");
+    const tokens=document.getElementById("ctx-tokens");
+    const note=document.getElementById("ctx-note");
+    if(isCommand){
+      fill.style.width=from+"%";
+      fill.style.background=from>80?"var(--red)":from>50?"var(--orange)":"var(--green)";
+      setTimeout(()=>{
+        fill.style.width=target+"%";
+        fill.style.background=target>80?"var(--red)":target>50?"var(--orange)":"var(--green)";
+        pct.textContent=target+"%";
+        tokens.textContent=Math.round(target*2000)+" / 200K tokens";
+      },400);
+    } else {
+      fill.style.width=target+"%";
+      fill.style.background=target>80?"var(--red)":target>50?"var(--orange)":"var(--green)";
+      pct.textContent=target+"%";
+      tokens.textContent=Math.round(target*2000)+" / 200K tokens";
+    }
+    const idx=[0,30,62,18,88,0].indexOf(target);
+    note.textContent=notes[el.parentElement ? Array.from(el.parentElement.children).indexOf(el) : 0]||notes[0];
   }
-  ctxLevel = Math.min(95, ctxLevel + Math.floor(Math.random() * 12 + 8));
-  log.innerHTML = `<span style="color:var(--text-muted)">Added context... now at ${ctxLevel}%</span>`;
-  updateMeter();
-}
-
-function doCompact() {
-  if (ctxLevel < 20) { log.innerHTML = '<span style="color:var(--text-muted)">Context is already lean — no need to compact yet.</span>'; return; }
-  const before = ctxLevel;
-  ctxLevel = Math.max(18, Math.floor(ctxLevel * 0.27));
-  log.innerHTML = `<span style="color:var(--green)">✓ /compact: ${before}% → ${ctxLevel}%. Key decisions preserved.</span>`;
-  updateMeter();
-}
-
-function doClear() {
-  const before = ctxLevel;
-  ctxLevel = 5;
-  log.innerHTML = `<span style="color:var(--red)">✕ /clear: ${before}% → 5%. All context erased. Fresh start.</span>`;
-  updateMeter();
-}
+  document.querySelectorAll(".ctx-event").forEach((el,i)=>{
+    el.onclick=function(){
+      const targets=[5,30,62,18,88,0];
+      const froms=[0,5,30,62,18,88];
+      const isCmd=[false,false,false,true,false,true];
+      if(prevEl){prevEl.classList.remove("active");}
+      this.classList.add("active"); prevEl=this;
+      const fill=document.getElementById("ctx-fill");
+      const pct=document.getElementById("ctx-pct");
+      const tokens=document.getElementById("ctx-tokens");
+      const note=document.getElementById("ctx-note");
+      const t=targets[i], bg=t>80?"var(--red)":t>50?"var(--orange)":"var(--green)";
+      if(isCmd[i]){ fill.style.width=froms[i]+"%"; setTimeout(()=>{ fill.style.width=t+"%"; fill.style.background=bg; pct.textContent=t+"%"; tokens.textContent=Math.round(t*2000)+" / 200K tokens"; },400); }
+      else { fill.style.width=t+"%"; fill.style.background=bg; pct.textContent=t+"%"; tokens.textContent=Math.round(t*2000)+" / 200K tokens"; }
+      note.textContent=notes[i];
+    };
+  });
 </script>
 </body>
 </html>

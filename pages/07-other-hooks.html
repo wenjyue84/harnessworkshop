@@ -3,17 +3,32 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Other Hooks — Harness Engineering</title>
+<title>Other Hooks &#8212; Harness Engineering</title>
 <link rel="stylesheet" href="../site.css">
 <style>
   #reading-progress{position:fixed;top:0;left:0;right:0;height:3px;background:var(--border);z-index:200;}
   #reading-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));width:0%;}
-  .hook-table { width:100%;border-collapse:collapse;font-size:13px;margin:16px 0; }
-  .hook-table th { text-align:left;padding:8px 12px;background:var(--surface2);color:var(--text-muted);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border); }
-  .hook-table td { padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text-dim);vertical-align:top; }
-  .hook-table tr:last-child td { border-bottom:none; }
-  .hook-name { font-family:var(--font-mono);font-size:12px;color:var(--accent3); }
-  .hook-can-block { display:inline-block;background:rgba(239,68,68,.15);color:var(--red);font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;margin-left:4px; }
+  .event-flow{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:16px 0;}
+  .ef-stage{border-radius:10px;padding:10px 14px;border:2px solid var(--border);background:var(--surface);text-align:center;font-size:12px;transition:all 0.4s;min-width:100px;cursor:pointer;}
+  .ef-stage.blocked{border-color:var(--red);background:rgba(239,68,68,0.08);}
+  .ef-stage.allowed{border-color:var(--green);background:rgba(34,197,94,0.08);}
+  .ef-stage.active{border-color:var(--accent);background:rgba(99,102,241,0.1);}
+  .ef-arrow{font-size:16px;color:var(--border2);transition:color 0.4s;}
+  .ef-arrow.green{color:var(--green);}
+  .ef-arrow.red{color:var(--red);}
+  .ef-label{font-weight:700;font-size:11px;}
+  .ef-sub{color:var(--text-muted);font-size:10px;}
+  .hooks-table{width:100%;border-collapse:collapse;margin:12px 0;}
+  .hooks-table th{text-align:left;padding:8px 12px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);border-bottom:1px solid var(--border);}
+  .hooks-table td{padding:10px 12px;font-size:13px;border-bottom:1px solid var(--border);}
+  .hooks-table tr:last-child td{border-bottom:none;}
+  .hooks-table td:first-child{font-family:var(--font-mono);font-weight:700;color:var(--accent);}
+  .hook-toggle{display:flex;gap:8px;margin-bottom:12px;}
+  .ht-btn{padding:6px 14px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--text-dim);cursor:pointer;font-size:12px;transition:all 0.2s;}
+  .ht-btn.on{background:var(--green);border-color:var(--green);color:#fff;}
+  .ht-btn.off{background:var(--red);border-color:var(--red);color:#fff;}
+  .anim-trigger{background:var(--surface2);border:1px solid var(--border2);color:var(--text);padding:8px 22px;border-radius:8px;cursor:pointer;font-size:13px;transition:all 0.2s;}
+  .anim-trigger:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
 </style>
 </head>
 <body>
@@ -23,172 +38,161 @@
   <div class="main-content">
     <div id="nav-topbar"></div>
     <div class="page-content">
-
       <div class="page-header">
-        <div class="module-eyebrow">Module 07 · Hooks &amp; Automation · ⏱ 12 min</div>
+        <div class="module-eyebrow">Module 07 &middot; Hooks &amp; Automation &middot; 12 min</div>
         <h1>Other <span class="gradient-text">Hooks</span></h1>
-        <p class="lead">Beyond SessionStart, Claude Code exposes hooks at every lifecycle stage: before tool calls, after tool calls, on notification, and on stop. Build audit trails, safety checks, auto-formatters, and alerts.</p>
+        <p class="lead">Beyond SessionStart, Claude Code exposes hooks for every significant event: PreToolUse, PostToolUse, Notification, and Stop. These let you build audit trails, safety checks, auto-formatters, and notification systems.</p>
       </div>
-
       <div class="content-section">
-        <div class="section-title"><div class="icon" style="background:rgba(99,102,241,.15);">🍳</div>The Kitchen Stations</div>
-        <p>A professional kitchen has quality control stations: the prep station checks ingredients before cooking, the pass checks plates before they leave. If anything is wrong, it gets stopped before reaching the customer.</p>
-        <p>Claude Code hooks are those stations. <code>PreToolUse</code> can inspect and <strong>block</strong> actions before they happen. <code>PostToolUse</code> can log, notify, or trigger follow-up actions after. You're adding control points to the AI's workflow.</p>
+        <h2 class="section-title">The Professional Kitchen Station Model</h2>
+        <p style="color:var(--text-dim);line-height:1.75;margin-bottom:16px;">A professional kitchen has stations: prep (before cooking), quality check (after each dish), expeditor (before it leaves). Claude Code hooks are those stations &#8212; you intercept actions at every stage and add your own logic. At Prisma, this means blocking accidental production deployments, logging every database migration for audit, and notifying the team on Telegram when a deployment completes.</p>
+        <p style="color:var(--text-dim);line-height:1.75;">PreToolUse hooks can inspect and block. PostToolUse hooks can log, notify, or trigger side effects. The Notification hook fires when Claude needs your attention. The Stop hook fires when Claude finishes a task. Together, they give you a complete audit and control system around every AI action on client systems.</p>
+        <div class="callout danger" style="margin-top:20px;"><div class="callout-icon">&#9888;</div><div class="callout-body"><strong>PreToolUse can block operations.</strong> If your hook exits with a non-zero code, the tool call is cancelled. Use this for safety checks on destructive operations like file deletion.</div></div>
       </div>
-
-      <!-- Hook types table -->
-      <div class="anim-box">
-        <div class="anim-box-header">
-          <div class="anim-box-title">📋 All Hook Events</div>
-        </div>
-        <div class="anim-box-body">
-          <table class="hook-table">
-            <tr>
-              <th>Event</th>
-              <th>When it fires</th>
-              <th>Can block?</th>
-              <th>Best for</th>
-            </tr>
-            <tr>
-              <td><span class="hook-name">SessionStart</span></td>
-              <td>Session opens, before any message</td>
-              <td>No</td>
-              <td>Injecting context, date, git status</td>
-            </tr>
-            <tr>
-              <td><span class="hook-name">PreToolUse</span></td>
-              <td>Before Claude calls any tool</td>
-              <td><span class="hook-can-block">YES</span></td>
-              <td>Safety checks, confirmations, validation</td>
-            </tr>
-            <tr>
-              <td><span class="hook-name">PostToolUse</span></td>
-              <td>After a tool call completes</td>
-              <td>No</td>
-              <td>Audit logs, notifications, auto-formatting</td>
-            </tr>
-            <tr>
-              <td><span class="hook-name">Notification</span></td>
-              <td>Claude sends a notification</td>
-              <td>No</td>
-              <td>Desktop alerts, Slack/webhook forwarding</td>
-            </tr>
-            <tr>
-              <td><span class="hook-name">Stop</span></td>
-              <td>Claude finishes responding</td>
-              <td>No</td>
-              <td>Summary writes, CI triggers, cleanup</td>
-            </tr>
-          </table>
-        </div>
-      </div>
-
-      <!-- PostToolUse audit log example -->
       <div class="content-section">
-        <div class="section-title"><div class="icon" style="background:rgba(34,197,94,.15);">📝</div>PostToolUse: Audit Log</div>
-        <p>Every file write gets logged automatically. No manual tracking needed.</p>
-        <div class="code-snippet">
-<span class="c">// ~/.claude/settings.json</span>
-{
-  <span class="k">"hooks"</span>: {
-    <span class="k">"PostToolUse"</span>: [{
-      <span class="k">"matcher"</span>: <span class="s">"Write|Edit|Bash"</span>,
-      <span class="k">"hooks"</span>: [{
-        <span class="k">"type"</span>: <span class="s">"command"</span>,
-        <span class="k">"command"</span>: <span class="s">"echo \"$(date +%Y-%m-%dT%H:%M:%S) TOOL=$CLAUDE_TOOL_NAME\" >> ~/claude-audit.log"</span>
-      }]
-    }]
-  }
-}
-        </div>
-      </div>
-
-      <!-- PreToolUse block example -->
-      <div class="content-section">
-        <div class="section-title"><div class="icon" style="background:rgba(239,68,68,.15);">🛡️</div>PreToolUse: Safety Block</div>
-        <p>Exit with code 2 from a PreToolUse hook to <strong>block</strong> the tool call. Claude receives your error message and adjusts.</p>
-        <div class="code-snippet">
-<span class="c">// Block deletion of .env files</span>
-{
-  <span class="k">"PreToolUse"</span>: [{
-    <span class="k">"matcher"</span>: <span class="s">"Bash"</span>,
-    <span class="k">"hooks"</span>: [{
-      <span class="k">"type"</span>: <span class="s">"command"</span>,
-      <span class="k">"command"</span>: <span class="g">"bash -c 'if echo \"$CLAUDE_TOOL_INPUT\" | grep -q \"rm.*\\.env\"; then echo \"BLOCKED: cannot delete .env files\" >&2; exit 2; fi'"</span>
-    }]
-  }]
-}
-        </div>
-        <div class="callout warn" style="margin-top:12px;">
-          <div class="callout-icon">⚠</div>
-          <div class="callout-body"><strong>Exit code 2 = block.</strong> Any other non-zero exit = error (hook failed but tool still runs). Exit 0 = success, tool proceeds. The error message in stderr is shown to Claude.</div>
-        </div>
-      </div>
-
-      <div class="terminal">
-        <div class="term-bar">
-          <div class="term-dot" style="background:#ff5f57"></div>
-          <div class="term-dot" style="background:#febc2e"></div>
-          <div class="term-dot" style="background:#28c840"></div>
-          <div class="term-title">bash — hook in action</div>
-        </div>
-        <div class="term-body">
-          <div><span class="comment"># Claude tries to delete a .env file</span></div>
-          <div><span class="acc">&gt; </span><span class="output">running: rm .env.local</span></div>
-          <div class="err">Hook blocked: cannot delete .env files</div>
-          <div class="warn">PreToolUse hook rejected the action.</div>
-          <br>
-          <div><span class="comment"># Claude receives the block and adjusts:</span></div>
-          <div class="output">I won't delete .env.local. Should I move it to .env.backup instead?</div>
-          <div><span class="cursor"></span></div>
-        </div>
-      </div>
-
-      <div class="exercise-block">
-        <div class="exercise-header"><span>🔧</span><h3>Hands-On Exercise</h3></div>
-        <div class="exercise-body">
-          <div class="exercise-step">
-            <div class="step-badge">01</div>
-            <div class="step-content">
-              <h4>Add a PostToolUse audit log</h4>
-              <p>Add the audit log hook above to your settings.json. Ask Claude to edit any file, then check <code>~/claude-audit.log</code> to confirm logging works.</p>
+        <h2 class="section-title">PreToolUse Flow &#8212; Allow or Block</h2>
+        <div class="anim-box">
+          <div class="anim-box-header"><span class="anim-box-title">Interactive Event Flow</span><span class="pill pill-accent">Toggle to Test</span></div>
+          <div class="anim-box-body">
+            <div class="hook-toggle">
+              <span style="font-size:13px;color:var(--text-dim);line-height:2;">Simulate input:</span>
+              <button class="ht-btn on" id="toggleAllow" onclick="setMode(true)">Allow (safe file)</button>
+              <button class="ht-btn" id="toggleBlock" onclick="setMode(false)">Block (deletion)</button>
             </div>
-          </div>
-          <div class="exercise-step">
-            <div class="step-badge">02</div>
-            <div class="step-content">
-              <h4>Add a PreToolUse safety check</h4>
-              <p>Add the .env protection hook. Then ask Claude: <em>"Delete all files in my project"</em> and verify it gets blocked.</p>
+            <div class="event-flow" id="eflow">
+              <div class="ef-stage" id="ef1"><div class="ef-label">Claude Intent</div><div class="ef-sub">write mqtt/broker.js</div></div>
+              <div class="ef-arrow" id="ea1">&#8594;</div>
+              <div class="ef-stage" id="ef2"><div class="ef-label">PreToolUse Hook</div><div class="ef-sub">validate action</div></div>
+              <div class="ef-arrow" id="ea2">&#8594;</div>
+              <div class="ef-stage" id="ef3"><div class="ef-label">Tool Executes</div><div class="ef-sub">file written</div></div>
+              <div class="ef-arrow" id="ea3">&#8594;</div>
+              <div class="ef-stage" id="ef4"><div class="ef-label">PostToolUse Hook</div><div class="ef-sub">log to audit</div></div>
+              <div class="ef-arrow" id="ea4">&#8594;</div>
+              <div class="ef-stage" id="ef5"><div class="ef-label">Done</div><div class="ef-sub">&#10003; complete</div></div>
             </div>
-          </div>
-          <div class="exercise-step">
-            <div class="step-badge">03</div>
-            <div class="step-content">
-              <h4>Create a desktop notification</h4>
-              <p>Add a <code>Stop</code> hook that notifies you when Claude finishes a long task:</p>
-              <div class="code-snippet"><span class="c"># Windows (PowerShell):</span>
-<span class="g">powershell -command "Add-Type -AssemblyName System.Windows.Forms; [System.Windows.Forms.MessageBox]::Show('Claude finished!')"</span></div>
-            </div>
+            <div id="flowStatus" style="font-size:12px;color:var(--text-dim);margin-top:8px;padding:8px;background:var(--surface2);border-radius:6px;">Showing: allowed flow. Toggle to see blocking.</div>
           </div>
         </div>
       </div>
-
-      <div class="takeaways">
-        <h3>⚡ Key Takeaways</h3>
-        <div class="takeaway-item"><span class="ti-icon">✓</span><div>5 hook events: SessionStart, PreToolUse, PostToolUse, Notification, Stop.</div></div>
-        <div class="takeaway-item"><span class="ti-icon">✓</span><div><strong>PreToolUse can block</strong> — exit code 2 prevents the tool call. Claude receives your error message.</div></div>
-        <div class="takeaway-item"><span class="ti-icon">✓</span><div>PostToolUse is perfect for audit logging — use <code>$CLAUDE_TOOL_NAME</code> and <code>$CLAUDE_TOOL_INPUT</code> env vars.</div></div>
-        <div class="takeaway-item"><span class="ti-icon">✓</span><div>matcher pattern (e.g., "Write|Edit") filters which tool calls trigger the hook.</div></div>
+      <div class="content-section">
+        <h2 class="section-title">The 5 Hook Types</h2>
+        <table class="hooks-table">
+          <thead><tr><th>Hook</th><th>When It Fires</th><th>Can Block?</th><th>Best For</th></tr></thead>
+          <tbody>
+            <tr><td>SessionStart</td><td>When Claude Code opens</td><td>No</td><td>Date injection, git status, health checks</td></tr>
+            <tr><td>PreToolUse</td><td>Before any tool call</td><td>Yes &#10003;</td><td>Safety validation, access control</td></tr>
+            <tr><td>PostToolUse</td><td>After any tool call</td><td>No</td><td>Audit logging, notifications, side effects</td></tr>
+            <tr><td>Notification</td><td>When Claude sends a notification</td><td>No</td><td>Desktop alerts, Slack/webhook pings</td></tr>
+            <tr><td>Stop</td><td>When Claude finishes responding</td><td>No</td><td>Completion alerts, post-run cleanup</td></tr>
+          </tbody>
+        </table>
       </div>
-
+      <div class="content-section">
+        <h2 class="section-title">PostToolUse Audit Log Hook</h2>
+        <div class="terminal">
+          <div class="term-bar"><span class="term-dot" style="background:#ef4444;"></span><span class="term-dot" style="background:#f59e0b;"></span><span class="term-dot" style="background:#22c55e;"></span><span class="term-title">~/.claude/settings.json</span></div>
+          <div class="term-body">
+            <div><span class="comment">// Log every DB migration and notify team on Telegram when deployment completes</span></div>
+            <div><span class="k">{</span></div>
+            <div>&nbsp;&nbsp;<span class="s">"hooks"</span>: <span class="k">{</span></div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="s">"PostToolUse"</span>: <span class="k">[</span></div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="k">{</span></div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="s">"matcher"</span>: <span class="s">"Write|Edit|Bash"</span>,</div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="s">"hooks"</span>: <span class="k">[{</span></div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="s">"type"</span>: <span class="s">"command"</span>,</div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="s">"command"</span>: <span class="g">"echo \"[$(date '+%d/%m/%Y %H:%M')] Modified: $CLAUDE_TOOL_INPUT\" >> ~/prisma-audit.log"</span></div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="k">}]</span></div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="k">}</span></div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="k">]</span>,</div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="s">"Stop"</span>: <span class="k">[{</span></div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="s">"matcher"</span>: <span class="s">"deploy|migration"</span>,</div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="s">"hooks"</span>: <span class="k">[{</span></div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="s">"type"</span>: <span class="s">"command"</span>,</div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="s">"command"</span>: <span class="g">"curl -s -X POST $TELEGRAM_WEBHOOK_URL -d '{\"text\":\"Prisma deploy complete on $(hostname)\"}'  &gt; /dev/null"</span></div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="k">}]</span></div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="k">}]</span></div>
+            <div>&nbsp;&nbsp;<span class="k">}</span></div>
+            <div><span class="k">}</span></div>
+            <br>
+            <div><span class="comment"># Result: every file edit is audited; deployments notify the Prisma team</span></div>
+            <div><span class="prompt">$</span> <span class="cmd">cat ~/prisma-audit.log</span></div>
+            <div class="output ok">[24/02/2026 09:45] Modified: src/mqtt/broker.js</div>
+            <div class="output ok">[24/02/2026 09:47] Modified: src/sensors/water-level.js</div>
+            <div class="output ok">[24/02/2026 10:02] Modified: supabase/migrations/20260224_add_shift_column.sql</div>
+            <span class="cursor">&#9610;</span>
+          </div>
+        </div>
+      </div>
+      <div class="content-section">
+        <h2 class="section-title">Hands-On Exercise</h2>
+        <div class="exercise-block">
+          <div class="exercise-header"><span>Exercise 07 &#8212; Build an Audit System</span><span class="pill pill-green">12 min</span></div>
+          <div class="exercise-body">
+            <div class="exercise-step"><div class="step-badge">1</div><div class="step-content"><strong>Create a PostToolUse audit hook</strong><br>Add the JSON from the terminal above to your settings.json. The matcher <code>Write|Edit|Bash</code> fires on file modifications and shell commands. Logs go to <code>~/prisma-audit.log</code> with Malaysian date format.</div></div>
+            <div class="exercise-step"><div class="step-badge">2</div><div class="step-content"><strong>Test it with a real edit</strong><br>Open Claude Code in <code>iot-monitor</code> and ask Claude to edit a sensor file. Afterward, check <code>~/prisma-audit.log</code> &#8212; you should see the timestamp and file name logged.</div></div>
+            <div class="exercise-step"><div class="step-badge">3</div><div class="step-content"><strong>Create a PreToolUse safety hook to block production IoT deploys</strong><br>Add a hook that blocks Bash commands containing <code>deploy</code> or <code>pm2 restart</code> when the environment is <code>production</code>. Exit code 1 cancels the command before it runs on live IoT devices.</div></div>
+            <div class="exercise-step"><div class="step-badge">4</div><div class="step-content"><strong>Advanced: Telegram notification on deployment complete</strong><br>Add a Stop hook that sends a message to your Prisma team Telegram group using <code>curl</code> and your bot token stored in <code>$TELEGRAM_WEBHOOK_URL</code>. Never hardcode the token &#8212; read it from environment variables.</div></div>
+          </div>
+        </div>
+        <div class="callout info" style="margin-top:16px;"><div class="callout-icon">&#8505;</div><div class="callout-body"><strong>Environment variables in hooks:</strong> <code>$CLAUDE_TOOL_INPUT</code> contains the tool input JSON. <code>$CLAUDE_TOOL_NAME</code> contains the tool name (Write, Edit, Bash, etc.).</div></div>
+      </div>
+      <div class="content-section">
+        <h2 class="section-title">Key Takeaways</h2>
+        <div class="takeaways">
+          <div class="takeaway-item"><div class="ti-icon">&#128272;</div><div><strong>Hooks give you control at every lifecycle stage.</strong> Before, during, and after every tool call. You are never flying blind on what Claude is doing.</div></div>
+          <div class="takeaway-item"><div class="ti-icon">&#128683;</div><div><strong>PreToolUse can block dangerous operations.</strong> Exit with a non-zero code to cancel the tool call before it executes. Perfect for deletion guards and access control.</div></div>
+          <div class="takeaway-item"><div class="ti-icon">&#128196;</div><div><strong>PostToolUse is perfect for logging and audit trails.</strong> Every file write, every bash command, every edit &#8212; all can be silently logged to a file for later review.</div></div>
+        </div>
+      </div>
       <div class="section-divider" style="margin-top:40px;"></div>
-      <div style="display:flex;justify-content:center;margin:24px 0;">
-        <button class="btn btn-ghost" id="mark-complete-btn">Mark as Complete ✓</button>
-      </div>
+      <div style="display:flex;justify-content:center;margin:24px 0;"><button class="btn btn-ghost" id="mark-complete-btn">Mark as Complete &#10003;</button></div>
       <div id="module-nav"></div>
     </div>
   </div>
 </div>
 <script src="../nav.js"></script>
+<script>
+  window.addEventListener("scroll",function(){var el=document.documentElement;document.getElementById("reading-progress-fill").style.width=(el.scrollTop/(el.scrollHeight-el.clientHeight)*100)+"%";});
+  var mode=true;
+  function setMode(allow){
+    mode=allow;
+    document.getElementById("toggleAllow").className=allow?"ht-btn on":"ht-btn";
+    document.getElementById("toggleBlock").className=allow?"ht-btn":"ht-btn off";
+    if(allow){
+      document.getElementById("ef1").className="ef-stage allowed";
+      document.getElementById("ef2").className="ef-stage allowed";
+      document.getElementById("ef3").className="ef-stage allowed";
+      document.getElementById("ef4").className="ef-stage allowed";
+      document.getElementById("ef5").className="ef-stage allowed";
+      document.getElementById("ea1").className="ef-arrow green";
+      document.getElementById("ea2").className="ef-arrow green";
+      document.getElementById("ea3").className="ef-arrow green";
+      document.getElementById("ea4").className="ef-arrow green";
+      document.getElementById("ef1").querySelector(".ef-sub").textContent="write src/mqtt/broker.js";
+      document.getElementById("ef2").querySelector(".ef-sub").textContent="validation pass";
+      document.getElementById("ef3").querySelector(".ef-sub").textContent="file written";
+      document.getElementById("ef5").querySelector(".ef-sub").textContent="&#10003; complete";
+      document.getElementById("flowStatus").textContent="ALLOWED: PreToolUse hook passed. MQTT broker file was written successfully.";
+      document.getElementById("flowStatus").style.color="var(--green)";
+    }else{
+      document.getElementById("ef1").className="ef-stage";
+      document.getElementById("ef2").className="ef-stage blocked";
+      document.getElementById("ef3").className="ef-stage";
+      document.getElementById("ef4").className="ef-stage";
+      document.getElementById("ef5").className="ef-stage";
+      document.getElementById("ea1").className="ef-arrow";
+      document.getElementById("ea2").className="ef-arrow red";
+      document.getElementById("ea3").className="ef-arrow";
+      document.getElementById("ea4").className="ef-arrow";
+      document.getElementById("ef1").querySelector(".ef-sub").textContent="pm2 restart iot-prod";
+      document.getElementById("ef2").querySelector(".ef-sub").textContent="BLOCKED exit code 1";
+      document.getElementById("ef3").querySelector(".ef-sub").textContent="never runs";
+      document.getElementById("ef5").querySelector(".ef-sub").textContent="&#10007; cancelled";
+      document.getElementById("flowStatus").textContent="BLOCKED: PreToolUse hook exited with code 1. Production IoT deployment was prevented on live device.";
+      document.getElementById("flowStatus").style.color="var(--red)";
+    }
+  }
+  setMode(true);
+</script>
 </body>
 </html>

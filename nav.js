@@ -19,7 +19,7 @@ const MODULES = [
   { id:'11', title:'GitHub MCP',                 sub:'AI-native git operations',        icon:'🐙', path:'/pages/11-github-mcp.html',    time:'10 min', section:'MCP Servers' },
   { id:'12', title:'Context7',                   sub:'Live docs for your LLM',          icon:'📚', path:'/pages/12-context7.html',      time:'8 min',  section:'MCP Servers' },
   { id:'13', title:'Firecrawl MCP',              sub:'Web scraping for AI agents',      icon:'🔥', path:'/pages/13-firecrawl.html',     time:'10 min', section:'MCP Servers' },
-  { id:'14', title:'/clear and /compact',        sub:'Context window management',       icon:'🧹', path:'/pages/14-clear-compact.html', time:'8 min',  section:'Memory & Context' },
+  { id:'14', title:'/clear and /compact',        sub:'Context window management',       icon:'🧹', path:'/pages/14-clear-compact.html', time:'8 min',  section:'Context Management' },
   { id:'15', title:'dangerously-skip-permissions',sub:'Autonomous execution mode',      icon:'⚠️', path:'/pages/15-dangerous.html',     time:'10 min', section:'Advanced' },
   { id:'16', title:'Ralph',                      sub:'Long-running background agents',  icon:'🤖', path:'/pages/16-ralph.html',         time:'15 min', section:'Advanced' },
   { id:'17', title:'Comprehensive Test Suites',  sub:'Let AI self-improve via tests',   icon:'🧪', path:'/pages/17-testing.html',       time:'12 min', section:'Advanced' },
@@ -29,11 +29,15 @@ const MODULES = [
   { id:'21', title:'Gemini --yolo',              sub:'Full-autonomy Gemini CLI',        icon:'✨', path:'/pages/21-gemini-yolo.html',   time:'8 min',  section:'Other Tools'  },
 ];
 
-// Detect current page path
+// Detect current page path — normalize for Vercel cleanUrls (strips .html)
 function getCurrentPath() {
   const p = window.location.pathname;
-  // Normalize: remove trailing slash, keep /pages/xx.html
-  return p.replace(/\/$/, '') || '/';
+  return p.replace(/\/$/, '').replace(/\.html$/, '') || '/';
+}
+
+// Normalize a module path for comparison (strip .html)
+function normPath(path) {
+  return path.replace(/\.html$/, '');
 }
 
 // Check completion from localStorage
@@ -67,7 +71,8 @@ function buildSidebar() {
   const curr = getCurrentPath();
   let currentIndex = -1;
   MODULES.forEach((m, i) => {
-    if (curr === m.path || curr.endsWith(m.path.replace(/^\//, ''))) currentIndex = i;
+    const np = normPath(m.path);
+    if (curr === np || curr === m.path || curr.endsWith(np.replace(/^\//, ''))) currentIndex = i;
   });
 
   let html = `
@@ -115,7 +120,6 @@ function buildSidebar() {
 function buildTopbar(currentIndex) {
   const m = currentIndex >= 0 ? MODULES[currentIndex] : null;
   return `
-    <div id="reading-progress"><div id="reading-progress-fill"></div></div>
     <div class="topbar">
       <button class="hamburger" id="hamburger" onclick="toggleSidebar()">☰</button>
       <div class="topbar-breadcrumb">
@@ -156,7 +160,8 @@ window.addEventListener('DOMContentLoaded', function() {
   const curr = getCurrentPath();
   let currentIndex = -1;
   MODULES.forEach((m, i) => {
-    if (curr === m.path || curr.endsWith(m.path.replace(/^\//, ''))) currentIndex = i;
+    const np = normPath(m.path);
+    if (curr === np || curr === m.path || curr.endsWith(np.replace(/^\//, ''))) currentIndex = i;
   });
 
   // Inject sidebar

@@ -3,17 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GitHub MCP — Harness Engineering</title>
+<title>GitHub MCP - Harness Engineering</title>
 <link rel="stylesheet" href="../site.css">
 <style>
   #reading-progress{position:fixed;top:0;left:0;right:0;height:3px;background:var(--border);z-index:200;}
   #reading-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));width:0%;}
-  .workflow-step { display:flex;align-items:flex-start;gap:14px;padding:12px 0;border-bottom:1px solid var(--border); }
-  .workflow-step:last-child { border-bottom:none; }
-  .wf-icon { width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0; }
-  .wf-body h4 { font-size:14px;font-weight:700;margin-bottom:3px; }
-  .wf-body p  { font-size:13px;color:var(--text-dim);margin:0; }
-  .context-switch { display:inline-block;background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.2);color:var(--orange);font-size:10px;font-weight:700;padding:1px 7px;border-radius:4px;margin:2px; }
+  .compare-flow{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0;}
+  @media(max-width:600px){.compare-flow{grid-template-columns:1fr;}}
+  .flow-col{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px;}
+  .flow-col-title{font-size:12px;font-family:var(--font-mono);color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:12px;display:flex;align-items:center;gap:6px;}
+  .flow-step{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:6px;margin-bottom:4px;font-size:13px;}
+  .flow-step.ctx-switch{background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.2);}
+  .flow-step.normal{background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.15);}
+  .flow-step-icon{width:22px;text-align:center;flex-shrink:0;}
+  .flow-step-label{flex:1;color:var(--text-dim);}
+  .ctx-badge{font-size:9px;background:var(--orange);color:#000;border-radius:3px;padding:1px 4px;margin-left:auto;font-family:var(--font-mono);}
+  .timer-badge{font-size:11px;font-family:var(--font-mono);color:var(--green);margin-left:auto;}
+  .code-snippet{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:16px;font-family:var(--font-mono);font-size:12px;line-height:1.7;margin:16px 0;overflow-x:auto;}
 </style>
 </head>
 <body>
@@ -23,138 +29,124 @@
   <div class="main-content">
     <div id="nav-topbar"></div>
     <div class="page-content">
-
       <div class="page-header">
-        <div class="module-eyebrow">Module 11 · MCP Servers · ⏱ 10 min</div>
-        <h1>GitHub <span class="gradient-text">MCP</span></h1>
-        <p class="lead">The GitHub MCP server connects Claude directly to the GitHub API. Read issues, create PRs, review code, search repositories — all without leaving the terminal or manually switching to the browser.</p>
+        <div class="module-eyebrow">Module 11 &middot; MCP Servers &middot; 10 min</div>
+        <h1 class="gradient-text">GitHub MCP</h1>
+        <p class="lead">AI-Native Git Operations &mdash; issues, PRs, and reviews in one continuous flow.</p>
       </div>
-
       <div class="content-section">
-        <div class="section-title"><div class="icon" style="background:rgba(99,102,241,.15);">🔄</div>The Context Switch Tax</div>
-        <p>Normal GitHub workflow looks like this: read the issue in the browser <span class="context-switch">switch</span>, open your editor <span class="context-switch">switch</span>, write the code, open the terminal <span class="context-switch">switch</span>, push, open the browser again <span class="context-switch">switch</span>, create the PR, write the description, request a review <span class="context-switch">switch</span>.</p>
-        <p>Each context switch costs 20+ minutes of refocusing. GitHub MCP <strong>eliminates all the switches</strong>. Claude reads the issue, writes the code, creates the branch, opens the PR, and writes the description — in one continuous flow inside your terminal.</p>
+        <p style="font-size:16px;line-height:1.8;color:var(--text-dim);">The GitHub MCP server connects Claude directly to the GitHub API. For Prisma Technology Solution, this means Claude can read IoT bug reports, create pull requests for chatbot knowledge base updates, manage repos like <code>prisma-iot-counter</code> and <code>ai-livechat</code> &mdash; all without leaving the terminal or manually switching to the browser.</p>
       </div>
-
-      <!-- Workflow visualization -->
-      <div class="anim-box">
-        <div class="anim-box-header">
-          <div class="anim-box-title">🐙 What Claude can do with GitHub MCP</div>
-        </div>
-        <div class="anim-box-body">
-          <div class="workflow-step">
-            <div class="wf-icon" style="background:rgba(99,102,241,.15);">📋</div>
-            <div class="wf-body"><h4>Read &amp; Create Issues</h4><p>List open issues, read issue details, create new issues, add comments, update labels and assignees</p></div>
-          </div>
-          <div class="workflow-step">
-            <div class="wf-icon" style="background:rgba(34,197,94,.15);">🔀</div>
-            <div class="wf-body"><h4>Pull Request Workflow</h4><p>Create branches, list PRs, read PR diffs, create pull requests with descriptions, request reviewers, merge PRs</p></div>
-          </div>
-          <div class="workflow-step">
-            <div class="wf-icon" style="background:rgba(245,158,11,.15);">🔍</div>
-            <div class="wf-body"><h4>Search &amp; Explore</h4><p>Search code across repositories, find issues by keyword, search users, browse file contents</p></div>
-          </div>
-          <div class="workflow-step">
-            <div class="wf-icon" style="background:rgba(6,182,212,.15);">📊</div>
-            <div class="wf-body"><h4>Reviews &amp; Status</h4><p>Get PR review status, read review comments, check CI/CD status, view commit history</p></div>
-          </div>
-        </div>
+      <div class="callout callout-info" style="margin:24px 0;">
+        <div class="callout-icon">&#128161;</div>
+        <div class="callout-body"><strong>The Mental Model</strong><br>Normal GitHub workflow: you switch between editor, browser, and terminal to read issues, write code, open PRs, and respond to reviews. With GitHub MCP, Claude is simultaneously the developer AND the project manager &mdash; reading the IoT sensor bug, writing the fix, opening the PR, and writing the review in one continuous flow.</div>
       </div>
-
-      <!-- Config -->
       <div class="content-section">
-        <div class="section-title"><div class="icon" style="background:rgba(245,158,11,.15);">⚙️</div>Configuration</div>
-        <div class="code-snippet">
-<span class="c">// ~/.claude/.mcp.json</span>
-{
-  <span class="k">"mcpServers"</span>: {
-    <span class="k">"github"</span>: {
-      <span class="k">"command"</span>: <span class="s">"npx"</span>,
-      <span class="k">"args"</span>: [<span class="s">"-y"</span>, <span class="s">"@modelcontextprotocol/server-github"</span>],
-      <span class="k">"env"</span>: {
-        <span class="k">"GITHUB_PERSONAL_ACCESS_TOKEN"</span>: <span class="s">"ghp_your_token_here"</span>
-      }
-    }
-  }
-}
-        </div>
-      </div>
-
-      <div class="terminal">
-        <div class="term-bar">
-          <div class="term-dot" style="background:#ff5f57"></div>
-          <div class="term-dot" style="background:#febc2e"></div>
-          <div class="term-dot" style="background:#28c840"></div>
-          <div class="term-title">Claude Code — GitHub MCP in action</div>
-        </div>
-        <div class="term-body">
-          <div><span class="acc">&gt; </span><span class="cmd">List all open issues in my-org/my-repo that are labeled "bug"</span></div>
-          <br>
-          <div class="output">Found 3 open bugs:</div>
-          <div class="output">#42 — Login fails on mobile (opened 3 days ago, Jay)</div>
-          <div class="output">#38 — Payment webhook timeout (opened 5 days ago, Sarah)</div>
-          <div class="output">#31 — Dark mode flicker on dashboard (opened 8 days ago, Alex)</div>
-          <br>
-          <div><span class="acc">&gt; </span><span class="cmd">Read issue #42 and create a fix branch</span></div>
-          <div class="output">Issue #42: "Login fails on mobile — iOS Safari 17.x, specifically after..."</div>
-          <div class="ok">✓ Branch created: fix/issue-42-mobile-login</div>
-          <br>
-          <div><span class="acc">&gt; </span><span class="cmd">Create a PR for the fix branch with a proper description</span></div>
-          <div class="ok">✓ PR #47 created: "fix: resolve iOS Safari login failure (closes #42)"</div>
-          <div class="ok">  → https://github.com/my-org/my-repo/pull/47</div>
-        </div>
-      </div>
-
-      <div class="exercise-block">
-        <div class="exercise-header"><span>🔧</span><h3>Hands-On Exercise</h3></div>
-        <div class="exercise-body">
-          <div class="exercise-step">
-            <div class="step-badge">01</div>
-            <div class="step-content">
-              <h4>Create a Personal Access Token</h4>
-              <p>Go to <strong>github.com → Settings → Developer settings → Personal access tokens → Tokens (classic)</strong> → Generate new token. Select scopes: <code>repo</code>, <code>issues</code>, <code>pull_requests</code>.</p>
-            </div>
-          </div>
-          <div class="exercise-step">
-            <div class="step-badge">02</div>
-            <div class="step-content">
-              <h4>Add to ~/.claude/.mcp.json</h4>
-              <p>Create or edit <code>~/.claude/.mcp.json</code> with the configuration above. Replace <code>ghp_your_token_here</code> with your PAT.</p>
-            </div>
-          </div>
-          <div class="exercise-step">
-            <div class="step-badge">03</div>
-            <div class="step-content">
-              <h4>Restart and verify</h4>
-              <p>Restart Claude Code and run <code>claude mcp list</code> — you should see <code>github</code> in the list.</p>
-            </div>
-          </div>
-          <div class="exercise-step">
-            <div class="step-badge">04</div>
-            <div class="step-content">
-              <h4>Test it</h4>
-              <p>Ask: <em>"List the last 5 issues in [your-org/your-repo]"</em> then <em>"Create a test issue titled 'GitHub MCP test'"</em></p>
+        <h2 class="section-title"><span class="icon">&#9889;</span> Manual vs Claude-Powered Workflow</h2>
+        <p style="color:var(--text-dim);margin-bottom:16px;">The orange tags show context switches &mdash; each one costs time and interrupts flow state. The Claude workflow eliminates them entirely. Example: fixing a Prisma IoT sensor issue from report to merged PR.</p>
+        <div class="anim-box">
+          <div class="anim-box-header"><span class="anim-box-title">Fixing Issue #17: Ultrasonic sensor reading intermittent on prisma-iot-counter</span></div>
+          <div class="anim-box-body">
+            <div class="compare-flow">
+              <div class="flow-col">
+                <div class="flow-col-title"><span style="color:var(--orange);">&#9888;</span> Manual Workflow</div>
+                <div class="flow-step ctx-switch"><div class="flow-step-icon">&#128270;</div><div class="flow-step-label">Open browser, find Issue #17</div><div class="ctx-badge">switch</div></div>
+                <div class="flow-step normal"><div class="flow-step-icon">&#128196;</div><div class="flow-step-label">Read sensor bug description</div></div>
+                <div class="flow-step ctx-switch"><div class="flow-step-icon">&#128187;</div><div class="flow-step-label">Switch to editor, fix MQTT handler</div><div class="ctx-badge">switch</div></div>
+                <div class="flow-step ctx-switch"><div class="flow-step-icon">&#128196;</div><div class="flow-step-label">Switch to terminal, git commit</div><div class="ctx-badge">switch</div></div>
+                <div class="flow-step ctx-switch"><div class="flow-step-icon">&#128279;</div><div class="flow-step-label">Open browser, create PR manually</div><div class="ctx-badge">switch</div></div>
+                <div class="flow-step normal"><div class="flow-step-icon">&#9997;&#65039;</div><div class="flow-step-label">Write PR description</div></div>
+                <div class="flow-step ctx-switch"><div class="flow-step-icon">&#128274;</div><div class="flow-step-label">Tag Kae Shyong as reviewer</div><div class="ctx-badge">switch</div></div>
+                <div style="margin-top:10px;font-size:12px;font-family:var(--font-mono);color:var(--orange);">5 context switches &mdash; ~25 min</div>
+              </div>
+              <div class="flow-col">
+                <div class="flow-col-title"><span style="color:var(--green);">&#10003;</span> With GitHub MCP</div>
+                <div class="flow-step normal"><div class="flow-step-icon">&#129302;</div><div class="flow-step-label">Read Issue #17 via MCP API</div><div class="timer-badge">0:30</div></div>
+                <div class="flow-step normal"><div class="flow-step-icon">&#9999;&#65039;</div><div class="flow-step-label">Fix MQTT reconnect logic in context</div><div class="timer-badge">2:00</div></div>
+                <div class="flow-step normal"><div class="flow-step-icon">&#128196;</div><div class="flow-step-label">Create branch + commit via git</div><div class="timer-badge">2:30</div></div>
+                <div class="flow-step normal"><div class="flow-step-icon">&#128279;</div><div class="flow-step-label">Open PR via GitHub MCP</div><div class="timer-badge">3:00</div></div>
+                <div class="flow-step normal"><div class="flow-step-icon">&#9997;&#65039;</div><div class="flow-step-label">PR description auto-generated</div><div class="timer-badge">3:20</div></div>
+                <div class="flow-step normal"><div class="flow-step-icon">&#128274;</div><div class="flow-step-label">Tag Kae Shyong via MCP API</div><div class="timer-badge">3:30</div></div>
+                <div style="margin-top:10px;font-size:12px;font-family:var(--font-mono);color:var(--green);">0 context switches &mdash; ~3.5 min</div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-
-      <div class="takeaways">
-        <h3>⚡ Key Takeaways</h3>
-        <div class="takeaway-item"><span class="ti-icon">✓</span><div>GitHub MCP = GitHub API access in Claude Code. Requires a PAT with appropriate scopes.</div></div>
-        <div class="takeaway-item"><span class="ti-icon">✓</span><div>Eliminates context switches: read issue → write code → create PR → done, all in terminal.</div></div>
-        <div class="takeaway-item"><span class="ti-icon">✓</span><div>Claude can create branches, PRs, review comments, and merge — full GitHub workflow.</div></div>
-        <div class="takeaway-item"><span class="ti-icon">✓</span><div>Add to <code>~/.claude/.mcp.json</code> — applies to all sessions once configured.</div></div>
+      <div class="content-section">
+        <h2 class="section-title"><span class="icon">&#128196;</span> MCP Configuration</h2>
+        <div class="code-snippet"><span class="c">// ~/.claude/.mcp.json</span>
+<span class="k">{</span>
+  <span class="s">"mcpServers"</span>: <span class="k">{</span>
+    <span class="s">"github"</span>: <span class="k">{</span>
+      <span class="s">"command"</span>: <span class="s">"npx"</span>,
+      <span class="s">"args"</span>: [<span class="s">"-y"</span>, <span class="s">"@modelcontextprotocol/server-github"</span>],
+      <span class="s">"env"</span>: <span class="k">{</span>
+        <span class="s">"GITHUB_PERSONAL_ACCESS_TOKEN"</span>: <span class="o">"ghp_your_token_here"</span>
+      <span class="k">}</span>
+    <span class="k">}</span>
+  <span class="k">}</span>
+<span class="k">}</span></div>
       </div>
-
+      <div class="content-section">
+        <h2 class="section-title"><span class="icon">&#128187;</span> Terminal Demo</h2>
+        <div class="terminal">
+          <div class="term-bar"><span class="term-dot" style="background:var(--red)"></span><span class="term-dot" style="background:var(--orange)"></span><span class="term-dot" style="background:var(--green)"></span><span class="term-title">claude code &mdash; prisma github mcp session</span></div>
+          <div class="term-body">
+            <div><span class="comment"># After adding GitHub MCP to .mcp.json and restarting</span></div>
+            <div><span class="prompt">$</span> <span class="cmd">claude mcp list</span></div>
+            <div><span class="ok">&#10003; github (connected)</span></div>
+            <br>
+            <div><span class="prompt">&gt;</span> <span class="cmd">List open issues in prisma-iot-counter</span></div>
+            <div><span class="output">#17 - Ultrasonic sensor reading intermittent (opened 1d ago)</span></div>
+            <div><span class="output">#14 - MQTT broker reconnect not handling timeout (opened 3d ago)</span></div>
+            <div><span class="output">#11 - Dashboard not reflecting live machine count (opened 1w ago)</span></div>
+            <br>
+            <div><span class="prompt">&gt;</span> <span class="cmd">Create a GitHub issue titled 'RAG knowledge base outdated for Pelangi Hostel FAQ' in repo ai-livechat</span></div>
+            <div><span class="ok">&#10003; Issue #23 created: https://github.com/prisma-tech/ai-livechat/issues/23</span></div>
+            <br>
+            <div><span class="prompt">&gt;</span> <span class="cmd">Review the last PR in prisma-payroll and summarise the changes<span class="cursor"></span></span></div>
+          </div>
+        </div>
+      </div>
+      <div class="content-section">
+        <h2 class="section-title"><span class="icon">&#127947;</span> Exercise</h2>
+        <div class="exercise-block">
+          <div class="exercise-header">Hands-On: Connect GitHub MCP for Prisma Repos</div>
+          <div class="exercise-body">
+            <div class="exercise-step"><div class="step-badge">1</div><div class="step-content"><strong>Create a Personal Access Token</strong><br>Go to github.com &rarr; Settings &rarr; Developer settings &rarr; Personal access tokens &rarr; Generate new token (classic). Select scopes: <code>repo</code>, <code>issues</code>, <code>pull_requests</code>. Copy the token &mdash; it is shown only once.</div></div>
+            <div class="exercise-step"><div class="step-badge">2</div><div class="step-content"><strong>Add to .mcp.json</strong><br>Open <code>~/.claude/.mcp.json</code> and add the github server config shown above. Replace <code>ghp_your_token_here</code> with your actual token.</div></div>
+            <div class="exercise-step"><div class="step-badge">3</div><div class="step-content"><strong>Restart and verify</strong><br>Restart Claude Code. Run <code>claude mcp list</code> &mdash; you should see <code>github (connected)</code>.</div></div>
+            <div class="exercise-step"><div class="step-badge">4</div><div class="step-content"><strong>List Prisma open issues</strong><br>Ask Claude: <em>List open issues in prisma-iot-counter.</em> Claude should return a formatted list of sensor bugs and backlog items.</div></div>
+            <div class="exercise-step"><div class="step-badge">5</div><div class="step-content"><strong>Create an IoT bug issue</strong><br>Ask: <em>Create a GitHub issue titled 'Ultrasonic sensor reading intermittent on injection machine line 3' in prisma-iot-counter.</em> Verify it appears on GitHub.</div></div>
+            <div class="exercise-step"><div class="step-badge">6</div><div class="step-content"><strong>Advanced: PR for chatbot RAG update</strong><br>Ask Claude to review the latest pull request in <code>ai-livechat</code> (your RAG chatbot repo) and summarise what knowledge base entries were added or changed.</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="callout callout-warn" style="margin:24px 0;"><div class="callout-icon">&#9888;</div><div class="callout-body"><strong>PAT Security</strong><br>Your Personal Access Token grants write access to Prisma's repositories. Store it only in <code>.mcp.json</code> (not committed to git). Use fine-grained PATs where possible to limit scope to specific repos like <code>prisma-iot-counter</code>, <code>ai-livechat</code>, and <code>prisma-payroll</code>.</div></div>
+      <div class="content-section">
+        <h2 class="section-title"><span class="icon">&#127919;</span> Key Takeaways</h2>
+        <div class="takeaways"><h3>What to Remember</h3>
+          <div class="takeaway-item"><div class="ti-icon">&#128279;</div><div><strong>GitHub MCP = GitHub API access for Claude.</strong> No browser switching required to manage Prisma's IoT, chatbot, and payroll repos.</div></div>
+          <div class="takeaway-item"><div class="ti-icon">&#128272;</div><div><strong>Requires PAT with appropriate scopes.</strong> repo, issues, and pull_requests at minimum.</div></div>
+          <div class="takeaway-item"><div class="ti-icon">&#129302;</div><div><strong>Claude can create, read, and update issues and PRs.</strong> Full CRUD on Prisma's GitHub workflow across all three projects.</div></div>
+          <div class="takeaway-item"><div class="ti-icon">&#128260;</div><div><strong>Combine with local git.</strong> Claude writes sensor fixes locally, commits, pushes, and opens the PR in one uninterrupted flow.</div></div>
+        </div>
+      </div>
       <div class="section-divider" style="margin-top:40px;"></div>
       <div style="display:flex;justify-content:center;margin:24px 0;">
-        <button class="btn btn-ghost" id="mark-complete-btn">Mark as Complete ✓</button>
+        <button class="btn btn-ghost" id="mark-complete-btn">Mark as Complete &#10003;</button>
       </div>
       <div id="module-nav"></div>
     </div>
   </div>
 </div>
 <script src="../nav.js"></script>
+<script>
+  window.addEventListener("scroll",()=>{
+    const el=document.documentElement;
+    document.getElementById("reading-progress-fill").style.width=(el.scrollTop/(el.scrollHeight-el.clientHeight))*100+"%";
+  });
+</script>
 </body>
 </html>
