@@ -128,6 +128,10 @@ function buildTopbar(currentIndex) {
         ${m ? `<span>${m.title}</span>` : '<span>Course</span>'}
       </div>
       ${m ? `<span class="topbar-module-badge">Module ${m.id} / 21</span>` : ''}
+      <button class="pm-toggle-btn" id="pm-toggle-btn" onclick="window.HE.togglePresMode()" title="Toggle Presentation Mode">
+        <span id="pm-icon">⊞</span>
+        <span id="pm-label">Website</span>
+      </button>
     </div>
   `;
 }
@@ -153,6 +157,48 @@ function buildModuleNav(currentIndex) {
       }
     </div>
   `;
+}
+
+// ── Presentation mode ──
+
+function wrapPresContent() {
+  document.querySelectorAll('.content-section').forEach(function(section) {
+    if (section.querySelector('.pm-collapse')) return; // already wrapped
+    const title = section.querySelector('.section-title');
+    if (!title) return;
+    const wrapper = document.createElement('div');
+    wrapper.className = 'pm-collapse';
+    const inner = document.createElement('div');
+    inner.className = 'pm-collapse-inner';
+    wrapper.appendChild(inner);
+    // Move every child except the title into the collapsible wrapper
+    Array.from(section.children).forEach(function(child) {
+      if (child !== title) inner.appendChild(child);
+    });
+    section.appendChild(wrapper);
+  });
+}
+
+function updatePmBtn(isPresMode) {
+  const iconEl  = document.getElementById('pm-icon');
+  const labelEl = document.getElementById('pm-label');
+  const btn     = document.getElementById('pm-toggle-btn');
+  if (iconEl)  iconEl.textContent  = isPresMode ? '▣' : '⊞';
+  if (labelEl) labelEl.textContent = isPresMode ? 'Presentation' : 'Website';
+  if (btn) btn.classList.toggle('active', isPresMode);
+}
+
+function togglePresMode() {
+  const isPresMode = document.body.classList.toggle('presentation-mode');
+  localStorage.setItem('he_pres_mode', isPresMode ? '1' : '0');
+  updatePmBtn(isPresMode);
+}
+
+function initPresMode() {
+  wrapPresContent();
+  const isPresMode = localStorage.getItem('he_pres_mode') === '1';
+  if (isPresMode) document.body.classList.add('presentation-mode');
+  updatePmBtn(isPresMode);
 }
 
 // ── Main init ──
@@ -201,6 +247,9 @@ window.addEventListener('DOMContentLoaded', function() {
 
   // Update progress
   updateProgress();
+
+  // Presentation mode — wraps content, restores saved state
+  initPresMode();
 });
 
 window.toggleSidebar = function() {
@@ -209,6 +258,6 @@ window.toggleSidebar = function() {
 };
 
 // Expose for pages to use
-window.HE = { MODULES, isDone, markDone, updateProgress };
+window.HE = { MODULES, isDone, markDone, updateProgress, togglePresMode };
 
 })();

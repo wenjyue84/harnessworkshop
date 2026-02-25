@@ -811,6 +811,171 @@ code {
 }
 
 /* ═══════════════════════════════════════════════════════════
+   PRESENTATION MODE TOGGLE BUTTON
+   ═══════════════════════════════════════════════════════════ */
+.pm-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border2);
+  background: var(--surface2);
+  color: var(--text-dim);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+  flex-shrink: 0;
+  letter-spacing: 0.3px;
+}
+
+.pm-toggle-btn:hover {
+  border-color: var(--accent);
+  color: var(--text);
+  background: rgba(99,102,241,.08);
+}
+
+.pm-toggle-btn.active {
+  background: rgba(99,102,241,.14);
+  border-color: var(--accent);
+  color: var(--accent3);
+  box-shadow: 0 0 14px rgba(99,102,241,.18);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PRESENTATION MODE — COLLAPSE ENGINE
+   Uses CSS grid-template-rows trick for smooth height animation
+   ═══════════════════════════════════════════════════════════ */
+
+/* Collapse wrapper — always present, animated by JS-toggled body class */
+.pm-collapse {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 0.38s ease, opacity 0.3s ease;
+  opacity: 1;
+}
+
+.pm-collapse-inner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* ── Presentation mode: collapse all section details ── */
+body.presentation-mode .content-section {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 2px;
+  margin-bottom: 8px !important;
+}
+
+body.presentation-mode .content-section:last-child {
+  border-bottom: none;
+}
+
+/* Section title shows a chevron hint */
+body.presentation-mode .content-section .section-title {
+  cursor: pointer;
+  padding: 10px 0;
+  margin-bottom: 0 !important;
+  transition: color var(--transition-fast);
+  position: relative;
+}
+
+body.presentation-mode .content-section .section-title::after {
+  content: '›';
+  position: absolute;
+  right: 0;
+  font-size: 20px;
+  font-weight: 300;
+  color: var(--text-muted);
+  line-height: 1;
+  transition: transform 0.3s ease, color 0.2s ease;
+}
+
+body.presentation-mode .content-section:hover .section-title {
+  color: var(--accent3);
+}
+
+body.presentation-mode .content-section:hover .section-title::after {
+  color: var(--accent);
+  transform: rotate(90deg);
+}
+
+/* Collapse detail content */
+body.presentation-mode .pm-collapse {
+  grid-template-rows: 0fr;
+  opacity: 0;
+  pointer-events: none;
+}
+
+body.presentation-mode .content-section:hover .pm-collapse {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  pointer-events: auto;
+  transition: grid-template-rows 0.38s ease, opacity 0.25s ease 0.05s;
+}
+
+/* Page header — collapse lead text, reveal on hover */
+body.presentation-mode .page-header {
+  margin-bottom: 16px;
+}
+
+body.presentation-mode .page-header .lead {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.4s ease, opacity 0.3s ease;
+  pointer-events: none;
+}
+
+body.presentation-mode .page-header:hover .lead {
+  max-height: 300px;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Page header title gets a subtle hint that it's hoverable */
+body.presentation-mode .page-header h1 {
+  cursor: pointer;
+}
+
+/* ── Home page — simplify hero in presentation mode ── */
+body.presentation-mode .hero-lead,
+body.presentation-mode .hero-stats,
+body.presentation-mode .hero-actions,
+body.presentation-mode .company-strip,
+body.presentation-mode .progress-banner {
+  display: none;
+}
+
+body.presentation-mode .hero {
+  padding-bottom: 24px;
+}
+
+body.presentation-mode .card-sub,
+body.presentation-mode .card-footer {
+  display: none;
+}
+
+body.presentation-mode .module-card {
+  gap: 4px;
+}
+
+/* Pres mode watermark badge */
+body.presentation-mode .pm-toggle-btn::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 6px rgba(99,102,241,.8);
+  animation: blink 2s ease-in-out infinite;
+}
+
+/* ═══════════════════════════════════════════════════════════
    INDEX PAGE — HERO + MODULE GRID
    ═══════════════════════════════════════════════════════════ */
 
